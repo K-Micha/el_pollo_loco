@@ -3,9 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
     <title>El Pollo Loco</title>
+    <link rel="icon" href="/assets/icon/epl logo.png" type="image/svg+xml">
+    <script src="./models/world.class.js"></script>
+    <script src="./models/movable-object.class.js"></script>
+    <script src="./models/background-object.class.js"></script>
+    <script src="./models/cloud.class.js"></script>
+    <script src="./models/character.class.js"></script>
+    <script src="./models/smallchicken.class.js"></script>
+    <script src="./models/chicken.class.js"></script>
+    <script src="/js/game.js"></script>
 </head>
-<body>
-    
+<body onload="init()">
+    <header>
+        <h1> El Pollo Loco</h1>
+    </header>
+
+    <main>
+
+        <canvas id="canvas" width="720" height="480">
+
+        </canvas>
+
+    </main>
+
+    <footer>
+
+    </footer>
+
 </body>
 </html>
