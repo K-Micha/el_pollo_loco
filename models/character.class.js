@@ -24,23 +24,25 @@ class Character extends MovableObject {
     animate() {
 
         setInterval(() => {
-                        if(this.world.keyboard.RIGHT){
+            if (this.world.keyboard.RIGHT) {
                 this.x += this.speed;
-                }
-                                        if(this.world.keyboard.LEFT){
+                this.otherDirection = false;
+            }
+            if (this.world.keyboard.LEFT) {
                 this.x -= this.speed;
-                }
+                this.otherDirection = true;
+            }
         }, 1000 / 60);
 
         setInterval(() => {
 
-            if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT){
+            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
 
-            let i = this.currentImage % this.IMAGES_WALKING.length;
-            let path = this.IMAGES_WALKING[i];
-            this.img = this.imageCache[path];
-            this.currentImage++;
-             }
+                let i = this.currentImage % this.IMAGES_WALKING.length;
+                let path = this.IMAGES_WALKING[i];
+                this.img = this.imageCache[path];
+                this.currentImage++;
+            }
         }, 100);
 
     }
