@@ -16,6 +16,8 @@ const lvl1 = new Level(
         this.randomEnemy(),
         this.randomEnemy(),
         this.randomEnemy(),
+        
+        new Endboss()
     ],
 
     [
