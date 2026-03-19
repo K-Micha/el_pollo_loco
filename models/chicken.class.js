@@ -38,5 +38,3 @@ class Chicken extends MovableObject {
 }, 100);
 
  */
-
-//last keyboard objekt
