@@ -25,6 +25,22 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/3_jump/J-39.png'
     ];
 
+    IMAGES_DEAD = [
+        'assets/img/2_character_pepe/5_dead/D-51.png',
+        'assets/img/2_character_pepe/5_dead/D-52.png',
+        'assets/img/2_character_pepe/5_dead/D-53.png',
+        'assets/img/2_character_pepe/5_dead/D-54.png',
+        'assets/img/2_character_pepe/5_dead/D-55.png',
+        'assets/img/2_character_pepe/5_dead/D-56.png',
+        'assets/img/2_character_pepe/5_dead/D-57.png'
+    ];
+
+    IMAGES_HURT = [
+        'assets/img/2_character_pepe/4_hurt/H-41.png',
+        'assets/img/2_character_pepe/4_hurt/H-42.png',
+        'assets/img/2_character_pepe/4_hurt/H-43.png'
+    ];
+
     world;
 
 
@@ -32,6 +48,8 @@ class Character extends MovableObject {
         super().loadImage('../assets/img/2_character_pepe/1_idle/idle/I-1.png')
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
+        this.loadImages(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_HURT);
         this.applyGravity();
         this.animate();
     }
@@ -58,9 +76,19 @@ class Character extends MovableObject {
 
         setInterval(() => {
 
-            if (this.isAboveGround()) {
+            if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+            }
+
+            else if(this.isHurt()){
+                this.playAnimation(this.IMAGES_HURT);
+            }
+
+            else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
-            } else {
+            } 
+
+            else {
 
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
 
@@ -74,4 +102,16 @@ class Character extends MovableObject {
     jump() {
         this.speedY = 30;
     }
+
+    drawBorder(ctx) {
+        ctx.strokeStyle = 'red';
+        ctx.rect(
+            this.x + 15,
+            this.y + 40,
+            this.width - 40,
+            this.height - 50
+        );
+        ctx.stroke();
+    }
+
 }
