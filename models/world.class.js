@@ -26,6 +26,7 @@ class World {
             this.checkCollision();
             this.checkThrowObjects();
             this.checkBottleCollision();
+            this.throwableObjects = this.throwableObjects.filter(obj => !obj.markedForRemoval);
         }, 200);
     }
 
@@ -38,22 +39,18 @@ class World {
         }
     }
 
-checkBottleCollision() {
-    this.throwableObjects.forEach((bottle) => {
-        this.level.enemies.forEach((enemy) => {
+    checkBottleCollision() {
+        this.throwableObjects.forEach((bottle) => {
+            this.level.enemies.forEach((enemy) => {
 
-      if (!bottle.isBroken && bottle.isColliding(enemy)) {
-    enemy.die();
-    bottle.break();
+                if (!bottle.isBroken && bottle.isColliding(enemy)) {
+                    enemy.die();
+                    bottle.break();
+                }
 
-    setTimeout(() => {
-        this.throwableObjects = this.throwableObjects.filter(obj => obj !== bottle);
-    }, 300);
-}
-
+            });
         });
-    });
-}
+    }
 
     checkCollision() {
         this.level.enemies.forEach((enemy) => {

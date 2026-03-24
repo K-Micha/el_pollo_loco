@@ -1,5 +1,6 @@
 class ThrowableObject extends MovableObject {
     isBroken = false;
+    markedForRemoval = false;
 
     constructor() {
         super();
@@ -11,36 +12,40 @@ class ThrowableObject extends MovableObject {
         this.img = this.imageCache[Images.BOTTLE_IMAGE[0]];
     }
 
-throw(x, y) {
-    this.x = x;
-    this.y = y;
-    this.speedY = 30;
-    this.applyGravity();
+    throw(x, y) {
+        this.x = x;
+        this.y = y;
+        this.speedY = 30;
+        this.applyGravity();
 
-    setInterval(() => {
-        this.x += 10;
+        setInterval(() => {
+            if (this.y >= 360) {
+                this.y = 360;
+                this.break();
+            }
 
-        if (this.isBroken) {
-            this.playAnimation(Images.BOTTLE_SPLASH);
-        } else {
-            this.playAnimation(Images.BOTTLE_IMAGE);
-        }
-
-    }, 25);
-}
+            if (!this.isBroken) {
+                this.x += 10;
+                this.playAnimation(Images.BOTTLE_IMAGE);
+            } else {
+                this.playAnimation(Images.BOTTLE_SPLASH);
+            }
+        }, 25);
+    }
 
     break() {
-    this.isBroken = true;
+        this.isBroken = true;
 
-    // Splash-Bilder laden
-    this.loadImages(Images.BOTTLE_SPLASH);
+        this.loadImages(Images.BOTTLE_SPLASH);
 
-    // Splash anzeigen
-    this.playAnimation(Images.BOTTLE_SPLASH);
+        this.playAnimation(Images.BOTTLE_SPLASH);
 
-    // Bewegung stoppen
-    this.speedX = 0;
-    this.speedY = 0;
-}
+        this.speedX = 0;
+        this.speedY = 0;
+
+        setTimeout(() => {
+            this.markedForRemoval = true;
+        }, 200);
+    }
 
 }
