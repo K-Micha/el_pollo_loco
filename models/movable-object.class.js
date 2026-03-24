@@ -27,7 +27,14 @@ class MovableObject extends DrawableObject {
         if (!this.isDeadEnemy) {
             this.isDeadEnemy = true;
             this.speed = 0;
+            this.removeAfterDelay();
         }
+    }
+
+    removeAfterDelay() {
+        setTimeout(() => {
+            this.markedForRemoval = true;
+        }, 500);
     }
 
     isAboveGround() {

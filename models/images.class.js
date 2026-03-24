@@ -27,11 +27,20 @@ class Images  {
         'assets/img/3_enemies_chicken/chicken_small/1_walk/3_w.png'
     ];
 
+   static IMAGES_DEAD_SMAL = [
+    'assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png'
+];
+
+
        static IMAGES_WALKING = [
         'assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
         'assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
         'assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
     ];
+
+   static IMAGES_DEAD_CHICKEN = [
+        'assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
+   ];
 
        static IMAGES_BOSS = [
         'assets/img/4_enemie_boss_chicken/2_alert/G5.png',

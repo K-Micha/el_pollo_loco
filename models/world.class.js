@@ -7,6 +7,8 @@ class World {
     camera_x = 0;
     statusBar = new StatusBar();
     throwableObjects = [];
+    canThrow = true;
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -26,18 +28,24 @@ class World {
             this.checkCollision();
             this.checkThrowObjects();
             this.checkBottleCollision();
-            this.throwableObjects = this.throwableObjects.filter(obj => !obj.markedForRemoval);
         }, 1000 / 60); // 60 FPS
     }
 
     checkThrowObjects() {
-        if (this.keyboard.D) {
-            let bottle = new ThrowableObject();
-            bottle.throw(this.character.x + 100, this.character.y + 100);
+        if (this.keyboard.D && this.canThrow) {
+            this.canThrow = false;
 
+            let bottle = new ThrowableObject();
+            bottle.throw(this.character.x + 100,
+                this.character.y + 150);
             this.throwableObjects.push(bottle);
         }
+
+        if (!this.keyboard.D) {
+            this.canThrow = true;
+        }
     }
+
 
     checkBottleCollision() {
         this.throwableObjects.forEach((bottle) => {
@@ -52,45 +60,45 @@ class World {
         });
     }
 
- checkCollision() {
-    this.level.enemies.forEach((enemy) => {
+    checkCollision() {
+        this.level.enemies.forEach((enemy) => {
 
-        if (enemy.isDeadEnemy) return;
+            if (enemy.isDeadEnemy) return;
 
-        const isNormalHit = this.character.isColliding(enemy);
-        if (!isNormalHit) return;
+            const isNormalHit = this.character.isColliding(enemy);
+            if (!isNormalHit) return;
 
-        const charBottom = this.character.y + this.character.height;
-        const enemyTop = enemy.y;
+            const charBottom = this.character.y + this.character.height;
+            const enemyTop = enemy.y;
 
-        // --- HORIZONTALE STOMP-BREITE ---
-        const charCenter = this.character.x + this.character.width / 2;
-        const enemyLeft = enemy.x;
-        const enemyRight = enemy.x + enemy.width;
+            // --- HORIZONTALE STOMP-BREITE ---
+            const charCenter = this.character.x + this.character.width / 2;
+            const enemyLeft = enemy.x;
+            const enemyRight = enemy.x + enemy.width;
 
-        // Wie breit darf der Stomp-Bereich sein? (60% der Gegnerbreite)
-        const stompWidth = enemy.width * 0.8;
-        const stompLeft = enemyLeft + (enemy.width - stompWidth) / 2;
-        const stompRight = enemyRight - (enemy.width - stompWidth) / 2;
+            // Wie breit darf der Stomp-Bereich sein? (60% der Gegnerbreite)
+            const stompWidth = enemy.width * 0.8;
+            const stompLeft = enemyLeft + (enemy.width - stompWidth) / 2;
+            const stompRight = enemyRight - (enemy.width - stompWidth) / 2;
 
-        // --- STOMP-CHECK ---
-        const stomp =
-            this.character.speedY < 0 &&
-            charBottom >= enemyTop &&
-            charBottom <= enemyTop + 40 &&
-            charCenter >= stompLeft &&
-            charCenter <= stompRight;
+            // --- STOMP-CHECK ---
+            const stomp =
+                this.character.speedY < 0 &&
+                charBottom >= enemyTop &&
+                charBottom <= enemyTop + 40 &&
+                charCenter >= stompLeft &&
+                charCenter <= stompRight;
 
-        if (stomp) {
-            enemy.die();
-        } else {
-            if (!this.character.isHurt()) {
-                this.character.hit();
-                this.statusBar.setPercentage(this.character.life);
+            if (stomp) {
+                enemy.die();
+            } else {
+                if (!this.character.isHurt()) {
+                    this.character.hit();
+                    this.statusBar.setPercentage(this.character.life);
+                }
             }
-        }
-    });
-}
+        });
+    }
 
 
     randomEnemy() {
@@ -100,6 +108,10 @@ class World {
     }
 
     draw() {
+        this.level.enemies = this.level.enemies.filter
+            (enemy => !enemy.markedForRemoval);
+        this.throwableObjects = this.throwableObjects.filter
+            (obj => !obj.markedForRemoval);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.ctx.translate(this.camera_x, 0);
@@ -108,6 +120,7 @@ class World {
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.enemies);
+
         this.addObjectsToMap(this.throwableObjects);
 
         this.ctx.translate(-this.camera_x, 0);
