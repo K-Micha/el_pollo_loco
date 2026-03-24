@@ -46,60 +46,66 @@ class World {
         }
     }
 
-
     checkBottleCollision() {
-        this.throwableObjects.forEach((bottle) => {
-            this.level.enemies.forEach((enemy) => {
+        this.throwableObjects.forEach(bottle => {
+            if (bottle.isBroken) return;
 
-                if (!bottle.isBroken && bottle.isColliding(enemy)) {
+            this.level.enemies.forEach(enemy => {
+                if (!bottle.isColliding(enemy)) return;
+
+                if (enemy instanceof Endboss) {
+                    enemy.hit(20);
+                } else {
                     enemy.die();
-                    bottle.break();
                 }
 
+                bottle.break();
             });
         });
     }
 
+
+
     checkCollision() {
-        this.level.enemies.forEach((enemy) => {
+        this.level.enemies.forEach(enemy => {
+            if (this.shouldSkipEnemy(enemy)) return;
+            if (!this.character.isColliding(enemy)) return;
 
-            if (enemy.isDeadEnemy) return;
-
-            const isNormalHit = this.character.isColliding(enemy);
-            if (!isNormalHit) return;
-
-            const charBottom = this.character.y + this.character.height;
-            const enemyTop = enemy.y;
-
-            // --- HORIZONTALE STOMP-BREITE ---
-            const charCenter = this.character.x + this.character.width / 2;
-            const enemyLeft = enemy.x;
-            const enemyRight = enemy.x + enemy.width;
-
-            // Wie breit darf der Stomp-Bereich sein? (60% der Gegnerbreite)
-            const stompWidth = enemy.width * 0.8;
-            const stompLeft = enemyLeft + (enemy.width - stompWidth) / 2;
-            const stompRight = enemyRight - (enemy.width - stompWidth) / 2;
-
-            // --- STOMP-CHECK ---
-            const stomp =
-                this.character.speedY < 0 &&
-                charBottom >= enemyTop &&
-                charBottom <= enemyTop + 40 &&
-                charCenter >= stompLeft &&
-                charCenter <= stompRight;
-
-            if (stomp) {
+            if (this.isStomp(enemy)) {
                 enemy.die();
             } else {
-                if (!this.character.isHurt()) {
-                    this.character.hit();
-                    this.statusBar.setPercentage(this.character.life);
-                }
+                this.handleCharacterHit();
             }
         });
     }
 
+    isStomp(enemy) {
+        const char = this.character;
+
+        const charBottom = char.y + char.height;
+        const enemyTop = enemy.y;
+
+        const charCenter = char.x + char.width / 2;
+
+        return (
+            char.speedY < 0 &&
+            charBottom >= enemyTop &&
+            charBottom <= enemyTop + 40 &&
+            charCenter >= enemy.x &&
+            charCenter <= enemy.x + enemy.width
+        );
+    }
+
+    handleCharacterHit() {
+        if (!this.character.isHurt()) {
+            this.character.hit();
+            this.statusBar.setPercentage(this.character.life);
+        }
+    }
+
+    shouldSkipEnemy(enemy) {
+        return enemy.isDeadEnemy;
+    }
 
     randomEnemy() {
         let types = [Chicken, SmallChicken];
@@ -108,30 +114,55 @@ class World {
     }
 
     draw() {
-        this.level.enemies = this.level.enemies.filter
-            (enemy => !enemy.markedForRemoval);
-        this.throwableObjects = this.throwableObjects.filter
-            (obj => !obj.markedForRemoval);
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.cleanupObjects();
+        this.clearCanvas();
 
         this.ctx.translate(this.camera_x, 0);
-        this.addObjectsToMap(this.level.backgroundObjects);
 
-        this.addToMap(this.character);
-        this.addObjectsToMap(this.level.clouds);
-        this.addObjectsToMap(this.level.enemies);
-
-        this.addObjectsToMap(this.throwableObjects);
+        this.drawBackground();
+        this.drawCharacter();
+        this.drawClouds();
+        this.drawEnemies();
+        this.drawThrowables();
 
         this.ctx.translate(-this.camera_x, 0);
 
+        this.drawUI();
+
+        requestAnimationFrame(() => this.draw());
+    }
+
+    cleanupObjects() {
+        this.level.enemies = this.level.enemies.filter(e => !e.markedForRemoval);
+        this.throwableObjects = this.throwableObjects.filter(o => !o.markedForRemoval);
+    }
+
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    drawBackground() {
+        this.addObjectsToMap(this.level.backgroundObjects);
+    }
+
+    drawCharacter() {
+        this.addToMap(this.character);
+    }
+
+    drawClouds() {
+        this.addObjectsToMap(this.level.clouds);
+    }
+
+    drawEnemies() {
+        this.addObjectsToMap(this.level.enemies);
+    }
+
+    drawThrowables() {
+        this.addObjectsToMap(this.throwableObjects);
+    }
+
+    drawUI() {
         this.addToMap(this.statusBar);
-
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
-
-        });
     }
 
     addObjectsToMap(objects) {
@@ -153,6 +184,7 @@ class World {
 
         }
     }
+    
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);

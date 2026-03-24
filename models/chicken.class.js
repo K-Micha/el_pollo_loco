@@ -15,18 +15,21 @@ class Chicken extends MovableObject {
     }
 
     animate() {
-        setInterval(() => {
-            if (!this.isDeadEnemy) {
-                this.moveLeft();
-            }
-        }, 1000 / 60);
+        setInterval(() => this.handleMovement(), 1000 / 60);
+        setInterval(() => this.handleAnimation(), 100);
+    }
 
-        setInterval(() => {
-            if (this.isDeadEnemy) {
-                this.playAnimation(Images.IMAGES_DEAD_CHICKEN);
-            } else {
-                this.playAnimation(Images.IMAGES_WALKING);
-            }
-        }, 100);
+    handleMovement() {
+        if (!this.isDeadEnemy) {
+            this.moveLeft();
+        }
+    }
+
+    handleAnimation() {
+        if (this.isDeadEnemy) {
+            this.playAnimation(Images.IMAGES_DEAD_CHICKEN);
+        } else {
+            this.playAnimation(Images.IMAGES_WALKING);
+        }
     }
 }
