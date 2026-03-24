@@ -7,6 +7,7 @@ class MovableObject extends DrawableObject {
     otherDirection = false;
     life = 100;
     lastHit = 0;
+    isDeadEnemy = false;
 
     applyGravity() {
         setInterval(() => {
@@ -15,6 +16,13 @@ class MovableObject extends DrawableObject {
                 this.speedY -= this.acceleration;
             }
         }, 1000 / 25);
+    }
+
+    die() {
+        if (!this.isDeadEnemy) {
+            this.isDeadEnemy = true;
+            this.speed = 0;
+        }
     }
 
     isAboveGround() {
@@ -31,6 +39,14 @@ class MovableObject extends DrawableObject {
             this.x < mo.x + mo.width &&
             this.y < mo.y + mo.height;
 
+    }
+
+    isCollidingTop(mo) {
+        let feet = this.y + this.height;
+        return this.x + this.width > mo.x &&
+            this.x < mo.x + mo.width &&
+            feet >= mo.y &&
+            this.y < mo.y;
     }
 
     hit() {
