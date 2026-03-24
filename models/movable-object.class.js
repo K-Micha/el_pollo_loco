@@ -14,9 +14,14 @@ class MovableObject extends DrawableObject {
             if (this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
+
+                if (!this.isAboveGround() && this.speedY < 0) {
+                    this.speedY = 0;
+                }
             }
         }, 1000 / 25);
     }
+
 
     die() {
         if (!this.isDeadEnemy) {
@@ -41,13 +46,6 @@ class MovableObject extends DrawableObject {
 
     }
 
-    isCollidingTop(mo) {
-        let feet = this.y + this.height;
-        return this.x + this.width > mo.x &&
-            this.x < mo.x + mo.width &&
-            feet >= mo.y &&
-            this.y < mo.y;
-    }
 
     hit() {
         this.life -= 5;

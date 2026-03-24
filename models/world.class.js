@@ -27,7 +27,7 @@ class World {
             this.checkThrowObjects();
             this.checkBottleCollision();
             this.throwableObjects = this.throwableObjects.filter(obj => !obj.markedForRemoval);
-        }, 200);
+        }, 1000 / 60); // 60 FPS
     }
 
     checkThrowObjects() {
@@ -52,37 +52,52 @@ class World {
         });
     }
 
-    checkCollision() {
-        this.level.enemies.forEach((enemy) => {
-            let isNormalHit = this.character.isColliding(enemy);
-            let isTopHit = this.character.isCollidingTop(enemy);
+ checkCollision() {
+    this.level.enemies.forEach((enemy) => {
 
-            if (isNormalHit && isTopHit && this.character.speedY < 0) {
-                enemy.die();
-            } else if (isNormalHit) {
-                if (!this.character.isHurt()) {
-                    this.character.hit();
-                    this.statusBar.setPercentage(this.character.life);
-                }
+        if (enemy.isDeadEnemy) return;
+
+        const isNormalHit = this.character.isColliding(enemy);
+        if (!isNormalHit) return;
+
+        const charBottom = this.character.y + this.character.height;
+        const enemyTop = enemy.y;
+
+        // --- HORIZONTALE STOMP-BREITE ---
+        const charCenter = this.character.x + this.character.width / 2;
+        const enemyLeft = enemy.x;
+        const enemyRight = enemy.x + enemy.width;
+
+        // Wie breit darf der Stomp-Bereich sein? (60% der Gegnerbreite)
+        const stompWidth = enemy.width * 0.8;
+        const stompLeft = enemyLeft + (enemy.width - stompWidth) / 2;
+        const stompRight = enemyRight - (enemy.width - stompWidth) / 2;
+
+        // --- STOMP-CHECK ---
+        const stomp =
+            this.character.speedY < 0 &&
+            charBottom >= enemyTop &&
+            charBottom <= enemyTop + 40 &&
+            charCenter >= stompLeft &&
+            charCenter <= stompRight;
+
+        if (stomp) {
+            enemy.die();
+        } else {
+            if (!this.character.isHurt()) {
+                this.character.hit();
+                this.statusBar.setPercentage(this.character.life);
             }
-        });
-    }
+        }
+    });
+}
 
-    isTopHit(enemy) {
-        let charBottom = this.character.y + this.character.height - 10; // Füße
-        let enemyTop = enemy.y;
-
-        let isFalling = this.character.speedY < 0;
-
-        return isFalling && charBottom < enemyTop + 30;
-    }
 
     randomEnemy() {
         let types = [Chicken, SmallChicken];
         let Type = types[Math.floor(Math.random() * types.length)];
         return new Type();
     }
-
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
