@@ -19,6 +19,14 @@ class World {
         this.run();
     }
 
+tickEnemies() {
+    this.level.enemies.forEach(enemy => {
+        if (enemy.isChicken) {
+            enemy.checkCrowding?.(this.level.enemies);
+        }
+    });
+}
+
     setWorld() {
         this.character.world = this;
     }
@@ -28,7 +36,7 @@ class World {
             this.checkCollision();
             this.checkThrowObjects();
             this.checkBottleCollision();
-        }, 1000 / 60); // 60 FPS
+        }, 1000 / 60); 
     }
 
     checkThrowObjects() {
@@ -114,6 +122,7 @@ class World {
     }
 
     draw() {
+         this.tickEnemies();
         this.cleanupObjects();
         this.clearCanvas();
 
