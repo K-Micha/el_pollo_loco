@@ -25,6 +25,7 @@ class World {
         setInterval(() => {
             this.checkCollision();
             this.checkThrowObjects();
+            this.checkBottleCollision();
         }, 200);
     }
 
@@ -37,13 +38,46 @@ class World {
         }
     }
 
+checkBottleCollision() {
+    this.throwableObjects.forEach((bottle) => {
+        this.level.enemies.forEach((enemy) => {
+
+      if (!bottle.isBroken && bottle.isColliding(enemy)) {
+    enemy.die();
+    bottle.break();
+
+    setTimeout(() => {
+        this.throwableObjects = this.throwableObjects.filter(obj => obj !== bottle);
+    }, 300);
+}
+
+        });
+    });
+}
+
     checkCollision() {
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
-                this.character.hit();
-                this.statusBar.setPercentage(this.character.life);
-            };
+            let isNormalHit = this.character.isColliding(enemy);
+            let isTopHit = this.character.isCollidingTop(enemy);
+
+            if (isNormalHit && isTopHit && this.character.speedY < 0) {
+                enemy.die();
+            } else if (isNormalHit) {
+                if (!this.character.isHurt()) {
+                    this.character.hit();
+                    this.statusBar.setPercentage(this.character.life);
+                }
+            }
         });
+    }
+
+    isTopHit(enemy) {
+        let charBottom = this.character.y + this.character.height - 10; // Füße
+        let enemyTop = enemy.y;
+
+        let isFalling = this.character.speedY < 0;
+
+        return isFalling && charBottom < enemyTop + 30;
     }
 
     randomEnemy() {
