@@ -82,7 +82,13 @@ class World {
     checkCollision() {
         this.level.enemies.forEach(enemy => {
             if (this.shouldSkipEnemy(enemy)) return;
+
             if (!this.character.isColliding(enemy)) return;
+
+
+            if (enemy instanceof Endboss) {
+                this.blockCharacter(enemy);
+            }
 
             if (this.isStomp(enemy)) {
                 enemy.die();
@@ -90,6 +96,15 @@ class World {
                 this.handleCharacterHit();
             }
         });
+    }
+
+    blockCharacter(boss) {
+        const padding = 150;
+
+        if (this.character.x + this.character.width > boss.x + padding &&
+            this.character.x < boss.x + boss.width / 2) {
+            this.character.x = boss.x - this.character.width + padding;
+        }
     }
 
     isStomp(enemy) {
@@ -211,7 +226,7 @@ class World {
         this.ctx.scale(-1, 1);
         mo.x = mo.x * -1;
     }
-    
+
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();

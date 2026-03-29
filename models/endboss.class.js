@@ -74,15 +74,37 @@ class Endboss extends MovableObject {
 
         setTimeout(() => {
             if (this.isCharacterInAttackRange()) {
-                this.world.character.hit(5);
-                this.world.statusBar.setPercentage(this.world.character.life);
+                this.performAttack();
             }
         }, 300);
-
 
         setTimeout(() => {
             this.isAttacking = false;
         }, 600);
+    }
+
+    performAttack() {
+        const dmg = this.calculateDamage();
+        this.world.character.hit(dmg);
+        this.world.statusBar.setPercentage(this.world.character.life);
+    }
+
+    calculateDamage() {
+        const overlap = this.getOverlapWithCharacter();
+        const maxOverlap = 150;
+        const factor = Math.min(overlap / maxOverlap, 1);
+
+        const baseDamage = 5;
+        return baseDamage * (1 + factor * 0.5);
+    }
+
+    getOverlapWithCharacter() {
+        const char = this.world.character;
+
+        const left = char.x + char.width - this.x;
+        const right = this.x + this.width - char.x;
+
+        return Math.min(left, right);
     }
 
     isCharacterInAttackRange() {
