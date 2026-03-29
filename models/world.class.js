@@ -6,6 +6,8 @@ class World {
     keyboard;
     camera_x = 0;
     statusBar = new StatusBar();
+    coinBar = new CoinBar();
+    bottleBar = new BottleBar();
     throwableObjects = [];
     canThrow = true;
 
@@ -153,6 +155,7 @@ class World {
         this.drawClouds();
         this.drawEnemies();
         this.drawThrowables();
+        this.coinBar.setCoins(this.character.coins || 0);
 
         this.ctx.translate(-this.camera_x, 0);
 
@@ -198,6 +201,8 @@ class World {
 
     drawUI() {
         this.addToMap(this.statusBar);
+        this.addToMap(this.coinBar);
+        this.addToMap(this.bottleBar);
     }
 
     addObjectsToMap(objects) {
