@@ -39,7 +39,7 @@ class LifeBarBoss extends DrawableObject {
             bossScreenX <= this.world.canvas.width
         );
     }
-    
+
     getFixedX() {
         return -this.world.camera_x +
             this.world.canvas.width -
@@ -65,5 +65,25 @@ class LifeBarBoss extends DrawableObject {
     draw(ctx) {
         this.updatePosition();
         super.draw(ctx);
+        this.drawText(ctx);
+    }
+
+    drawText(ctx) {
+        ctx.font = "22px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const text = `${Math.round(this.percentage)}%`;
+
+        const centerX = this.x + this.width / 2;
+        const centerY = this.y + this.height / 2 + 4.5;
+
+        ctx.shadowColor = "black";
+        ctx.shadowBlur = 4;
+
+        ctx.fillText(text, centerX, centerY);
+
+        ctx.shadowBlur = 0;
     }
 }

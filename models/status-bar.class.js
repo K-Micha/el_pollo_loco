@@ -1,5 +1,6 @@
 class StatusBar extends DrawableObject {
     percentage = 100;
+    type = "life";
 
     constructor() {
         super();
@@ -25,5 +26,38 @@ class StatusBar extends DrawableObject {
         if (this.percentage >= 20) return 1;
         if (this.percentage > 0) return 0;
         return 0;
+    }
+
+    drawText(ctx) {
+        ctx.font = "22px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const text = this.getText();
+
+        const centerX = this.x + this.width / 2;
+
+        const centerY = this.y + this.height / 2 + 10.5;
+
+        ctx.shadowColor = "black";
+        ctx.shadowBlur = 4;
+
+        ctx.fillText(text, centerX, centerY);
+
+        ctx.shadowBlur = 0;
+    }
+
+    getText() {
+        if (this.type === "life") {
+            return `${Math.round(this.percentage)}%`;
+        }
+        if (this.type === "coins") {
+            return `${this.world.character.coins}`;
+        }
+        if (this.type === "potions") {
+            return `${this.world.character.potions}`;
+        }
+        return "";
     }
 }
