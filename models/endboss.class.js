@@ -12,6 +12,7 @@ class Endboss extends MovableObject {
 
     hit(dmg) {
         this.life -= dmg;
+        this.lifeBar.setPercentage(this.life);
 
         if (!this.isAggro) {
             this.speed = 3;
@@ -36,6 +37,7 @@ class Endboss extends MovableObject {
 
     constructor() {
         super();
+
         this.loadImage(Images.IMAGES_BOSS_IDLE[0]);
         this.loadImages(Images.IMAGES_BOSS_IDLE);
 
@@ -43,8 +45,10 @@ class Endboss extends MovableObject {
         this.loadImages(Images.IMAGES_BOSS_ATTACK);
         this.loadImages(Images.IMAGES_BOSS_HURT);
         this.loadImages(Images.IMAGES_BOSS_DEAD);
+
         this.x = 2500;
         this.animate();
+
     }
 
     startAggro() {

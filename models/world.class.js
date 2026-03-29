@@ -33,6 +33,7 @@ class World {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
         if (boss) {
             boss.world = this;
+            boss.lifeBar = new LifeBarBoss(boss);
         }
     }
 
@@ -77,8 +78,6 @@ class World {
             });
         });
     }
-
-
 
     checkCollision() {
         this.level.enemies.forEach(enemy => {
@@ -169,7 +168,13 @@ class World {
     }
 
     drawEnemies() {
-        this.addObjectsToMap(this.level.enemies);
+        this.level.enemies.forEach(enemy => {
+            this.addToMap(enemy);
+
+            if (enemy.lifeBar) {
+                this.addToMap(enemy.lifeBar);
+            }
+        });
     }
 
     drawThrowables() {
@@ -206,6 +211,7 @@ class World {
         this.ctx.scale(-1, 1);
         mo.x = mo.x * -1;
     }
+    
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();

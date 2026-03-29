@@ -21,6 +21,15 @@ class Images {
         'assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
     ];
 
+    static IMAGES_BOSS_LIFE = [
+        'assets/img/7_statusbars/2_statusbar_endboss/green/green0.png',
+        'assets/img/7_statusbars/2_statusbar_endboss/green/green20.png',
+        'assets/img/7_statusbars/2_statusbar_endboss/green/green40.png',
+        'assets/img/7_statusbars/2_statusbar_endboss/green/green60.png',
+        'assets/img/7_statusbars/2_statusbar_endboss/green/green80.png',
+        'assets/img/7_statusbars/2_statusbar_endboss/green/green100.png'
+    ];
+
     static IMAGES_WALKING_SMAL = [
         'assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
         'assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
