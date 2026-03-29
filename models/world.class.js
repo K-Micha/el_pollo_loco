@@ -19,16 +19,21 @@ class World {
         this.run();
     }
 
-tickEnemies() {
-    this.level.enemies.forEach(enemy => {
-        if (enemy.isChicken) {
-            enemy.checkCrowding?.(this.level.enemies);
-        }
-    });
-}
+    tickEnemies() {
+        this.level.enemies.forEach(enemy => {
+            if (enemy.isChicken) {
+                enemy.checkCrowding?.(this.level.enemies);
+            }
+        });
+    }
 
     setWorld() {
         this.character.world = this;
+
+        const boss = this.level.enemies.find(e => e instanceof Endboss);
+        if (boss) {
+            boss.world = this;
+        }
     }
 
     run() {
@@ -36,7 +41,7 @@ tickEnemies() {
             this.checkCollision();
             this.checkThrowObjects();
             this.checkBottleCollision();
-        }, 1000 / 60); 
+        }, 1000 / 60);
     }
 
     checkThrowObjects() {
@@ -63,6 +68,7 @@ tickEnemies() {
 
                 if (enemy instanceof Endboss) {
                     enemy.hit(20);
+                    enemy.hurt();
                 } else {
                     enemy.die();
                 }
@@ -122,7 +128,7 @@ tickEnemies() {
     }
 
     draw() {
-         this.tickEnemies();
+        this.tickEnemies();
         this.cleanupObjects();
         this.clearCanvas();
 
@@ -193,7 +199,7 @@ tickEnemies() {
 
         }
     }
-    
+
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
