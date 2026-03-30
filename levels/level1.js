@@ -1,4 +1,4 @@
-let startX = 300 + Math.random() * 1800;
+let startX = 300 + Math.random() * 1700;
 let startY = 120 + Math.random() * 40;
 
 
