@@ -89,6 +89,7 @@ class World {
         this.drawClouds();
         this.drawEnemies();
         this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.bottles);
         this.drawThrowables();
         this.coinBar.setCoins(this.character.coins || 0);
 

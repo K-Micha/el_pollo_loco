@@ -8,6 +8,15 @@ function randomEnemy() {
     return new Type();
 }
 
+function randomBottle() {
+    const x = 100 + Math.random() * 1800;
+    const variant = Math.random() < 0.5 ? 'ground1' : 'ground2';
+    return new Bottle(x, variant);
+}
+
+
+
+
 const COIN_BOW = [
     { x: 0, y: 0 },
     { x: 50, y: -30 },
@@ -15,6 +24,7 @@ const COIN_BOW = [
     { x: 150, y: -30 },
     { x: 200, y: 0 }
 ];
+
 
 const lvl1 = new Level(
     [
@@ -70,12 +80,20 @@ const lvl1 = new Level(
         new Coin(startX + COIN_BOW[3].x, startY + COIN_BOW[3].y),
         new Coin(startX + COIN_BOW[4].x, startY + COIN_BOW[4].y),
 
-        // + deine 5 random Coins
         new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150),
         new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150),
         new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150),
         new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150),
         new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150)
-    ]
+    ],
 
+    [
+        randomBottle(),
+        randomBottle(),
+        randomBottle(),
+        randomBottle(),
+        randomBottle(),
+        randomBottle(),
+        randomBottle()
+    ]
 )
