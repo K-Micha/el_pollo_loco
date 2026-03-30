@@ -1,5 +1,4 @@
 class CoinBar extends DrawableObject {
-    coins = 0;
 
     constructor() {
         super();

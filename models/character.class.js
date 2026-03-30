@@ -23,8 +23,10 @@ class Character extends MovableObject {
     handleMovement() {
         const kb = this.world.keyboard;
 
-        if (kb.RIGHT && this.x < this.world.level.level_end_x) this.moveRight(), this.otherDirection = false;
-        if (kb.LEFT && this.x > -300) this.moveLeft(), this.otherDirection = true;
+        if (kb.RIGHT && this.x < this.world.level.level_end_x)
+            this.moveRight(), this.otherDirection = false;
+        if (kb.LEFT && this.x > -300) this.moveLeft(),
+            this.otherDirection = true;
         if (kb.UP && !this.isAboveGround()) this.jump();
 
         this.world.camera_x = -this.x + 100;

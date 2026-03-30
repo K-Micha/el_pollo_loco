@@ -11,7 +11,6 @@ class World {
     throwableObjects = [];
     canThrow = true;
 
-
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -41,9 +40,10 @@ class World {
 
     run() {
         setInterval(() => {
-            this.checkCollision();
+            Collision.checkEnemyCollision(this);
             this.checkThrowObjects();
-            this.checkBottleCollision();
+            Collision.checkBottleCollision(this);
+            Collision.checkCoinCollision(this);
         }, 1000 / 60);
     }
 
@@ -52,8 +52,10 @@ class World {
             this.canThrow = false;
 
             let bottle = new ThrowableObject();
-            bottle.throw(this.character.x + 100,
-                this.character.y + 150);
+            bottle.throw(
+                this.character.x + 100,
+                this.character.y + 150
+            );
             this.throwableObjects.push(bottle);
         }
 
@@ -62,79 +64,11 @@ class World {
         }
     }
 
-    checkBottleCollision() {
-        this.throwableObjects.forEach(bottle => {
-            if (bottle.isBroken) return;
-
-            this.level.enemies.forEach(enemy => {
-                if (!bottle.isColliding(enemy)) return;
-
-                if (enemy instanceof Endboss) {
-                    enemy.hit(20);
-                    enemy.hurt();
-                } else {
-                    enemy.die();
-                }
-
-                bottle.break();
-            });
-        });
-    }
-
-    checkCollision() {
-        this.level.enemies.forEach(enemy => {
-            if (this.shouldSkipEnemy(enemy)) return;
-
-            if (!this.character.isColliding(enemy)) return;
-
-
-            if (enemy instanceof Endboss) {
-                this.blockCharacter(enemy);
-            }
-
-            if (this.isStomp(enemy)) {
-                enemy.die();
-            } else {
-                this.handleCharacterHit();
-            }
-        });
-    }
-
-    blockCharacter(boss) {
-        const padding = 150;
-
-        if (this.character.x + this.character.width > boss.x + padding &&
-            this.character.x < boss.x + boss.width / 2) {
-            this.character.x = boss.x - this.character.width + padding;
-        }
-    }
-
-    isStomp(enemy) {
-        const char = this.character;
-
-        const charBottom = char.y + char.height;
-        const enemyTop = enemy.y;
-
-        const charCenter = char.x + char.width / 2;
-
-        return (
-            char.speedY < 0 &&
-            charBottom >= enemyTop &&
-            charBottom <= enemyTop + 40 &&
-            charCenter >= enemy.x &&
-            charCenter <= enemy.x + enemy.width
-        );
-    }
-
     handleCharacterHit() {
         if (!this.character.isHurt()) {
             this.character.hit();
             this.statusBar.setPercentage(this.character.life);
         }
-    }
-
-    shouldSkipEnemy(enemy) {
-        return enemy.isDeadEnemy;
     }
 
     randomEnemy() {
@@ -154,6 +88,7 @@ class World {
         this.drawCharacter();
         this.drawClouds();
         this.drawEnemies();
+        this.addObjectsToMap(this.level.coins);
         this.drawThrowables();
         this.coinBar.setCoins(this.character.coins || 0);
 
@@ -221,7 +156,6 @@ class World {
 
         if (mo.otherDirection) {
             this.flipImageBack(mo);
-
         }
     }
 

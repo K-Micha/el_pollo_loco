@@ -3,6 +3,7 @@ class MovableObject extends DrawableObject {
     width = 100;
     speed = 0.15;
     speedY = 0;
+    coins = 0;
     acceleration = 2.5;
     otherDirection = false;
     life = 100;
@@ -22,19 +23,19 @@ class MovableObject extends DrawableObject {
         }, 1000 / 25);
     }
 
-checkCrowding(enemies) {
-    if (!this.isChicken) return;
+    checkCrowding(enemies) {
+        if (!this.isChicken) return;
 
-    const tooClose = enemies.some(other =>
-        other !== this &&
-        other.isChicken &&
-        Math.abs(other.x - this.x) < 80
-    );
+        const tooClose = enemies.some(other =>
+            other !== this &&
+            other.isChicken &&
+            Math.abs(other.x - this.x) < 80
+        );
 
-    if (tooClose) {
-        this.speed = 0.5; 
+        if (tooClose) {
+            this.speed = 0.5;
+        }
     }
-}
 
     die() {
         if (!this.isDeadEnemy) {
@@ -65,7 +66,6 @@ checkCrowding(enemies) {
             this.y < mo.y + mo.height;
 
     }
-
 
     hit() {
         this.life -= 5;

@@ -12,19 +12,24 @@ class Images {
         'assets/img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png'
     ];
 
-   static COIN_BAR = [
-    'assets/img/8_coin/coin_1.png',
-    'assets/img/8_coin/coin_2.png',
-   ];
+    static COIN_BAR = [
+        'assets/img/8_coin/coin_1.png',
+        'assets/img/8_coin/coin_2.png',
+    ];
 
-   static BOTTLE_BAR = [
-    'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
-    'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/20.png',
-    'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/40.png',
-    'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/60.png',
-    'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/80.png',
-    'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png'
-   ];
+    static COIN_ANIM = [
+        'assets/img/8_coin/coin_1.png',
+        'assets/img/8_coin/coin_2.png'
+    ];
+
+    static BOTTLE_BAR = [
+        'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
+        'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/20.png',
+        'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/40.png',
+        'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/60.png',
+        'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/80.png',
+        'assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png'
+    ];
 
     static IMAGES = [
         'assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
