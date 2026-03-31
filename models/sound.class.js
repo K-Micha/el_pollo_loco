@@ -1,10 +1,12 @@
+let SOUND_ENABLED = false;
 class Sound {
     constructor(path, volume) {
         this.audio = new Audio(path);
         this.audio.volume = volume;
     }
 
-    play() {
+   play() {
+        if (!SOUND_ENABLED) return;
         this.audio.play();
     }
 

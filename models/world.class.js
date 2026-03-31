@@ -9,11 +9,16 @@ class World {
     statusBar = new StatusBar();
     coinBar = new CoinBar();
     bottleBar = new BottleBar();
+    winBackground = new WinBackground();
+    winImage = new WinImage();
+    winPhase = 1;
+    gameWon = false;
     throwableObjects = [];
     canThrow = true;
     bossSoundPlaying = false;
     collectedBottles = 0;
     totalBottles = 7;
+
 
 
 
@@ -40,7 +45,16 @@ class World {
                 this.bossSoundPlaying = false;
             }
         }
+
+        if (boss && boss.isDeadEnemy) {
+            this.gameWon = true;
+        }
+
+        if (this.gameWon) {
+            this.updateWinAnimation();
+        }
     }
+
 
     setWorld() {
         this.character.world = this;
@@ -54,6 +68,7 @@ class World {
 
     run() {
         setInterval(() => {
+            if (this.gameWon) return;
             Collision.checkEnemyCollision(this);
             this.checkThrowObjects();
             Collision.checkBottleCollision(this);
@@ -106,25 +121,22 @@ class World {
         });
     }
 
-collectBottle(bottle) {
-    SOUNDS.pickup.play();
+    collectBottle(bottle) {
+        SOUNDS.pickup.play();
 
-    this.bottlesCollected++;
+        this.bottlesCollected++;
 
-    this.bottleBar.setPercentage(
-        (this.bottlesCollected / this.totalBottles) * 100
-    );
+        this.bottleBar.setPercentage(
+            (this.bottlesCollected / this.totalBottles) * 100
+        );
 
-    this.bottleBar.setBottles(
-        this.bottlesCollected,
-        this.totalBottles
-    );
+        this.bottleBar.setBottles(
+            this.bottlesCollected,
+            this.totalBottles
+        );
 
-    bottle.markedForRemoval = true;
-}
-
-
-
+        bottle.markedForRemoval = true;
+    }
 
     handleCharacterHit() {
         if (!this.character.isHurt()) {
@@ -160,8 +172,35 @@ collectBottle(bottle) {
 
         this.drawUI();
 
+
+
+        if (this.gameWon) {
+            this.winBackground.draw(this.ctx);
+            this.winImage.draw(this.ctx);
+        }
+
         requestAnimationFrame(() => this.draw());
     }
+
+updateWinAnimation() {
+    if (!this.gameWon) return;
+
+    if (this.winPhase === 1) {
+        this.winImage.opacity = Math.min(this.winImage.opacity + 0.02, 1);
+        this.winImage.scale = Math.max(this.winImage.scale - 0.03, 1);
+
+        if (this.winImage.scale === 1)
+            this.winPhase = 2;
+    }
+
+    else {
+        this.winImage.opacity = Math.max(this.winImage.opacity - 0.02, 0);
+    }
+}
+
+
+
+
 
     cleanupObjects() {
         this.level.enemies = this.level.enemies.filter(e => !e.markedForRemoval);
@@ -202,7 +241,7 @@ collectBottle(bottle) {
         this.addToMap(this.statusBar);
         this.addToMap(this.coinBar);
         this.addToMap(this.bottleBar);
-        
+
     }
 
     addObjectsToMap(objects) {
