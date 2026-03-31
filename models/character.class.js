@@ -8,6 +8,8 @@ class Character extends MovableObject {
     stepCooldown = 0;
     stepInterval = 120;
     deathSoundPlayed = false;
+        enemiesKilled = 0;
+    bossesKilled = 0;
 
     constructor() {
         super().loadImage('../assets/img/2_character_pepe/1_idle/idle/I-1.png')

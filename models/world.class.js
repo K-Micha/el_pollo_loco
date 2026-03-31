@@ -6,29 +6,41 @@ class World {
     keyboard;
     camera_x = 0;
     bottlesCollected = 0;
-    statusBar = new StatusBar();
-    coinBar = new CoinBar();
-    bottleBar = new BottleBar();
-    winBackground = new WinBackground();
-    winImage = new WinImage();
     winPhase = 1;
     gameWon = false;
     throwableObjects = [];
     canThrow = true;
     bossSoundPlaying = false;
     collectedBottles = 0;
+    enemiesKilled = 0;
+    bossesKilled = 0;
     totalBottles = 7;
-
-
 
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+
+        this.setupUI();
+        this.setupWinScreen();
+
+        this.restartController = new RestartController(this, canvas);
+
         this.setWorld();
         this.draw();
         this.run();
+    }
+
+    setupUI() {
+        this.statusBar = new StatusBar();
+        this.coinBar = new CoinBar();
+        this.bottleBar = new BottleBar();
+    }
+
+    setupWinScreen() {
+        this.winBackground = new WinBackground();
+        this.winImage = new WinImage();
     }
 
     tickEnemies() {
@@ -54,7 +66,6 @@ class World {
             this.updateWinAnimation();
         }
     }
-
 
     setWorld() {
         this.character.world = this;
@@ -172,40 +183,47 @@ class World {
 
         this.drawUI();
 
-
-
         if (this.gameWon) {
-            this.winBackground.draw(this.ctx);
+            this.winBackground.draw(this.ctx, this);
             this.winImage.draw(this.ctx);
         }
 
         requestAnimationFrame(() => this.draw());
     }
 
-updateWinAnimation() {
-    if (!this.gameWon) return;
+    updateWinAnimation() {
+        if (!this.gameWon) return;
 
-    if (this.winPhase === 1) {
-        this.winImage.opacity = Math.min(this.winImage.opacity + 0.02, 1);
-        this.winImage.scale = Math.max(this.winImage.scale - 0.03, 1);
+        if (this.winPhase === 1) {
+            this.winImage.opacity = Math.min(this.winImage.opacity + 0.02, 1);
+            this.winImage.scale = Math.max(this.winImage.scale - 0.03, 1);
 
-        if (this.winImage.scale === 1)
-            this.winPhase = 2;
+            if (this.winImage.scale === 1)
+                this.winPhase = 2;
+        }
+
+        else {
+            this.winImage.opacity = Math.max(this.winImage.opacity - 0.02, 0);
+        }
     }
-
-    else {
-        this.winImage.opacity = Math.max(this.winImage.opacity - 0.02, 0);
-    }
-}
-
-
-
-
 
     cleanupObjects() {
+        this.level.enemies.forEach(enemy => {
+            if (enemy.markedForRemoval) {
+
+                if (!(enemy instanceof Endboss)) {
+                    this.enemiesKilled++;
+                }
+                if (enemy instanceof Endboss) {
+                    this.bossesKilled++;
+                }
+            }
+        });
+
         this.level.enemies = this.level.enemies.filter(e => !e.markedForRemoval);
         this.throwableObjects = this.throwableObjects.filter(o => !o.markedForRemoval);
     }
+
 
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

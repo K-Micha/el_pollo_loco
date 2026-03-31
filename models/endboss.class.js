@@ -8,6 +8,7 @@ class Endboss extends MovableObject {
     attackCooldown = false;
     isHurtEnemy = false;
     currentAnimation = 'idle';
+     bossesKilled = 0;
 
 
     hit(dmg) {

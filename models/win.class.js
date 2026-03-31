@@ -1,4 +1,6 @@
 class WinBackground extends DrawableObject {
+    isHoveringRestart = false;
+
     constructor() {
         super();
         this.loadImage('assets/img/pepe-win.png');
@@ -6,8 +8,115 @@ class WinBackground extends DrawableObject {
         this.y = 0;
         this.width = 720;
         this.height = 480;
+
+        this.restartButton = {
+            x: 720 - 200,
+            y: 480 - 70,
+            width: 160,
+            height: 50
+        };
+    }
+
+    draw(ctx, world) {
+        super.draw(ctx);
+        this.drawStats(ctx, world);
+        this.drawRestart(ctx);
+    }
+
+    drawRestart(ctx) {
+        ctx.font = "28px Arial";
+        ctx.textAlign = "center";
+
+        const x = this.x + this.width / 2 + 150;
+        const y = this.y + 200 + (5 * 40) + 40;
+
+        this.restartButton = {
+            x: x - 80,
+            y: y - 35,
+            width: 160,
+            height: 50
+        };
+
+        const fill = this.isHoveringRestart ? "#ffe066" : "#ffd700";
+        const stroke = this.isHoveringRestart ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.6)";
+        const lineWidth = this.isHoveringRestart ? 7 : 6;
+
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = lineWidth;
+        ctx.strokeText("Restart", x, y);
+
+        ctx.fillStyle = fill;
+        ctx.fillText("Restart", x, y);
+    }
+
+    getStatsLines(world) {
+        return [
+            `Enemies killed: ${world.character.enemiesKilled}`,
+            `Bosses killed: ${world.character.bossesKilled}`,
+            `Health left: ${world.character.life}`,
+            `Bottles left: ${world.bottlesCollected}`,
+            `Coins collected: ${world.character.coins}`
+        ];
+    }
+
+    drawRestartButton(ctx) {
+        const b = this.restartButton;
+
+        ctx.fillStyle = "rgba(0,0,0,0.6)";
+        ctx.fillRect(b.x, b.y, b.width, b.height);
+
+        ctx.fillStyle = "#ffd700";
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 3;
+        ctx.font = "26px Arial";
+        ctx.textAlign = "center";
+
+        const cx = b.x + b.width / 2;
+        const cy = b.y + b.height / 2 + 10;
+
+        ctx.strokeText("Restart", cx, cy);
+        ctx.fillText("Restart", cx, cy);
+    }
+
+    setTextStyle(ctx) {
+        ctx.fillStyle = "#ffd700";
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 4;
+        ctx.font = "28px Arial";
+        ctx.textAlign = "center";
+    }
+
+    getStatsPosition() {
+        return {
+            x: this.x + this.width / 2 + 150,
+            y: this.y + 200
+        };
+    }
+
+    getStatsLines(world) {
+        return [
+            `Enemies killed: ${world.enemiesKilled}`,
+            `Bosses killed: ${world.bossesKilled}`,
+            `Health left: ${world.character.life}`,
+            `Bottles left: ${world.bottlesCollected}`,
+            `Coins collected: ${world.character.coins}`
+        ];
+    }
+
+    drawStats(ctx, world) {
+        this.setTextStyle(ctx);
+
+        const pos = this.getStatsPosition();
+        let y = pos.y;
+
+        for (const line of this.getStatsLines(world)) {
+            ctx.strokeText(line, pos.x, y);
+            ctx.fillText(line, pos.x, y);
+            y += 40;
+        }
     }
 }
+
 
 class WinImage extends DrawableObject {
     constructor() {
