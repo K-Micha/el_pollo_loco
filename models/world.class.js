@@ -11,6 +11,9 @@ class World {
     bottleBar = new BottleBar();
     throwableObjects = [];
     canThrow = true;
+    bossSoundPlaying = false;
+
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -22,11 +25,19 @@ class World {
     }
 
     tickEnemies() {
-        this.level.enemies.forEach(enemy => {
-            if (enemy.isChicken) {
-                enemy.checkCrowding?.(this.level.enemies);
+        const boss = this.level.enemies.find(e => e instanceof Endboss);
+
+        if (boss && !boss.isDeadEnemy) {
+            if (!this.bossSoundPlaying) {
+                SOUNDS.boss_sound.play();
+                this.bossSoundPlaying = true;
             }
-        });
+        } else {
+            if (this.bossSoundPlaying) {
+                SOUNDS.boss_sound.pause();
+                this.bossSoundPlaying = false;
+            }
+        }
     }
 
     setWorld() {
@@ -94,6 +105,7 @@ class World {
     }
 
     collectBottle(bottle) {
+        SOUNDS.pickup.play();
         this.bottlesCollected++;
         this.bottleBar.setPercentage(this.bottlesCollected * 20);
     }

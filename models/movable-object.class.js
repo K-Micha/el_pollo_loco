@@ -9,6 +9,8 @@ class MovableObject extends DrawableObject {
     life = 100;
     lastHit = 0;
     isDeadEnemy = false;
+    walkingSoundPlaying = false;
+
 
     applyGravity() {
         setInterval(() => {

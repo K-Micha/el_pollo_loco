@@ -1,18 +1,16 @@
 class Collision {
 
     static checkCoinCollision(world) {
-        const char = world.character;
+        world.level.coins = world.level.coins.filter(coin => {
+            if (coin.isColliding(world.character)) {
 
-        world.level.coins.forEach(coin => {
-            const hit = this.getCoinHitbox(coin);
+                SOUNDS.pickup.play();
 
-            if (this.isCoinCollision(char, hit)) {
-                char.coins++;
-                coin.markedForRemoval = true;
+                world.character.coins++;
+                return false;
             }
+            return true;
         });
-
-        world.level.coins = world.level.coins.filter(c => !c.markedForRemoval);
     }
 
     static getCoinHitbox(coin) {
@@ -101,5 +99,4 @@ class Collision {
             charCenter <= enemy.x + enemy.width
         );
     }
-
 }

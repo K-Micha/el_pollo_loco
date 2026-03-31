@@ -46,6 +46,8 @@ class ThrowableObject extends MovableObject {
 
 
     break() {
+        SOUNDS.break.play();
+
         this.isBroken = true;
         this.speedX = 0;
         this.speedY = 0;

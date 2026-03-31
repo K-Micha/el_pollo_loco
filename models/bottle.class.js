@@ -15,20 +15,21 @@ class Bottle extends MovableObject {
         this.x = x;
 
         const groundLine = 155 + 280;
-        this.y = groundLine - this.height; 
+        this.y = groundLine - this.height;
 
         this.speedY = 0;
         this.acceleration = 0;
-        this.applyGravity = () => {};
+        this.applyGravity = () => { };
         this.offsetX = 0;
         this.offsetY = 0;
     }
+
     isColliding(obj) {
-    return (
-        this.x + this.width > obj.x &&
-        this.x < obj.x + obj.width &&
-        this.y + this.height > obj.y &&
-        this.y < obj.y + obj.height
-    );
-}    
+        return (
+            this.x + this.width > obj.x &&
+            this.x < obj.x + obj.width &&
+            this.y + this.height > obj.y &&
+            this.y < obj.y + obj.height
+        );
+    }
 }

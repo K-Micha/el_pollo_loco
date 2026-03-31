@@ -22,8 +22,11 @@ class Endboss extends MovableObject {
         if (this.life <= 0) {
             this.life = 0;
             this.isDeadEnemy = true;
+            SOUNDS.win.play()
+
             clearInterval(this.walkInterval);
             this.removeAfterDelay();
+
         }
     }
 
