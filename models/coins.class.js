@@ -29,7 +29,7 @@ class Coin extends MovableObject {
             height: 40
         };
 
-        ctx.strokeStyle = 'yellow';
+       /*  ctx.strokeStyle = 'yellow'; */
         ctx.strokeRect(hit.x, hit.y, hit.width, hit.height);
     }
 }

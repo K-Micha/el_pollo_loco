@@ -274,7 +274,7 @@ class World {
         }
 
         mo.draw(this.ctx);
-        mo.drawBorder(this.ctx);
+        /* mo.drawBorder(this.ctx); */
 
         if (mo.otherDirection) {
             this.flipImageBack(mo);

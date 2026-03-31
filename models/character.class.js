@@ -8,7 +8,7 @@ class Character extends MovableObject {
     stepCooldown = 0;
     stepInterval = 120;
     deathSoundPlayed = false;
-        enemiesKilled = 0;
+    enemiesKilled = 0;
     bossesKilled = 0;
 
     constructor() {
@@ -106,7 +106,7 @@ class Character extends MovableObject {
 
 
     drawBorder(ctx) {
-        ctx.strokeStyle = 'red';
+        /* ctx.strokeStyle = 'red'; */
         ctx.rect(
             this.x + 15,
             this.y + 40,
