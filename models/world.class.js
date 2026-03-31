@@ -48,55 +48,55 @@ class World {
         }, 1000 / 60);
     }
 
-checkThrowObjects() {
-    if (this.canStartThrow()) {
-        this.performThrow();
+    checkThrowObjects() {
+        if (this.canStartThrow()) {
+            this.performThrow();
+        }
+
+        this.resetThrowState();
     }
 
-    this.resetThrowState();
-}
-
-canStartThrow() {
-    return this.keyboard.D 
-        && this.canThrow 
-        && this.bottlesCollected > 0;
-}
-
-performThrow() {
-    this.canThrow = false;
-
-    let bottle = new ThrowableObject();
-    bottle.throw(
-        this.character.x + 100,
-        this.character.y + 150
-    );
-    this.throwableObjects.push(bottle);
-
-    this.bottlesCollected--;
-    this.bottleBar.setPercentage(this.bottlesCollected * 20);
-}
-
-resetThrowState() {
-    if (!this.keyboard.D) {
-        this.canThrow = true;
+    canStartThrow() {
+        return this.keyboard.D
+            && this.canThrow
+            && this.bottlesCollected > 0;
     }
-}
+
+    performThrow() {
+        this.canThrow = false;
+
+        let bottle = new ThrowableObject();
+        bottle.throw(
+            this.character.x + 100,
+            this.character.y + 150
+        );
+        this.throwableObjects.push(bottle);
+
+        this.bottlesCollected--;
+        this.bottleBar.setPercentage(this.bottlesCollected * 20);
+    }
+
+    resetThrowState() {
+        if (!this.keyboard.D) {
+            this.canThrow = true;
+        }
+    }
 
 
     checkBottlePickup() {
-    this.level.bottles = this.level.bottles.filter(bottle => {
-        if (bottle.isColliding(this.character)) {
-            this.collectBottle(bottle);
-            return false; 
-        }
-        return true;
-    });
-}
+        this.level.bottles = this.level.bottles.filter(bottle => {
+            if (bottle.isColliding(this.character)) {
+                this.collectBottle(bottle);
+                return false;
+            }
+            return true;
+        });
+    }
 
-collectBottle(bottle) {
-    this.bottlesCollected++;
-    this.bottleBar.setPercentage(this.bottlesCollected * 20); 
-}
+    collectBottle(bottle) {
+        this.bottlesCollected++;
+        this.bottleBar.setPercentage(this.bottlesCollected * 20);
+    }
 
 
 

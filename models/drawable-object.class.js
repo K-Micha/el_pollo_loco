@@ -23,14 +23,14 @@ class DrawableObject {
         });
     }
 
-   draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    draw(ctx) {
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 
-    if (this.drawText) {
-        this.drawText(ctx);
+        if (this.drawText) {
+            this.drawText(ctx);
+        }
     }
-}
-    
+
     drawBorder(ctx) {
 
         if ([Character, Chicken, SmallChicken, Endboss]

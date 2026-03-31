@@ -101,5 +101,5 @@ class Collision {
             charCenter <= enemy.x + enemy.width
         );
     }
-    
+
 }

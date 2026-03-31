@@ -156,7 +156,7 @@ class Images {
         'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
     ];
 
-   static IMAGES_IDLE_CHAR = [
+    static IMAGES_IDLE_CHAR = [
         'assets/img/2_character_pepe/1_idle/idle/I-1.png',
         'assets/img/2_character_pepe/1_idle/idle/I-2.png',
         'assets/img/2_character_pepe/1_idle/idle/I-3.png',

@@ -2,57 +2,57 @@ class ThrowableObject extends MovableObject {
     isBroken = false;
     markedForRemoval = false;
 
-constructor() {
-    super();
-    this.width = 50;
-    this.height = 60;
+    constructor() {
+        super();
+        this.width = 50;
+        this.height = 60;
 
-    this.loadImages(Images.BOTTLE_IMAGE);
-    this.loadImages(Images.BOTTLE_SPLASH);
+        this.loadImages(Images.BOTTLE_IMAGE);
+        this.loadImages(Images.BOTTLE_SPLASH);
 
-    this.img = this.imageCache[Images.BOTTLE_IMAGE[0]];
-}
-
-throw(x, y) {
-    this.x = x;
-    this.y = y;
-    this.speedY = 30;
-
-    this.applyGravity();
-    this.startThrowLoop();
-}
-
-startThrowLoop() {
-    this.throwInterval = setInterval(() => this.updateThrow(), 25);
-}
-
-updateThrow() {
-    
-    if (this.y >= 360 && !this.isBroken) {
-        this.y = 360;
-        this.break();
-        return;
+        this.img = this.imageCache[Images.BOTTLE_IMAGE[0]];
     }
 
-    if (!this.isBroken) {
-        this.x += 10;
-        this.playAnimation(Images.BOTTLE_IMAGE);
-    } 
+    throw(x, y) {
+        this.x = x;
+        this.y = y;
+        this.speedY = 30;
 
-    else {
-        this.playAnimation(Images.BOTTLE_SPLASH);
+        this.applyGravity();
+        this.startThrowLoop();
     }
-}
+
+    startThrowLoop() {
+        this.throwInterval = setInterval(() => this.updateThrow(), 25);
+    }
+
+    updateThrow() {
+
+        if (this.y >= 360 && !this.isBroken) {
+            this.y = 360;
+            this.break();
+            return;
+        }
+
+        if (!this.isBroken) {
+            this.x += 10;
+            this.playAnimation(Images.BOTTLE_IMAGE);
+        }
+
+        else {
+            this.playAnimation(Images.BOTTLE_SPLASH);
+        }
+    }
 
 
-break() {
-    this.isBroken = true;
-    this.speedX = 0;
-    this.speedY = 0;
+    break() {
+        this.isBroken = true;
+        this.speedX = 0;
+        this.speedY = 0;
 
-    setTimeout(() => {
-        this.markedForRemoval = true;
-        clearInterval(this.throwInterval);
-    }, 200);
-}
+        setTimeout(() => {
+            this.markedForRemoval = true;
+            clearInterval(this.throwInterval);
+        }, 200);
+    }
 }

@@ -9,7 +9,7 @@ class Level {
         this.clouds = clouds;
         this.backgroundObjects = backgroundObjects;
         this.coins = coins;
-         this.bottles = bottles;
+        this.bottles = bottles;
 
         this.level_end_x = 2200
     }
