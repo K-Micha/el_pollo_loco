@@ -12,6 +12,8 @@ class World {
     throwableObjects = [];
     canThrow = true;
     bossSoundPlaying = false;
+    collectedBottles = 0;
+    totalBottles = 7;
 
 
 
@@ -104,11 +106,23 @@ class World {
         });
     }
 
-    collectBottle(bottle) {
-        SOUNDS.pickup.play();
-        this.bottlesCollected++;
-        this.bottleBar.setPercentage(this.bottlesCollected * 20);
-    }
+collectBottle(bottle) {
+    SOUNDS.pickup.play();
+
+    this.bottlesCollected++;
+
+    this.bottleBar.setPercentage(
+        (this.bottlesCollected / this.totalBottles) * 100
+    );
+
+    this.bottleBar.setBottles(
+        this.bottlesCollected,
+        this.totalBottles
+    );
+
+    bottle.markedForRemoval = true;
+}
+
 
 
 
@@ -188,6 +202,7 @@ class World {
         this.addToMap(this.statusBar);
         this.addToMap(this.coinBar);
         this.addToMap(this.bottleBar);
+        
     }
 
     addObjectsToMap(objects) {

@@ -1,20 +1,51 @@
 class BottleBar extends DrawableObject {
     percentage = 0;
+    collected = 0;
+    total = 7;
 
     constructor() {
         super();
         this.loadImages(Images.BOTTLE_BAR);
-        this.x = 30;
-        this.y = 0;
+        this.x = 30;     // NICHT ANGEFASST
+        this.y = 0;      // NICHT ANGEFASST
         this.width = 200;
         this.height = 60;
         this.setPercentage(0);
     }
 
+    setBottles(collected, total) {
+        this.collected = collected;
+        this.total = total;
+    }
+
     setPercentage(p) {
         this.percentage = p;
-        let path = Images.BOTTLE_BAR[this.resolveImageIndex()];
+        const path = Images.BOTTLE_BAR[this.resolveImageIndex()];
         this.img = this.imageCache[path];
+    }
+
+    draw(ctx) {
+        super.draw(ctx);
+        this.drawText(ctx);
+    }
+
+    drawText(ctx) {
+        ctx.font = "22px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const text = `${this.collected}/${this.total}`;
+
+        const centerX = this.x + this.width / 2;
+        const centerY = this.y + this.height / 2 + 10.5;
+
+        ctx.shadowColor = "black";
+        ctx.shadowBlur = 4;
+
+        ctx.fillText(text, centerX, centerY);
+
+        ctx.shadowBlur = 0;
     }
 
     resolveImageIndex() {
