@@ -1,7 +1,7 @@
 class BottleBar extends DrawableObject {
     percentage = 0;
     collected = 0;
-    total = 7;
+    total = 9;
 
     constructor() {
         super();

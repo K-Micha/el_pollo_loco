@@ -16,7 +16,7 @@ class World {
     collectedBottles = 0;
     enemiesKilled = 0;
     bossesKilled = 0;
-    totalBottles = 7;
+    totalBottles = 9;
 
 
     constructor(canvas, keyboard) {

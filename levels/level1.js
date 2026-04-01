@@ -94,6 +94,8 @@ const lvl1 = new Level(
         randomBottle(),
         randomBottle(),
         randomBottle(),
+        randomBottle(),
+        randomBottle(),
         randomBottle()
     ]
 )
