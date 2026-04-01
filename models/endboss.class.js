@@ -98,7 +98,7 @@ class Endboss extends MovableObject {
         const maxOverlap = 150;
         const factor = Math.min(overlap / maxOverlap, 1);
 
-        const baseDamage = 5;
+        const baseDamage = 15;
         return baseDamage * (1 + factor * 0.5);
     }
 

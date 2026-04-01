@@ -70,9 +70,11 @@ class MovableObject extends DrawableObject {
     }
 
     hit() {
-        this.life -= 5;
-        if (this.life < 0) {
+        this.life -= 10;
+
+        if (this.life <= 0) {
             this.life = 0;
+            this.world.gameOver = true;
         } else {
             this.lastHit = new Date().getTime();
         }
