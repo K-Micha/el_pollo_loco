@@ -96,9 +96,8 @@ class World {
         if (this.canStartThrow()) {
             this.performThrow();
         }
-
-        this.resetThrowState();
     }
+
 
     canStartThrow() {
         return this.keyboard.D
@@ -109,16 +108,33 @@ class World {
     performThrow() {
         this.canThrow = false;
 
+        const dir = this.character.otherDirection ? -1 : 1;
+        const offsetX = this.character.otherDirection ? -20 : 100;
+
         let bottle = new ThrowableObject();
+        bottle.direction = dir;
+
         bottle.throw(
-            this.character.x + 100,
+            this.character.x + offsetX,
             this.character.y + 150
         );
+
         this.throwableObjects.push(bottle);
 
         this.bottlesCollected--;
-        this.bottleBar.setPercentage(this.bottlesCollected * 20);
+
+        this.bottleBar.setPercentage(
+            (this.bottlesCollected / this.totalBottles) * 100
+        );
+
+        this.bottleBar.setBottles(
+            this.bottlesCollected,
+            this.totalBottles
+        );
+
+        setTimeout(() => this.canThrow = true, 600);
     }
+
 
     resetThrowState() {
         if (!this.keyboard.D) {

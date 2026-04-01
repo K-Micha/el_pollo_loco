@@ -17,6 +17,7 @@ class ThrowableObject extends MovableObject {
         this.x = x;
         this.y = y;
         this.speedY = 30;
+        
 
         this.applyGravity();
         this.startThrowLoop();
@@ -35,7 +36,7 @@ class ThrowableObject extends MovableObject {
         }
 
         if (!this.isBroken) {
-            this.x += 10;
+            this.x += 10 * this.direction;
             this.playAnimation(Images.BOTTLE_IMAGE);
         }
 
@@ -43,7 +44,6 @@ class ThrowableObject extends MovableObject {
             this.playAnimation(Images.BOTTLE_SPLASH);
         }
     }
-
 
     break() {
         SOUNDS.break.play();
