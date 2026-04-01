@@ -8,6 +8,8 @@ class World {
     bottlesCollected = 0;
     winPhase = 1;
     gameWon = false;
+    gameOver = false;
+    gameOverPhase = 1;
     throwableObjects = [];
     canThrow = true;
     bossSoundPlaying = false;
@@ -24,6 +26,9 @@ class World {
 
         this.setupUI();
         this.setupWinScreen();
+
+        this.gameOverImage = new GameOverImage();
+        this.gameOverBackground = new GameOverBackground();
 
         this.restartController = new RestartController(this, canvas);
 
@@ -121,7 +126,6 @@ class World {
         }
     }
 
-
     checkBottlePickup() {
         this.level.bottles = this.level.bottles.filter(bottle => {
             if (bottle.isColliding(this.character)) {
@@ -183,12 +187,43 @@ class World {
 
         this.drawUI();
 
+        this.drawGameStates();
+
+        requestAnimationFrame(() => this.draw());
+    }
+
+    drawGameStates() {
+
+        if (this.gameOver) {
+            this.updateGameOverAnimation();
+
+            this.gameOverBackground.draw(this.ctx, this);
+
+            this.gameOverImage.draw(this.ctx);
+
+            return;
+        }
+
         if (this.gameWon) {
+            this.updateWinAnimation();
             this.winBackground.draw(this.ctx, this);
             this.winImage.draw(this.ctx);
         }
+    }
 
-        requestAnimationFrame(() => this.draw());
+    updateGameOverAnimation() {
+        if (!this.gameOver) return;
+
+        if (this.gameOverPhase === 1) {
+            this.gameOverImage.opacity = Math.min
+                (this.gameOverImage.opacity + 0.01, 1);
+            this.gameOverImage.scale = Math.max
+                (this.gameOverImage.scale - 0.015, 1);
+
+            if (this.gameOverImage.scale === 1) {
+                this.gameOverPhase = 2;
+            }
+        }
     }
 
     updateWinAnimation() {
@@ -223,7 +258,6 @@ class World {
         this.level.enemies = this.level.enemies.filter(e => !e.markedForRemoval);
         this.throwableObjects = this.throwableObjects.filter(o => !o.markedForRemoval);
     }
-
 
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

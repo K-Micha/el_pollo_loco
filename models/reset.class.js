@@ -11,27 +11,43 @@ class RestartController {
     }
 
     onClick(e) {
-        if (!this.world.gameWon) return;
-
         const { x, y } = this.getMousePos(e);
-        const b = this.world.winBackground.restartButton;
+        
+        if (this.world.gameWon) {
+            const b = this.world.winBackground.restartButton;
+            const inside =
+                x >= b.x && x <= b.x + b.width &&
+                y >= b.y && y <= b.y + b.height;
 
-        const inside =
-            x >= b.x && x <= b.x + b.width &&
-            y >= b.y && y <= b.y + b.height;
+            if (inside) location.reload();
+        }
 
-        if (inside) location.reload();
+        if (this.world.gameOver) {
+            const b = this.world.gameOverBackground.restartButton;
+            const inside =
+                x >= b.x && x <= b.x + b.width &&
+                y >= b.y && y <= b.y + b.height;
+
+            if (inside) location.reload();
+        }
     }
 
     onMove(e) {
-        if (!this.world.gameWon) return;
-
         const { x, y } = this.getMousePos(e);
-        const b = this.world.winBackground.restartButton;
 
-        this.world.winBackground.isHoveringRestart =
-            x >= b.x && x <= b.x + b.width &&
-            y >= b.y && y <= b.y + b.height;
+        if (this.world.gameWon) {
+            const b = this.world.winBackground.restartButton;
+            this.world.winBackground.isHoveringRestart =
+                x >= b.x && x <= b.x + b.width &&
+                y >= b.y && y <= b.y + b.height;
+        }
+
+        if (this.world.gameOver) {
+            const b = this.world.gameOverBackground.restartButton;
+            this.world.gameOverBackground.isHoveringRestart =
+                x >= b.x && x <= b.x + b.width &&
+                y >= b.y && y <= b.y + b.height;
+        }
     }
 
     getMousePos(e) {

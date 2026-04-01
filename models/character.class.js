@@ -115,4 +115,7 @@ class Character extends MovableObject {
         );
         ctx.stroke();
     }
+    onDeath(world) {
+    world.gameOver = true;
+}
 }
