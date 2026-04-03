@@ -5,11 +5,17 @@ let keyboard = new Keyboard();
 
 function init() {
     canvas = document.getElementById('canvas');
-    console.log('Init ready'); 
+    startScreen = new StartScreen(canvas);
+
+    startScreen.img.onload = () => {
+        startScreen.draw();
+    };
 }
 
 function startGame() {
     world = new World(canvas, keyboard);
+    world.run();  
+    world.draw();  
     gameStarted = true;
 }
 

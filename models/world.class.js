@@ -33,9 +33,9 @@ class World {
         this.restartController = new RestartController(this, canvas);
 
         this.setWorld();
-        this.draw();
-        this.run();
+
     }
+
 
     setupUI() {
         this.statusBar = new StatusBar();
