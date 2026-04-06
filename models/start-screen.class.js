@@ -16,6 +16,15 @@ class StartScreen {
 
         canvas.addEventListener("click", (e) => this.handleClick(e));
 
+        document.addEventListener("fullscreenchange", () => {
+            if (document.fullscreenElement) {
+                this.resizeCanvasToFullscreen();
+            } else {
+                this.resetCanvasSize();
+            }
+            this.draw();
+        });
+
         this.loadAllImages([
             this.img,
             this.iconInfo,
@@ -23,6 +32,24 @@ class StartScreen {
             this.iconVolume,
             this.iconFullscreen
         ], () => this.draw());
+    }
+
+    toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            this.canvas.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    resizeCanvasToFullscreen() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    resetCanvasSize() {
+        this.canvas.width = 720;
+        this.canvas.height = 480;
     }
 
     loadImage(path) {
@@ -41,23 +68,26 @@ class StartScreen {
         });
     }
 
+
     drawIcon(img, x, y) {
-        const targetSize = 32;
-        const scale = targetSize / Math.max(img.width, img.height);
-        this.ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+        const size = 48; 
+        this.ctx.drawImage(img, x, y, size, size);
     }
 
     draw() {
         const w = this.canvas.width;
         const h = this.canvas.height;
 
+        this.ctx.clearRect(0, 0, w, h);
+
         this.drawBackground(w, h);
-        this.drawUI(w);
 
         if (this.showInfoPopup) {
             const { px, py, pw, ph } = this.getPopupRect();
             this.ui.drawPopup(px, py, pw, ph);
         }
+
+        this.drawUI(w);
     }
 
     drawBackground(w, h) {
@@ -67,8 +97,8 @@ class StartScreen {
 
     drawUI(w) {
         this.drawIcon(this.iconInfo, 20, 20);
-        this.drawIcon(this.isMuted ? this.iconMute : this.iconVolume, w - 120, 20);
-        this.drawIcon(this.iconFullscreen, w - 60, 20);
+        this.drawIcon(this.isMuted ? this.iconMute : this.iconVolume, w - 140, 20);
+        this.drawIcon(this.iconFullscreen, w - 70, 20);
     }
 
     drawStartText(x, y) {
@@ -99,14 +129,19 @@ class StartScreen {
         };
     }
 
-    isHit(x, y, bx, by, bw = 32, bh = 32) {
+    isHit(x, y, bx, by, bw = 48, bh = 48) {
         return x >= bx && x <= bx + bw && y >= by && y <= by + bh;
     }
-    
+
     handleClick(e) {
         const rect = this.canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+
         const w = this.canvas.width;
 
         if (this.showInfoPopup) {
@@ -119,8 +154,12 @@ class StartScreen {
             return this.draw();
         }
 
-        if (this.isHit(x, y, w - 120, 20)) {
+        if (this.isHit(x, y, w - 140, 20)) {
             return this.toggleSound();
+        }
+
+        if (this.isHit(x, y, w - 70, 20)) {
+            return this.toggleFullscreen();
         }
     }
 }

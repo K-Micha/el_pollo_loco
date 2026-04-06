@@ -1,4 +1,6 @@
 class World {
+    baseWidth = 720;
+    baseHeight = 480;
     character = new Character();
     level = lvl1;
     canvas;
@@ -182,31 +184,40 @@ class World {
         return new Type();
     }
 
-    draw() {
-        this.tickEnemies();
-        this.cleanupObjects();
-        this.clearCanvas();
+draw() {
+    this.tickEnemies();
+    this.cleanupObjects();
+    this.clearCanvas();
 
-        this.ctx.translate(this.camera_x, 0);
+    const scaleX = this.canvas.width / this.baseWidth;
+    const scaleY = this.canvas.height / this.baseHeight;
+    const scale = Math.min(scaleX, scaleY);
 
-        this.drawBackground();
-        this.drawCharacter();
-        this.drawClouds();
-        this.drawEnemies();
-        this.checkBottlePickup();
-        this.addObjectsToMap(this.level.coins);
-        this.addObjectsToMap(this.level.bottles);
-        this.drawThrowables();
-        this.coinBar.setCoins(this.character.coins || 0);
+    this.ctx.save();
+    this.ctx.scale(scale, scale);
 
-        this.ctx.translate(-this.camera_x, 0);
+    this.ctx.translate(this.camera_x, 0);
 
-        this.drawUI();
+    this.drawBackground();
+    this.drawCharacter();
+    this.drawClouds();
+    this.drawEnemies();
+    this.checkBottlePickup();
+    this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottles);
+    this.drawThrowables();
+    this.coinBar.setCoins(this.character.coins || 0);
 
-        this.drawGameStates();
+    this.ctx.translate(-this.camera_x, 0);
 
-        requestAnimationFrame(() => this.draw());
-    }
+    this.drawUI();
+    this.drawGameStates();
+
+    this.ctx.restore();
+
+    requestAnimationFrame(() => this.draw());
+}
+
 
     drawGameStates() {
 

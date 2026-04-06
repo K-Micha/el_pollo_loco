@@ -12,11 +12,23 @@ body {
 
 }
 
+body:fullscreen {
+    display: block;
+}
+
 canvas {
     background-color: black;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
     border-radius: 8px;
 }
+
+canvas:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+    background: black;
+}
+
 
 h1 {
     text-align: center;
