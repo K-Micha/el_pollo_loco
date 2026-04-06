@@ -38,7 +38,6 @@ class World {
 
     }
 
-
     setupUI() {
         this.statusBar = new StatusBar();
         this.coinBar = new CoinBar();
@@ -183,40 +182,45 @@ class World {
         return new Type();
     }
 
-draw() {
-    this.tickEnemies();
-    this.cleanupObjects();
-    this.clearCanvas();
+    draw() {
+        this.tickEnemies();
+        this.cleanupObjects();
+        this.clearCanvas();
 
-    const scaleX = this.canvas.width / this.baseWidth;
-    const scaleY = this.canvas.height / this.baseHeight;
-    const scale = Math.min(scaleX, scaleY);
+        const rect = this.canvas.getBoundingClientRect();
 
-    this.ctx.save();
-    this.ctx.scale(scale, scale);
+        const scaleX = rect.width / this.baseWidth;
+        const scaleY = rect.height / this.baseHeight;
+        const scale = Math.min(scaleX, scaleY);
 
-    this.ctx.translate(this.camera_x, 0);
+        const offsetX = (rect.width - this.baseWidth * scale) / 2;
+        const offsetY = (rect.height - this.baseHeight * scale) / 2;
 
-    this.drawBackground();
-    this.drawCharacter();
-    this.drawClouds();
-    this.drawEnemies();
-    this.checkBottlePickup();
-    this.addObjectsToMap(this.level.coins);
-    this.addObjectsToMap(this.level.bottles);
-    this.drawThrowables();
-    this.coinBar.setCoins(this.character.coins || 0);
+        this.ctx.save();
 
-    this.ctx.translate(-this.camera_x, 0);
+        this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
 
-    this.drawUI();
-    this.drawGameStates();
+        this.ctx.translate(this.camera_x, 0);
 
-    this.ctx.restore();
+        this.drawBackground();
+        this.drawCharacter();
+        this.drawClouds();
+        this.drawEnemies();
+        this.checkBottlePickup();
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.bottles);
+        this.drawThrowables();
+        this.coinBar.setCoins(this.character.coins || 0);
 
-    requestAnimationFrame(() => this.draw());
-}
+        this.ctx.translate(-this.camera_x, 0);
 
+        this.drawUI();
+        this.drawGameStates();
+
+        this.ctx.restore();
+
+        requestAnimationFrame(() => this.draw());
+    }
 
     drawGameStates() {
 
