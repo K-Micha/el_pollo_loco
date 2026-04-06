@@ -12,7 +12,7 @@ class RestartController {
 
     onClick(e) {
         const { x, y } = this.getMousePos(e);
-        
+
         if (this.world.gameWon) {
             const b = this.world.winBackground.restartButton;
             const inside =
@@ -52,9 +52,16 @@ class RestartController {
 
     getMousePos(e) {
         const rect = this.canvas.getBoundingClientRect();
+
+        const baseW = 720;
+        const baseH = 480;
+        const scaleX = rect.width / baseW;
+        const scaleY = rect.height / baseH;
+        const scale = Math.min(scaleX, scaleY);
+
         return {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top
+            x: (e.clientX - rect.left) / scale,
+            y: (e.clientY - rect.top) / scale
         };
     }
 }
