@@ -50,18 +50,23 @@ class RestartController {
         }
     }
 
-    getMousePos(e) {
-        const rect = this.canvas.getBoundingClientRect();
+getMousePos(e) {
+    const rect = this.canvas.getBoundingClientRect();
 
-        const baseW = 720;
-        const baseH = 480;
-        const scaleX = rect.width / baseW;
-        const scaleY = rect.height / baseH;
-        const scale = Math.min(scaleX, scaleY);
+    const baseW = 720;
+    const baseH = 480;
 
-        return {
-            x: (e.clientX - rect.left) / scale,
-            y: (e.clientY - rect.top) / scale
-        };
-    }
+    const scaleX = rect.width / baseW;
+    const scaleY = rect.height / baseH;
+    const scale = Math.min(scaleX, scaleY);
+
+    const offsetX = (rect.width  - baseW * scale) / 2;
+    const offsetY = (rect.height - baseH * scale) / 2;
+
+    return {
+        x: (e.clientX - rect.left - offsetX) / scale,
+        y: (e.clientY - rect.top  - offsetY) / scale
+    };
+}
+
 }

@@ -100,7 +100,6 @@ class World {
         }
     }
 
-
     canStartThrow() {
         return this.keyboard.D
             && this.canThrow

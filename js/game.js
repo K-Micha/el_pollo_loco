@@ -13,6 +13,7 @@ function init() {
 }
 
 function startGame() {
+    startScreen.stop();
     world = new World(canvas, keyboard);
     world.run();  
     world.draw();  

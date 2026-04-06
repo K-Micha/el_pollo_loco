@@ -27,6 +27,9 @@ canvas:fullscreen {
     height: 100vh;
     object-fit: contain;
     background: black;
+
+    display: block;
+    margin: auto;
 }
 
 

@@ -32,6 +32,12 @@ class StartScreen {
             this.iconVolume,
             this.iconFullscreen
         ], () => this.draw());
+        this.loop = setInterval(() => {
+            this.draw();
+        }, 1000 / 60);
+    }
+    stop() {
+        clearInterval(this.loop);
     }
 
     toggleFullscreen() {
@@ -68,9 +74,8 @@ class StartScreen {
         });
     }
 
-
     drawIcon(img, x, y) {
-        const size = 48; 
+        const size = 48;
         this.ctx.drawImage(img, x, y, size, size);
     }
 
