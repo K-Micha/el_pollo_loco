@@ -1,4 +1,5 @@
 class StartScreen {
+    isHoveringStart = false;
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -15,6 +16,7 @@ class StartScreen {
         this.showInfoPopup = false;
 
         canvas.addEventListener("click", (e) => this.handleClick(e));
+        canvas.addEventListener("mousemove", (e) => this.handleMove(e));
 
         document.addEventListener("fullscreenchange", () => {
             if (document.fullscreenElement) {
@@ -32,10 +34,12 @@ class StartScreen {
             this.iconVolume,
             this.iconFullscreen
         ], () => this.draw());
+
         this.loop = setInterval(() => {
             this.draw();
         }, 1000 / 60);
     }
+
     stop() {
         clearInterval(this.loop);
     }
@@ -79,6 +83,19 @@ class StartScreen {
         this.ctx.drawImage(img, x, y, size, size);
     }
 
+    getStartTextRect() {
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+
+        const textWidth = 360 * (w / 720);
+        const textHeight = 80 * (h / 480);
+
+        const x = (w - textWidth) / 2;
+        const y = 90 * (h / 480) - textHeight / 2;
+
+        return { x, y, width: textWidth, height: textHeight };
+    }
+
     draw() {
         const w = this.canvas.width;
         const h = this.canvas.height;
@@ -86,6 +103,9 @@ class StartScreen {
         this.ctx.clearRect(0, 0, w, h);
 
         this.drawBackground(w, h);
+
+        const rect = this.getStartTextRect();
+        this.drawStartText(rect.x + rect.width / 2, rect.y + rect.height * 0.7);
 
         if (this.showInfoPopup) {
             const { px, py, pw, ph } = this.getPopupRect();
@@ -97,7 +117,6 @@ class StartScreen {
 
     drawBackground(w, h) {
         this.ctx.drawImage(this.img, 0, 0, w, h);
-        this.drawStartText(w / 2, 90);
     }
 
     drawUI(w) {
@@ -110,7 +129,7 @@ class StartScreen {
         const ctx = this.ctx;
         ctx.font = "bold 48px Arial";
         ctx.textAlign = "center";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = this.isHoveringStart ? 6 : 3;
         ctx.strokeStyle = "#8b3a00";
         ctx.strokeText("START GAME", x, y);
         ctx.fillStyle = "#ffcc33";
@@ -136,6 +155,22 @@ class StartScreen {
 
     isHit(x, y, bx, by, bw = 48, bh = 48) {
         return x >= bx && x <= bx + bw && y >= by && y <= by + bh;
+    }
+
+    handleMove(e) {
+        const rect = this.canvas.getBoundingClientRect();
+
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+
+        const b = this.getStartTextRect();
+
+        this.isHoveringStart =
+            x >= b.x && x <= b.x + b.width &&
+            y >= b.y && y <= b.y + b.height;
     }
 
     handleClick(e) {
@@ -165,6 +200,15 @@ class StartScreen {
 
         if (this.isHit(x, y, w - 70, 20)) {
             return this.toggleFullscreen();
+        }
+
+        const b = this.getStartTextRect();
+
+        if (
+            x >= b.x && x <= b.x + b.width &&
+            y >= b.y && y <= b.y + b.height
+        ) {
+            startGame();
         }
     }
 }
