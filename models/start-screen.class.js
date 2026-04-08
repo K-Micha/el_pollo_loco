@@ -1,5 +1,7 @@
 class StartScreen {
     isHoveringStart = false;
+    gameStarted = false;
+
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -208,7 +210,11 @@ class StartScreen {
             x >= b.x && x <= b.x + b.width &&
             y >= b.y && y <= b.y + b.height
         ) {
-            startGame();
+            if (!gameStarted) {
+                gameStarted = true;
+                startGame();
+            }
+            return;
         }
     }
 }
