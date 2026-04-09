@@ -19,8 +19,7 @@ class World {
     enemiesKilled = 0;
     bossesKilled = 0;
     totalBottles = 9;
-    touchButtons = [];
-
+    touchUi;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -34,6 +33,8 @@ class World {
         this.gameOverBackground = new GameOverBackground();
 
         this.restartController = new RestartController(this, canvas);
+
+        this.touchUi = new TouchUi(this); 
 
         this.setWorld();
     }
@@ -86,6 +87,7 @@ class World {
     run() {
         setInterval(() => {
             if (this.gameWon) return;
+
             Collision.checkEnemyCollision(this);
             this.checkThrowObjects();
             Collision.checkBottleCollision(this);
@@ -134,7 +136,6 @@ class World {
 
         setTimeout(() => this.canThrow = true, 600);
     }
-
 
     resetThrowState() {
         if (!this.keyboard.D) {
@@ -187,8 +188,6 @@ class World {
         this.cleanupObjects();
         this.clearCanvas();
 
-        const rect = this.canvas.getBoundingClientRect();
-
         const canvasWidth = this.canvas.width;
         const canvasHeight = this.canvas.height;
 
@@ -199,8 +198,8 @@ class World {
 
         const offsetX = (canvasWidth - this.baseWidth * scale) / 2;
         const offsetY = (canvasHeight - this.baseHeight * scale) / 2;
-        this.ctx.save();
 
+        this.ctx.save();
         this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
 
         this.ctx.translate(this.camera_x, 0);
@@ -219,7 +218,8 @@ class World {
 
         this.drawUI();
         this.drawGameStates();
-        this.drawTouchControls();
+
+        this.touchUi.draw(this.ctx);
 
         this.ctx.restore();
 
@@ -227,14 +227,10 @@ class World {
     }
 
     drawGameStates() {
-
         if (this.gameOver) {
             this.updateGameOverAnimation();
-
             this.gameOverBackground.draw(this.ctx, this);
-
             this.gameOverImage.draw(this.ctx);
-
             return;
         }
 
@@ -249,10 +245,8 @@ class World {
         if (!this.gameOver) return;
 
         if (this.gameOverPhase === 1) {
-            this.gameOverImage.opacity = Math.min
-                (this.gameOverImage.opacity + 0.01, 1);
-            this.gameOverImage.scale = Math.max
-                (this.gameOverImage.scale - 0.015, 1);
+            this.gameOverImage.opacity = Math.min(this.gameOverImage.opacity + 0.01, 1);
+            this.gameOverImage.scale = Math.max(this.gameOverImage.scale - 0.015, 1);
 
             if (this.gameOverImage.scale === 1) {
                 this.gameOverPhase = 2;
@@ -269,9 +263,7 @@ class World {
 
             if (this.winImage.scale === 1)
                 this.winPhase = 2;
-        }
-
-        else {
+        } else {
             this.winImage.opacity = Math.max(this.winImage.opacity - 0.02, 0);
         }
     }
@@ -279,13 +271,8 @@ class World {
     cleanupObjects() {
         this.level.enemies.forEach(enemy => {
             if (enemy.markedForRemoval) {
-
-                if (!(enemy instanceof Endboss)) {
-                    this.enemiesKilled++;
-                }
-                if (enemy instanceof Endboss) {
-                    this.bossesKilled++;
-                }
+                if (!(enemy instanceof Endboss)) this.enemiesKilled++;
+                if (enemy instanceof Endboss) this.bossesKilled++;
             }
         });
 
@@ -312,10 +299,7 @@ class World {
     drawEnemies() {
         this.level.enemies.forEach(enemy => {
             this.addToMap(enemy);
-
-            if (enemy.lifeBar) {
-                this.addToMap(enemy.lifeBar);
-            }
+            if (enemy.lifeBar) this.addToMap(enemy.lifeBar);
         });
     }
 
@@ -327,13 +311,10 @@ class World {
         this.addToMap(this.statusBar);
         this.addToMap(this.coinBar);
         this.addToMap(this.bottleBar);
-
     }
 
     addObjectsToMap(objects) {
-        objects.forEach(o => {
-            this.addToMap(o);
-        });
+        objects.forEach(o => this.addToMap(o));
     }
 
     addToMap(mo) {
@@ -365,82 +346,4 @@ class World {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
-
-
-updateTouchButtons() {
-    if (!isMobileGameControls()) {
-        this.touchButtons = [];
-        return;
-    }
-
-    const w = this.baseWidth;
-    const h = this.baseHeight;
-    const size = 58;
-    const gap = 14;
-    const bottom = h - size - 18;
-
-    this.touchButtons = [
-        {
-            key: 'LEFT',
-            x: 20,
-            y: bottom,
-            width: size,
-            height: size,
-            label: '◀'
-        },
-        {
-            key: 'RIGHT',
-            x: 20 + size + gap,
-            y: bottom,
-            width: size,
-            height: size,
-            label: '▶'
-        },
-        {
-            key: 'JUMP',
-            x: w - (size * 2 + gap) - 20,
-            y: bottom,
-            width: size,
-            height: size,
-            label: '▲'
-        },
-        {
-            key: 'THROW',
-            x: w - size - 20,
-            y: bottom,
-            width: size,
-            height: size,
-            label: '🧴'
-        }
-    ];
-}
-
-drawTouchControls() {
-    if (!isMobileGameControls()) return;
-
-    this.updateTouchButtons();
-
-    this.touchButtons.forEach(btn => {
-        this.ctx.save();
-
-        this.ctx.globalAlpha = 0.45;
-        this.ctx.fillStyle = '#000';
-        this.ctx.beginPath();
-        this.ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 16);
-        this.ctx.fill();
-
-        this.ctx.globalAlpha = 1;
-        this.ctx.fillStyle = '#fff';
-        this.ctx.font = '28px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(
-            btn.label,
-            btn.x + btn.width / 2,
-            btn.y + btn.height / 2
-        );
-
-        this.ctx.restore();
-    });
-}
 }

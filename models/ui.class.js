@@ -96,3 +96,98 @@ class UI {
         }
     }
 }
+
+class TouchUi {
+    constructor(world) {
+        this.world = world;
+        this.buttons = [];
+    }
+
+    updateButtons() {
+        if (!isMobileGameControls()) {
+            this.buttons = [];
+            return;
+        }
+
+        const w = this.world.baseWidth;
+        const h = this.world.baseHeight;
+        const size = 58;
+        const gap = 14;
+        const bottom = h - size - 21;
+
+        this.buttons = [
+            {
+                key: 'LEFT',
+                x: 23,
+                y: bottom,
+                width: size,
+                height: size,
+                label: '◀'
+            },
+            {
+                key: 'RIGHT',
+                x: 23 + size + gap,
+                y: bottom,
+                width: size,
+                height: size,
+                label: '▶'
+            },
+            {
+                key: 'JUMP',
+                x: w - (size * 2 + gap) - 23,
+                y: bottom,
+                width: size,
+                height: size,
+                label: '▲'
+            },
+            {
+                key: 'THROW',
+                x: w - size - 23,
+                y: bottom,
+                width: size,
+                height: size,
+                label: '🧴'
+            }
+        ];
+    }
+
+    draw(ctx) {
+        if (!isMobileGameControls()) return;
+
+        this.updateButtons();
+
+        this.buttons.forEach(btn => {
+            ctx.save();
+
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 3;
+
+            ctx.globalAlpha = 0.45;
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 16);
+            ctx.fill();
+
+            ctx.shadowColor = 'transparent';
+
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = '#fff';
+            ctx.font = '28px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(
+                btn.label,
+                btn.x + btn.width / 2,
+                btn.y + btn.height / 2
+            );
+
+            ctx.restore();
+        });
+    }
+
+    getButtons() {
+        return this.buttons;
+    }
+}

@@ -12,11 +12,19 @@ function setupTouchControls(canvas, world, keyboard) {
     }, { passive: false });
 
     canvas.addEventListener('touchend', () => {
-        resetTouchKeys(keyboard);
+        keyboard.LEFT = false;
+        keyboard.RIGHT = false;
+        keyboard.UP = false;
+        keyboard.SPACE = false;
+        keyboard.D = false;
     });
 
     canvas.addEventListener('touchcancel', () => {
-        resetTouchKeys(keyboard);
+        keyboard.LEFT = false;
+        keyboard.RIGHT = false;
+        keyboard.UP = false;
+        keyboard.SPACE = false;
+        keyboard.D = false;
     });
 }
 
@@ -35,12 +43,14 @@ function handleTouch(event, canvas, world, keyboard) {
     const scaleX = world.baseWidth / rect.width;
     const scaleY = world.baseHeight / rect.height;
 
+    const buttons = world.touchUi.getButtons();
+
     for (let i = 0; i < event.touches.length; i++) {
         const touch = event.touches[i];
         const x = (touch.clientX - rect.left) * scaleX;
         const y = (touch.clientY - rect.top) * scaleY;
 
-        world.touchButtons.forEach(btn => {
+        buttons.forEach(btn => {
             if (isInsideButton(x, y, btn)) {
                 setTouchKey(keyboard, btn.key, true);
             }
@@ -65,11 +75,4 @@ function setTouchKey(keyboard, key, value) {
     }
 
     if (key === 'THROW') keyboard.D = value;
-}
-
-function resetTouchKeys(keyboard) {
-    keyboard.LEFT = false;
-    keyboard.RIGHT = false;
-    keyboard.SPACE = false;
-    keyboard.D = false;
 }
