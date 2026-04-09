@@ -5,10 +5,20 @@ class RestartController {
         this.registerEvents();
     }
 
-    registerEvents() {
-        this.canvas.addEventListener("click", (e) => this.onClick(e));
-        this.canvas.addEventListener("mousemove", (e) => this.onMove(e));
-    }
+   registerEvents() {
+    this.canvas.addEventListener("click", (e) => this.onClick(e));
+    this.canvas.addEventListener("mousemove", (e) => this.onMove(e));
+
+    this.canvas.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        this.onClick(e.touches[0]);
+    }, { passive: false });
+
+    this.canvas.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+        this.onMove(e.touches[0]);
+    }, { passive: false });
+}
 
     onClick(e) {
         const { x, y } = this.getMousePos(e);

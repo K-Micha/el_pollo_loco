@@ -19,6 +19,7 @@ class World {
     enemiesKilled = 0;
     bossesKilled = 0;
     totalBottles = 9;
+    touchButtons = [];
 
 
     constructor(canvas, keyboard) {
@@ -35,7 +36,6 @@ class World {
         this.restartController = new RestartController(this, canvas);
 
         this.setWorld();
-
     }
 
     setupUI() {
@@ -219,6 +219,7 @@ class World {
 
         this.drawUI();
         this.drawGameStates();
+        this.drawTouchControls();
 
         this.ctx.restore();
 
@@ -336,16 +337,21 @@ class World {
     }
 
     addToMap(mo) {
-        if (mo.otherDirection) {
-            this.flipImage(mo);
-        }
+        const oldX = mo.x;
+        const oldY = mo.y;
+
+        mo.x = Math.round(mo.x);
+        mo.y = Math.round(mo.y);
+
+        if (mo.otherDirection) this.flipImage(mo);
 
         mo.draw(this.ctx);
         /* mo.drawBorder(this.ctx); */
 
-        if (mo.otherDirection) {
-            this.flipImageBack(mo);
-        }
+        if (mo.otherDirection) this.flipImageBack(mo);
+
+        mo.x = oldX;
+        mo.y = oldY;
     }
 
     flipImage(mo) {
@@ -359,4 +365,82 @@ class World {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
+
+
+updateTouchButtons() {
+    if (!isMobileGameControls()) {
+        this.touchButtons = [];
+        return;
+    }
+
+    const w = this.baseWidth;
+    const h = this.baseHeight;
+    const size = 58;
+    const gap = 14;
+    const bottom = h - size - 18;
+
+    this.touchButtons = [
+        {
+            key: 'LEFT',
+            x: 20,
+            y: bottom,
+            width: size,
+            height: size,
+            label: '◀'
+        },
+        {
+            key: 'RIGHT',
+            x: 20 + size + gap,
+            y: bottom,
+            width: size,
+            height: size,
+            label: '▶'
+        },
+        {
+            key: 'JUMP',
+            x: w - (size * 2 + gap) - 20,
+            y: bottom,
+            width: size,
+            height: size,
+            label: '▲'
+        },
+        {
+            key: 'THROW',
+            x: w - size - 20,
+            y: bottom,
+            width: size,
+            height: size,
+            label: '🧴'
+        }
+    ];
+}
+
+drawTouchControls() {
+    if (!isMobileGameControls()) return;
+
+    this.updateTouchButtons();
+
+    this.touchButtons.forEach(btn => {
+        this.ctx.save();
+
+        this.ctx.globalAlpha = 0.45;
+        this.ctx.fillStyle = '#000';
+        this.ctx.beginPath();
+        this.ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 16);
+        this.ctx.fill();
+
+        this.ctx.globalAlpha = 1;
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = '28px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(
+            btn.label,
+            btn.x + btn.width / 2,
+            btn.y + btn.height / 2
+        );
+
+        this.ctx.restore();
+    });
+}
 }

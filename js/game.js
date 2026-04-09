@@ -30,6 +30,7 @@ function startGame() {
     startScreen.stop();
 
     world = new World(canvas, keyboard);
+    setupTouchControls(canvas, world, keyboard);
     world.run();
     world.draw();
     gameStarted = true;
