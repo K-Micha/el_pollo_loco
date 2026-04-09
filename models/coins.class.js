@@ -21,6 +21,13 @@ class Coin extends MovableObject {
         this.playAnimation(Images.COIN_ANIM);
     }
 
+    isColliding(mo) {
+        return this.x + 30 < mo.x + mo.width &&
+            this.x + 30 + 40 > mo.x &&
+            this.y + 30 < mo.y + mo.height &&
+            this.y + 30 + 40 > mo.y;
+    }
+
     drawBorder(ctx) {
         const hit = {
             x: this.x + 30,
@@ -29,7 +36,6 @@ class Coin extends MovableObject {
             height: 40
         };
 
-       /*  ctx.strokeStyle = 'yellow'; */
         ctx.strokeRect(hit.x, hit.y, hit.width, hit.height);
     }
 }

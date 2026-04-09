@@ -2,35 +2,57 @@ class Collision {
 
     static checkCoinCollision(world) {
         world.level.coins = world.level.coins.filter(coin => {
-            if (coin.isColliding(world.character)) {
-
+            if (this.isCoinPickup(world.character, coin)) {
                 SOUNDS.pickup.play();
-
                 world.character.coins++;
                 return false;
             }
+
             return true;
         });
     }
 
     static getCoinHitbox(coin) {
         return {
-            x: coin.x + 30,
-            y: coin.y + 30,
-            width: 40,
-            height: 40
+            x: coin.x + 28,
+            y: coin.y + 28,
+            width: 44,
+            height: 44
         };
     }
 
-    static isCoinCollision(char, hit) {
+    static getCharacterCoinHitbox(char) {
+        return {
+            x: char.x + 20,
+            y: char.y + 35,
+            width: 55,
+            height: 95
+        };
+    }
+
+    static isCoinCollision(char, coinHit) {
+        const charHit = this.getCharacterCoinHitbox(char);
+
         return (
-            char.x + char.width > hit.x &&
-            char.y + char.height > hit.y &&
-            char.x < hit.x + hit.width &&
-            char.y < hit.y + hit.height
+            charHit.x + charHit.width >= coinHit.x &&
+            charHit.y + charHit.height >= coinHit.y &&
+            charHit.x <= coinHit.x + coinHit.width &&
+            charHit.y <= coinHit.y + coinHit.height
         );
     }
 
+    static isCoinPickup(char, coin) {
+        const charCenterX = char.x + char.width / 2;
+        const charPickupY = char.y + char.height * 0.72;
+
+        const coinCenterX = coin.x + coin.width / 2;
+        const coinCenterY = coin.y + coin.height / 2;
+
+        const dx = Math.abs(charCenterX - coinCenterX);
+        const dy = Math.abs(charPickupY - coinCenterY);
+
+        return dx < 28 && dy < 58;
+    }
 
     static checkBottleCollision(world) {
         world.throwableObjects.forEach(bottle => {
