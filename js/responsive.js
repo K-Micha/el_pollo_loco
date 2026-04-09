@@ -1,5 +1,7 @@
 class ResponsiveCanvas {
     constructor(canvas) {
+        if (window.innerWidth >= 1060) return;
+
         this.canvas = canvas;
         this.baseWidth = 720;
         this.baseHeight = 480;
@@ -59,8 +61,11 @@ class ResponsiveCanvas {
         const height = Math.max(1, Math.floor(this.baseHeight * scale));
 
         this.setCanvasSize(width, height);
-        if (isMobile && isPortrait) this.showOverlay();
-        else this.hideOverlay();
+        if (shouldShowRotateOverlay()) {
+            this.showOverlay();
+        } else {
+            this.hideOverlay();
+        }
     }
 
     setCanvasSize(width, height) {

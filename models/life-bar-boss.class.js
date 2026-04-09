@@ -9,11 +9,19 @@ class LifeBarBoss extends DrawableObject {
         this.loadImages(Images.IMAGES_BOSS_LIFE);
 
         this.y = 10;
-        this.width = 200;
+        this.width = this.getBarWidth();
         this.height = 60;
 
         this.setPercentage(100);
         this.updatePosition();
+    }
+
+    getBarWidth() {
+        return window.innerWidth < 1060 ? 160 : 200;
+    }
+
+    getRightOffset() {
+        return window.innerWidth < 1060 ? 8 : 20;
     }
 
     updatePosition() {
@@ -21,6 +29,8 @@ class LifeBarBoss extends DrawableObject {
             this.x = -9999;
             return;
         }
+
+        this.width = this.getBarWidth();
 
         const bossRight = this.boss.x + this.boss.width + 20;
         const fixedX = this.getFixedX();
@@ -43,7 +53,8 @@ class LifeBarBoss extends DrawableObject {
     getFixedX() {
         return -this.world.camera_x +
             this.world.canvas.width -
-            this.width - 20;
+            this.width -
+            this.getRightOffset();
     }
 
     setPercentage(percentage) {
@@ -75,15 +86,12 @@ class LifeBarBoss extends DrawableObject {
         ctx.textBaseline = "middle";
 
         const text = `${Math.round(this.percentage)}%`;
-
         const centerX = this.x + this.width / 2;
         const centerY = this.y + this.height / 2 + 4.5;
 
         ctx.shadowColor = "black";
         ctx.shadowBlur = 4;
-
         ctx.fillText(text, centerX, centerY);
-
         ctx.shadowBlur = 0;
     }
 }
