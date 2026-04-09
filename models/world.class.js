@@ -189,13 +189,16 @@ class World {
 
         const rect = this.canvas.getBoundingClientRect();
 
-        const scaleX = rect.width / this.baseWidth;
-        const scaleY = rect.height / this.baseHeight;
-        const scale = Math.min(scaleX, scaleY);
+        const canvasWidth = this.canvas.width;
+        const canvasHeight = this.canvas.height;
 
-        const offsetX = (rect.width - this.baseWidth * scale) / 2;
-        const offsetY = (rect.height - this.baseHeight * scale) / 2;
+        const scale = Math.min(
+            canvasWidth / this.baseWidth,
+            canvasHeight / this.baseHeight
+        );
 
+        const offsetX = (canvasWidth - this.baseWidth * scale) / 2;
+        const offsetY = (canvasHeight - this.baseHeight * scale) / 2;
         this.ctx.save();
 
         this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);

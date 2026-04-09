@@ -2,9 +2,15 @@ let canvas;
 let world = null;
 let gameStarted = false;
 let keyboard = new Keyboard();
+let responsive = null; 
+window.GAME_ZOOM = window.innerWidth < 1060 ? 0.8 : 1;
+
 
 function init() {
     canvas = document.getElementById('canvas');
+
+    responsive = new ResponsiveCanvas(canvas);
+
     startScreen = new StartScreen(canvas);
 
     startScreen.img.onload = () => {
@@ -14,11 +20,12 @@ function init() {
 
 function startGame() {
     startScreen.stop();
+
     world = new World(canvas, keyboard);
-    world.run();  
-    world.draw();  
-    gameStarted = true;
+    world.run();
+    world.draw();
 }
+
 
 document.addEventListener("keydown",(e) => {
     if(e.keyCode == 39){

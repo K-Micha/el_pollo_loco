@@ -129,13 +129,19 @@ class StartScreen {
 
     drawStartText(x, y) {
         const ctx = this.ctx;
+        const text = this.getStartText();
+
         ctx.font = "bold 48px Arial";
         ctx.textAlign = "center";
         ctx.lineWidth = this.isHoveringStart ? 6 : 3;
         ctx.strokeStyle = "#8b3a00";
-        ctx.strokeText("START GAME", x, y);
+        ctx.strokeText(text, x, y);
         ctx.fillStyle = "#ffcc33";
-        ctx.fillText("START GAME", x, y);
+        ctx.fillText(text, x, y);
+    }
+
+    getStartText() {
+        return window.innerWidth < 910 ? "START" : "START GAME";
     }
 
     toggleSound() {
