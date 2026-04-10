@@ -11,6 +11,9 @@ class Character extends MovableObject {
     enemiesKilled = 0;
     bossesKilled = 0;
 
+    /**
+    * Initializes character, loads animations and starts loops
+    */
     constructor() {
         super().loadImage('../assets/img/2_character_pepe/1_idle/idle/I-1.png')
         this.loadImages(Images.IMAGES_WALKING_CHAR);
@@ -23,11 +26,17 @@ class Character extends MovableObject {
         this.animate();
     }
 
+    /**
+    * Starts movement and animation intervals
+    */
     animate() {
         setInterval(() => this.handleMovement(), 1000 / 60);
         setInterval(() => this.handleAnimation(), 100);
     }
 
+    /**
+   * Handles movement, jumping and camera updates
+   */
     handleMovement() {
         this.updateIdleTimer();
         this.handleWalkingSound();
@@ -66,6 +75,9 @@ class Character extends MovableObject {
         }
     }
 
+    /**
+        * Selects and plays the correct animation state
+        */
     handleAnimation() {
         const idleTime = Date.now() - this.lastInputTime;
 
@@ -98,7 +110,9 @@ class Character extends MovableObject {
     playWalk() { return this.playAnimation(Images.IMAGES_WALKING_CHAR); }
     playIdle() { return this.playAnimation(Images.IMAGES_IDLE_CHAR); }
 
-
+    /**
+     * Triggers jump action
+    */
     jump() {
         SOUNDS.jump.play();
         this.speedY = 30;
@@ -116,6 +130,6 @@ class Character extends MovableObject {
         ctx.stroke();
     }
     onDeath(world) {
-    world.gameOver = true;
-}
+        world.gameOver = true;
+    }
 }

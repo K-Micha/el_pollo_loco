@@ -1,3 +1,6 @@
+/**
+ * Creates the rotate‑overlay container element
+ */
 function createRotateOverlay() {
     const overlay = document.createElement("div");
     overlay.className = "rotate-overlay";
@@ -6,6 +9,9 @@ function createRotateOverlay() {
     return overlay;
 }
 
+/**
+ * Returns the HTML markup for the rotate overlay
+ */
 function getRotateOverlayMarkup() {
     return `
         <div class="rotate-box">
@@ -45,6 +51,9 @@ function getRotateOverlayBaseStyles() {
     };
 }
 
+/**
+ * Injects the rotate‑overlay CSS into the document once
+ */
 function injectRotateStyles() {
     if (document.getElementById("rotate-overlay-styles")) return;
 

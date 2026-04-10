@@ -20,6 +20,7 @@ class World {
     bossesKilled = 0;
     totalBottles = 9;
     touchUi;
+    throwController;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -33,10 +34,14 @@ class World {
         this.gameOverBackground = new GameOverBackground();
 
         this.restartController = new RestartController(this, canvas);
-
-        this.touchUi = new TouchUi(this); 
+        this.touchUi = new TouchUi(this);
+        this.throwController = new ThrowController(this);
 
         this.setWorld();
+    }
+    start() {
+        this.run();
+        this.draw();
     }
 
     setupUI() {
@@ -86,61 +91,8 @@ class World {
 
     run() {
         setInterval(() => {
-            if (this.gameWon) return;
-
-            Collision.checkEnemyCollision(this);
-            this.checkThrowObjects();
-            Collision.checkBottleCollision(this);
-            Collision.checkCoinCollision(this);
+            updateWorld(this);
         }, 1000 / 60);
-    }
-
-    checkThrowObjects() {
-        if (this.canStartThrow()) {
-            this.performThrow();
-        }
-    }
-
-    canStartThrow() {
-        return this.keyboard.D
-            && this.canThrow
-            && this.bottlesCollected > 0;
-    }
-
-    performThrow() {
-        this.canThrow = false;
-
-        const dir = this.character.otherDirection ? -1 : 1;
-        const offsetX = this.character.otherDirection ? -20 : 100;
-
-        let bottle = new ThrowableObject();
-        bottle.direction = dir;
-
-        bottle.throw(
-            this.character.x + offsetX,
-            this.character.y + 150
-        );
-
-        this.throwableObjects.push(bottle);
-
-        this.bottlesCollected--;
-
-        this.bottleBar.setPercentage(
-            (this.bottlesCollected / this.totalBottles) * 100
-        );
-
-        this.bottleBar.setBottles(
-            this.bottlesCollected,
-            this.totalBottles
-        );
-
-        setTimeout(() => this.canThrow = true, 600);
-    }
-
-    resetThrowState() {
-        if (!this.keyboard.D) {
-            this.canThrow = true;
-        }
     }
 
     checkBottlePickup() {
@@ -184,8 +136,26 @@ class World {
     }
 
     draw() {
+        this.updateFrame();
+        this.renderFrame();
+        requestAnimationFrame(() => this.draw());
+    }
+
+    drawBossLifeBar() {
+        const boss = this.level.enemies.find(e => e instanceof Endboss);
+
+        if (!boss || !boss.lifeBar) return;
+        if (!boss.lifeBar.isBossVisible()) return;
+
+        boss.lifeBar.draw(this.ctx);
+    }
+
+    updateFrame() {
         this.tickEnemies();
         this.cleanupObjects();
+    }
+
+    renderFrame() {
         this.clearCanvas();
 
         const canvasWidth = this.canvas.width;
@@ -204,6 +174,16 @@ class World {
 
         this.ctx.translate(this.camera_x, 0);
 
+        this.renderWorld();
+
+        this.ctx.translate(-this.camera_x, 0);
+
+        this.renderUI();
+
+        this.ctx.restore();
+    }
+
+    renderWorld() {
         this.drawBackground();
         this.drawCharacter();
         this.drawClouds();
@@ -212,18 +192,14 @@ class World {
         this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.level.bottles);
         this.drawThrowables();
+
         this.coinBar.setCoins(this.character.coins || 0);
+    }
 
-        this.ctx.translate(-this.camera_x, 0);
-
+    renderUI() {
         this.drawUI();
         this.drawGameStates();
-
         this.touchUi.draw(this.ctx);
-
-        this.ctx.restore();
-
-        requestAnimationFrame(() => this.draw());
     }
 
     drawGameStates() {
@@ -261,8 +237,9 @@ class World {
             this.winImage.opacity = Math.min(this.winImage.opacity + 0.02, 1);
             this.winImage.scale = Math.max(this.winImage.scale - 0.03, 1);
 
-            if (this.winImage.scale === 1)
+            if (this.winImage.scale === 1) {
                 this.winPhase = 2;
+            }
         } else {
             this.winImage.opacity = Math.max(this.winImage.opacity - 0.02, 0);
         }
@@ -299,7 +276,6 @@ class World {
     drawEnemies() {
         this.level.enemies.forEach(enemy => {
             this.addToMap(enemy);
-            if (enemy.lifeBar) this.addToMap(enemy.lifeBar);
         });
     }
 
@@ -311,6 +287,7 @@ class World {
         this.addToMap(this.statusBar);
         this.addToMap(this.coinBar);
         this.addToMap(this.bottleBar);
+        this.drawBossLifeBar();
     }
 
     addObjectsToMap(objects) {
@@ -327,7 +304,6 @@ class World {
         if (mo.otherDirection) this.flipImage(mo);
 
         mo.draw(this.ctx);
-        /* mo.drawBorder(this.ctx); */
 
         if (mo.otherDirection) this.flipImageBack(mo);
 

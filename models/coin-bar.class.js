@@ -1,5 +1,8 @@
 class CoinBar extends DrawableObject {
 
+    /**
+     * Initializes the coin UI bar
+     */ 
     constructor() {
         super();
 
@@ -21,6 +24,9 @@ class CoinBar extends DrawableObject {
         this.coins = amount;
     }
 
+      /**
+     * Draws the coin bar and its text
+     */
     draw(ctx) {
         super.draw(ctx);
 
@@ -39,6 +45,9 @@ class CoinBar extends DrawableObject {
         ctx.shadowBlur = 0;
     }
 
+    /**
+     * Animates the coin icon by cycling frames
+     */
     animate() {
         setInterval(() => {
             this.currentFrame = (this.currentFrame + 1) % this.images.length;

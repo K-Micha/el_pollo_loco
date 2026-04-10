@@ -1,7 +1,16 @@
 function isMobileGameControls() {
-    return window.innerWidth <= 1060;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const shortSide = Math.min(vw, vh);
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    return isTouch && shortSide <= 600;
 }
 
+    /**
+    * Sets up touch input handling for mobile gameplay
+     */
 function setupTouchControls(canvas, world, keyboard) {
     canvas.addEventListener('touchstart', (e) => {
         handleTouch(e, canvas, world, keyboard);
@@ -28,6 +37,9 @@ function setupTouchControls(canvas, world, keyboard) {
     });
 }
 
+/**
+ * Processes touch input and maps it to virtual keys
+ */
 function handleTouch(event, canvas, world, keyboard) {
     if (!isMobileGameControls()) return;
 

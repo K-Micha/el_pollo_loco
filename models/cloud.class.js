@@ -3,7 +3,9 @@ class Cloud extends MovableObject {
     width = 500;
     height = 250;
 
-
+    /**
+     * Creates a cloud with random starting position
+     */
     constructor() {
         super().loadImage('assets/img/5_background/layers/4_clouds/1.png');
         this.loadImages(Images.IMAGES);

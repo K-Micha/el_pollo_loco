@@ -2,6 +2,9 @@ class Bottle extends MovableObject {
     width = 60;
     height = 80;
 
+    /**
+   * Creates a ground bottle with the chosen variant
+   */
     constructor(x, variant = 'ground1') {
         super();
 
@@ -24,6 +27,9 @@ class Bottle extends MovableObject {
         this.offsetY = 0;
     }
 
+    /**
+    * Checks simple AABB collision with another object
+    */
     isColliding(obj) {
         return (
             this.x + this.width > obj.x &&

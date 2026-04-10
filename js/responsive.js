@@ -42,15 +42,20 @@ class ResponsiveCanvas {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
         const isMobile = vw < 1060;
-        const isPortrait = vh > vw;
         const isLandscape = vw > vh;
 
         let availableWidth = vw;
         let availableHeight = vh;
 
         if (!isLandscape) availableHeight -= 60;
-        if (isMobile && isLandscape) availableWidth -= 10, availableHeight -= 10;
-        else if (isMobile) availableWidth -= 20, availableHeight -= 20;
+
+        if (isMobile && isLandscape) {
+            availableWidth -= 10;
+            availableHeight -= 10;
+        } else if (isMobile) {
+            availableWidth -= 20;
+            availableHeight -= 20;
+        }
 
         const scale = Math.min(
             availableWidth / this.baseWidth,
@@ -61,11 +66,7 @@ class ResponsiveCanvas {
         const height = Math.max(1, Math.floor(this.baseHeight * scale));
 
         this.setCanvasSize(width, height);
-        if (shouldShowRotateOverlay()) {
-            this.showOverlay();
-        } else {
-            this.hideOverlay();
-        }
+        this.handleRotateState();
     }
 
     setCanvasSize(width, height) {
@@ -81,6 +82,32 @@ class ResponsiveCanvas {
         this.overlay.style.height = height + "px";
     }
 
+    handleRotateState() {
+        const mustRotate = shouldLockGameToRotate();
+
+        if (mustRotate) {
+            this.showOverlay();
+            this.disableGameInput();
+        } else {
+            this.hideOverlay();
+            this.enableGameInput();
+        }
+    }
+
+    disableGameInput() {
+        if (typeof keyboard !== "undefined") {
+            keyboard.LEFT = false;
+            keyboard.RIGHT = false;
+            keyboard.UP = false;
+            keyboard.DOWN = false;
+            keyboard.SPACE = false;
+            keyboard.D = false;
+        }
+    }
+
+    enableGameInput() {
+    }
+
     showOverlay() {
         this.overlay.style.display = "flex";
     }
@@ -88,4 +115,16 @@ class ResponsiveCanvas {
     hideOverlay() {
         this.overlay.style.display = "none";
     }
+}
+
+function shouldLockGameToRotate() {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const shortSide = Math.min(vw, vh);
+    const isPortrait = vh > vw;
+
+    const isTouchDevice = 'ontouchstart' in window;
+
+    return isTouchDevice && shortSide <= 600 && isPortrait;
 }

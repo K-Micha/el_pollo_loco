@@ -6,15 +6,16 @@ class DrawableObject {
     img;
     imageCache = {};
     currentImage = 0;
-    constructor() {
 
-    }
 
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
     }
 
+      /**
+     * Preloads multiple images into the cache
+     */
     loadImages(imgCache) {
         imgCache.forEach((path) => {
             let img = new Image();
@@ -23,6 +24,9 @@ class DrawableObject {
         });
     }
 
+      /**
+     * Draws the object and optional text overlay
+     */
     draw(ctx) {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 

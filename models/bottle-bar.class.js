@@ -3,6 +3,9 @@ class BottleBar extends DrawableObject {
     collected = 0;
     total = 9;
 
+     /**
+     * Initializes the bottle UI bar
+     */
     constructor() {
         super();
         this.loadImages(Images.BOTTLE_BAR);
@@ -24,6 +27,9 @@ class BottleBar extends DrawableObject {
         this.img = this.imageCache[path];
     }
 
+      /**
+     * Draws the bar and its text
+     */
     draw(ctx) {
         super.draw(ctx);
         this.drawText(ctx);

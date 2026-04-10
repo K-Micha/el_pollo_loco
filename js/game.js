@@ -5,7 +5,9 @@ let keyboard = new Keyboard();
 let responsive = null;
 window.GAME_ZOOM = window.innerWidth < 1060 ? 0.8 : 1;
 
-
+/**
+ * Initializes canvas and loads start screen
+ */
 function init() {
     canvas = document.getElementById('canvas');
 
@@ -24,6 +26,9 @@ function isMobileDevice() {
     return window.innerWidth < 1060;
 }
 
+/**
+ * Starts the game and initializes world + controls
+ */
 function startGame() {
     if (shouldShowRotateOverlay()) return;
 
@@ -31,8 +36,9 @@ function startGame() {
 
     world = new World(canvas, keyboard);
     setupTouchControls(canvas, world, keyboard);
-    world.run();
-    world.draw();
+    
+    world.start();
+
     gameStarted = true;
 }
 
@@ -50,6 +56,18 @@ function isSmallScreenHeight(limit = 900) {
 
 function shouldShowRotateOverlay() {
     return isMobileOrTablet() && isPortraitMode() && isSmallScreenHeight();
+}
+
+/**
+ * Updates world logic and collision checks
+ */
+function updateWorld(world) {
+    if (world.gameWon) return;
+
+    Collision.checkEnemyCollision(world);
+    world.throwController.update();
+    Collision.checkBottleCollision(world);
+    Collision.checkCoinCollision(world);
 }
 
 document.addEventListener("keydown", (e) => {

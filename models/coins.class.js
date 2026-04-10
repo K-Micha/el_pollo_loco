@@ -3,6 +3,9 @@ class Coin extends MovableObject {
     height = 100;
     width = 100;
 
+    /**
+     * Creates a coin at the given position
+     */
     constructor(x, y) {
         super().loadImage('assets/img/8_coin/coin_1.png');
         this.loadImages(Images.COIN_ANIM);
@@ -13,6 +16,9 @@ class Coin extends MovableObject {
         this.animate();
     }
 
+      /**
+     * Plays coin animation frames
+     */
     animate() {
         setInterval(() => this.handleAnimation(), 100);
     }
@@ -21,6 +27,9 @@ class Coin extends MovableObject {
         this.playAnimation(Images.COIN_ANIM);
     }
 
+     /**
+     * Checks collision using reduced hitbox
+     */
     isColliding(mo) {
         return this.x + 30 < mo.x + mo.width &&
             this.x + 30 + 40 > mo.x &&
