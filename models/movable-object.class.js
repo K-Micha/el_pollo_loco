@@ -11,7 +11,9 @@ class MovableObject extends DrawableObject {
     isDeadEnemy = false;
     walkingSoundPlaying = false;
 
-
+     /**
+     * Applies gravity and vertical movement over time
+     */
     applyGravity() {
         setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
@@ -25,6 +27,9 @@ class MovableObject extends DrawableObject {
         }, 1000 / 25);
     }
 
+    /**
+     * Prevents chickens from overlapping by slowing them down
+     */
     checkCrowding(enemies) {
         if (!this.isChicken) return;
 
@@ -47,6 +52,9 @@ class MovableObject extends DrawableObject {
         }
     }
 
+      /**
+     * Removes object after a short delay
+     */
     removeAfterDelay() {
         setTimeout(() => {
             this.markedForRemoval = true;
@@ -69,6 +77,9 @@ class MovableObject extends DrawableObject {
 
     }
 
+    /**
+     * Applies damage and triggers game over if life reaches zero
+     */
     hit() {
         this.life -= 10;
 
@@ -99,6 +110,9 @@ class MovableObject extends DrawableObject {
 
     }
 
+     /**
+     * Plays next frame of an animation sequence
+     */
     playAnimation(images) {
         let i = this.currentImage % images.length;
         let path = images[i];

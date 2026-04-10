@@ -2,6 +2,9 @@ class ThrowableObject extends MovableObject {
     isBroken = false;
     markedForRemoval = false;
 
+    /**
+     * Initializes throwable bottle with images and size
+     */
     constructor() {
         super();
         this.width = 50;
@@ -13,6 +16,9 @@ class ThrowableObject extends MovableObject {
         this.img = this.imageCache[Images.BOTTLE_IMAGE[0]];
     }
 
+     /**
+     * Starts a throw from given position with upward force
+     */
     throw(x, y) {
         this.x = x;
         this.y = y;
@@ -23,10 +29,16 @@ class ThrowableObject extends MovableObject {
         this.startThrowLoop();
     }
 
+     /**
+     * Starts interval loop for movement + animation
+     */
     startThrowLoop() {
         this.throwInterval = setInterval(() => this.updateThrow(), 25);
     }
 
+     /**
+     * Updates bottle movement, collision and animation state
+     */
     updateThrow() {
 
         if (this.y >= 360 && !this.isBroken) {
@@ -45,6 +57,9 @@ class ThrowableObject extends MovableObject {
         }
     }
 
+     /**
+     * Plays break sound, switches to splash animation and schedules removal
+     */
     break() {
         SOUNDS.break.play();
 

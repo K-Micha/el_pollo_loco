@@ -1,4 +1,7 @@
 class Images {
+    /**
+    * Central repository of all image asset paths
+    */
 
     static IMAGES_CLOUD = [
         'assets/img/5_background/layers/4_clouds/1.png',

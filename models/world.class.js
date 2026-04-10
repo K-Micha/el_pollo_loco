@@ -22,6 +22,9 @@ class World {
     touchUi;
     throwController;
 
+    /**
+     * Initializes world, UI, controllers and references
+     */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -39,6 +42,10 @@ class World {
 
         this.setWorld();
     }
+
+    /**
+     * Starts update loop and render loop
+     */
     start() {
         this.run();
         this.draw();
@@ -50,11 +57,17 @@ class World {
         this.bottleBar = new BottleBar();
     }
 
+    /**
+     * Creates win screen objects
+     */
     setupWinScreen() {
         this.winBackground = new WinBackground();
         this.winImage = new WinImage();
     }
 
+     /**
+     * Handles boss sound, win detection and win animation
+     */
     tickEnemies() {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
 
@@ -79,6 +92,9 @@ class World {
         }
     }
 
+    /**
+     * Injects world reference into character and boss
+     */
     setWorld() {
         this.character.world = this;
 
@@ -122,6 +138,9 @@ class World {
         bottle.markedForRemoval = true;
     }
 
+     /**
+     * Applies damage to character and updates life bar
+     */
     handleCharacterHit() {
         if (!this.character.isHurt()) {
             this.character.hit();
@@ -135,6 +154,9 @@ class World {
         return new Type();
     }
 
+      /**
+     * Main render loop using requestAnimationFrame
+     */
     draw() {
         this.updateFrame();
         this.renderFrame();
@@ -150,11 +172,17 @@ class World {
         boss.lifeBar.draw(this.ctx);
     }
 
+       /**
+     * Updates world state before rendering
+     */
     updateFrame() {
         this.tickEnemies();
         this.cleanupObjects();
     }
 
+    /**
+     * Handles scaling, camera transform and world/UI rendering
+     */
     renderFrame() {
         this.clearCanvas();
 
@@ -183,6 +211,9 @@ class World {
         this.ctx.restore();
     }
 
+     /**
+     * Renders world objects (background, enemies, items, character)
+     */
     renderWorld() {
         this.drawBackground();
         this.drawCharacter();
@@ -202,6 +233,9 @@ class World {
         this.touchUi.draw(this.ctx);
     }
 
+     /**
+     * Draws win/game over screens and animations
+     */
     drawGameStates() {
         if (this.gameOver) {
             this.updateGameOverAnimation();
@@ -245,6 +279,9 @@ class World {
         }
     }
 
+      /**
+     * Removes dead enemies and finished throwables
+     */
     cleanupObjects() {
         this.level.enemies.forEach(enemy => {
             if (enemy.markedForRemoval) {

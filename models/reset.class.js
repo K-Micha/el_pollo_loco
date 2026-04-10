@@ -1,25 +1,34 @@
 class RestartController {
+    /**
+     * Handles restart button input for game over / win screens
+     */
     constructor(world, canvas) {
         this.world = world;
         this.canvas = canvas;
         this.registerEvents();
     }
 
-   registerEvents() {
-    this.canvas.addEventListener("click", (e) => this.onClick(e));
-    this.canvas.addEventListener("mousemove", (e) => this.onMove(e));
+    /**
+   * Registers mouse and touch listeners for restart interaction
+   */
+    registerEvents() {
+        this.canvas.addEventListener("click", (e) => this.onClick(e));
+        this.canvas.addEventListener("mousemove", (e) => this.onMove(e));
 
-    this.canvas.addEventListener("touchstart", (e) => {
-        e.preventDefault();
-        this.onClick(e.touches[0]);
-    }, { passive: false });
+        this.canvas.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            this.onClick(e.touches[0]);
+        }, { passive: false });
 
-    this.canvas.addEventListener("touchmove", (e) => {
-        e.preventDefault();
-        this.onMove(e.touches[0]);
-    }, { passive: false });
-}
+        this.canvas.addEventListener("touchmove", (e) => {
+            e.preventDefault();
+            this.onMove(e.touches[0]);
+        }, { passive: false });
+    }
 
+    /**
+    * Handles restart button clicks for win/lose screens
+    */
     onClick(e) {
         const { x, y } = this.getMousePos(e);
 
@@ -42,6 +51,9 @@ class RestartController {
         }
     }
 
+      /**
+     * Updates hover state for restart button
+     */
     onMove(e) {
         const { x, y } = this.getMousePos(e);
 
@@ -60,23 +72,25 @@ class RestartController {
         }
     }
 
-getMousePos(e) {
-    const rect = this.canvas.getBoundingClientRect();
+     /**
+     * Converts mouse/touch coordinates to scaled canvas space
+     */
+    getMousePos(e) {
+        const rect = this.canvas.getBoundingClientRect();
 
-    const baseW = 720;
-    const baseH = 480;
+        const baseW = 720;
+        const baseH = 480;
 
-    const scaleX = rect.width / baseW;
-    const scaleY = rect.height / baseH;
-    const scale = Math.min(scaleX, scaleY);
+        const scaleX = rect.width / baseW;
+        const scaleY = rect.height / baseH;
+        const scale = Math.min(scaleX, scaleY);
 
-    const offsetX = (rect.width  - baseW * scale) / 2;
-    const offsetY = (rect.height - baseH * scale) / 2;
+        const offsetX = (rect.width - baseW * scale) / 2;
+        const offsetY = (rect.height - baseH * scale) / 2;
 
-    return {
-        x: (e.clientX - rect.left - offsetX) / scale,
-        y: (e.clientY - rect.top  - offsetY) / scale
-    };
-}
-
+        return {
+            x: (e.clientX - rect.left - offsetX) / scale,
+            y: (e.clientY - rect.top - offsetY) / scale
+        };
+    }
 }

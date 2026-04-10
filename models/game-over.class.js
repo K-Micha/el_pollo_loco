@@ -11,6 +11,9 @@ class GameOverBackground {
         this.isHoveringRestart = false;
     }
 
+     /**
+     * Draws background layers and restart button when active
+     */
     draw(ctx, world) {
         this.layers.forEach(l => l.draw(ctx));
 
@@ -19,6 +22,9 @@ class GameOverBackground {
         }
     }
 
+     /**
+     * Draws the restart button with hover styling
+     */
     drawRestart(ctx) {
         const x = 360;
         const y = 480 / 2 + 120;
@@ -37,6 +43,9 @@ class GameOverBackground {
     }
 }
 
+    /**
+     * Loads and centers the game‑over image with fade/scale props
+     */
 class GameOverImage extends DrawableObject {
     constructor() {
         super();
@@ -52,6 +61,9 @@ class GameOverImage extends DrawableObject {
         this.scale = 3;
     }
 
+      /**
+     * Draws the image with scaling and fade‑in transform
+     */
     draw(ctx) {
         ctx.save();
         ctx.globalAlpha = this.opacity;

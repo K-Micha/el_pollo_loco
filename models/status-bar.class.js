@@ -2,6 +2,9 @@ class StatusBar extends DrawableObject {
     percentage = 100;
     type = "life";
 
+     /**
+     * Initializes the status bar with default life images
+     */
     constructor() {
         super();
         this.loadImages(Images.IMAGES);
@@ -12,6 +15,9 @@ class StatusBar extends DrawableObject {
         this.setPercentage(100);
     }
 
+     /**
+     * Updates percentage and selects correct bar image
+     */
     setPercentage(percentage) {
         this.percentage = percentage;
         let Path = Images.IMAGES[this.resolvImageIndex()];
@@ -28,6 +34,9 @@ class StatusBar extends DrawableObject {
         return 0;
     }
 
+      /**
+     * Draws the text value (life %, coins, potions)
+     */
     drawText(ctx) {
         ctx.font = "22px Arial";
         ctx.fillStyle = "white";
@@ -48,6 +57,9 @@ class StatusBar extends DrawableObject {
         ctx.shadowBlur = 0;
     }
 
+    /**
+     * Returns the displayed text based on bar type
+     */
     getText() {
         if (this.type === "life") {
             return `${Math.round(this.percentage)}%`;

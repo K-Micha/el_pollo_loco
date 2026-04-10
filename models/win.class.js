@@ -1,6 +1,9 @@
 class WinBackground extends DrawableObject {
     isHoveringRestart = false;
 
+    /**
+     * Initializes win screen background and restart button
+     */
     constructor() {
         super();
         this.loadImage('assets/img/pepe-win.png');
@@ -17,6 +20,9 @@ class WinBackground extends DrawableObject {
         };
     }
 
+     /**
+     * Draws background, stats and restart button
+     */
     draw(ctx, world) {
         super.draw(ctx);
         this.drawStats(ctx, world);
@@ -78,6 +84,9 @@ class WinBackground extends DrawableObject {
         ctx.fillText("Restart", cx, cy);
     }
 
+       /**
+     * Sets text style for stats
+     */
     setTextStyle(ctx) {
         ctx.fillStyle = "#ffd700";
         ctx.strokeStyle = "#000";
@@ -103,6 +112,9 @@ class WinBackground extends DrawableObject {
         ];
     }
 
+     /**
+     * Draws all stats lines with stroke + fill
+     */
     drawStats(ctx, world) {
         this.setTextStyle(ctx);
 
@@ -119,6 +131,10 @@ class WinBackground extends DrawableObject {
 
 
 class WinImage extends DrawableObject {
+
+       /**
+     * Initializes win image with fade/scale animation props
+     */
     constructor() {
         super();
         this.loadImage('assets/img/You won, you lost/You won A.png');
@@ -132,6 +148,9 @@ class WinImage extends DrawableObject {
         this.scale = 3;
     }
 
+     /**
+     * Draws win image with scaling + fade transform
+     */
     draw(ctx) {
         ctx.save();
         ctx.globalAlpha = this.opacity;

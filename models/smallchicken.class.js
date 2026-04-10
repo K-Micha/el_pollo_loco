@@ -4,7 +4,9 @@ class SmallChicken extends MovableObject {
     height = 40;
     width = 60;
 
-
+    /**
+     * Initializes a small chicken with random position and speed
+     */
     constructor() {
         super().loadImage('assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(Images.IMAGES_WALKING_SMAL);
@@ -16,6 +18,9 @@ class SmallChicken extends MovableObject {
         this.animate();
     }
 
+      /**
+     * Starts movement and animation loops
+     */
     animate() {
         setInterval(() => this.handleMovement(), 1000 / 60);
         setInterval(() => this.handleAnimation(), 100);
@@ -25,6 +30,9 @@ class SmallChicken extends MovableObject {
         if (!this.isDeadEnemy) this.moveLeft();
     }
 
+     /**
+     * Plays walking or dead animation depending on state
+     */
     handleAnimation() {
         this.playAnimation(
             this.isDeadEnemy

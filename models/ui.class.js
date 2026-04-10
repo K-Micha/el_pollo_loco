@@ -43,11 +43,17 @@ class UI {
         ctx.textAlign = "center";
     }
 
+    /**
+     * Draws popup background and text
+     */
     drawPopup(px, py, pw, ph) {
         this.drawPopupBackground(px, py, pw, ph);
         this.drawPopupText(px, py, pw, ph);
     }
 
+       /**
+     * Draws dimmed overlay and popup box
+     */
     drawPopupBackground(px, py, pw, ph) {
         const ctx = this.ctx;
         const w = this.canvas.width;
@@ -74,6 +80,9 @@ class UI {
         ctx.strokeRect(px, py, pw, ph);
     }
 
+     /**
+     * Draws popup title and control instructions
+     */
     drawPopupText(px, py, pw, ph) {
         const ctx = this.ctx;
         const w = this.canvas.width;
@@ -103,6 +112,9 @@ class TouchUi {
         this.buttons = [];
     }
 
+       /**
+     * Updates mobile button layout based on screen size
+     */
     updateButtons() {
         if (!isMobileGameControls()) {
             this.buttons = [];
@@ -151,6 +163,9 @@ class TouchUi {
         ];
     }
 
+     /**
+     * Draws all mobile control buttons
+     */
     draw(ctx) {
         if (!isMobileGameControls()) return;
 

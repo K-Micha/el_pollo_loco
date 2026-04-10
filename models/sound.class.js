@@ -1,5 +1,10 @@
 let SOUND_ENABLED = false;
+
 class Sound {
+
+    /**
+    * Simple wrapper for HTMLAudioElement with global enable/disable
+    */
     constructor(path, volume) {
         this.audio = new Audio(path);
         this.audio.volume = volume;

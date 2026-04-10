@@ -16,8 +16,8 @@ class ThrowController {
     }
 
     /**
- * Spawns and throws a new bottle object
- */
+    * Spawns and throws a new bottle object
+    */
     throwBottle() {
         this.world.canThrow = false;
 
