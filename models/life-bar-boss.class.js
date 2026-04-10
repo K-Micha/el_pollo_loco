@@ -21,40 +21,21 @@ class LifeBarBoss extends DrawableObject {
     }
 
     getRightOffset() {
-        return window.innerWidth < 1060 ? 8 : 20;
+        return window.innerWidth < 1060 ? 10 : 20;
     }
 
     updatePosition() {
-        if (!this.isBossVisible()) {
-            this.x = -9999;
-            return;
-        }
-
         this.width = this.getBarWidth();
-
-        const bossRight = this.boss.x + this.boss.width + 20;
-        const fixedX = this.getFixedX();
-
-        if (bossRight < fixedX) {
-            this.x = bossRight;
-        } else {
-            this.x = fixedX;
-        }
+        this.x = this.world.baseWidth - this.width - this.getRightOffset();
     }
 
     isBossVisible() {
         const bossScreenX = this.boss.x + this.world.camera_x;
+
         return (
             bossScreenX + this.boss.width >= 0 &&
-            bossScreenX <= this.world.canvas.width
+            bossScreenX <= this.world.baseWidth
         );
-    }
-
-    getFixedX() {
-        return -this.world.camera_x +
-            this.world.canvas.width -
-            this.width -
-            this.getRightOffset();
     }
 
     setPercentage(percentage) {
@@ -74,6 +55,8 @@ class LifeBarBoss extends DrawableObject {
     }
 
     draw(ctx) {
+        if (!this.isBossVisible()) return;
+
         this.updatePosition();
         super.draw(ctx);
         this.drawText(ctx);

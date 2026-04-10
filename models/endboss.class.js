@@ -10,7 +10,9 @@ class Endboss extends MovableObject {
     currentAnimation = 'idle';
      bossesKilled = 0;
 
-
+    /**
+     * Applies damage, triggers aggro and handles death
+     */
     hit(dmg) {
         this.life -= dmg;
         this.lifeBar.setPercentage(this.life);
@@ -31,6 +33,9 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Temporarily marks the boss as hurt
+     */
     hurt() {
         this.isHurtEnemy = true;
 
@@ -39,6 +44,9 @@ class Endboss extends MovableObject {
         }, 300);
     }
 
+    /**
+     * Initializes the boss and loads all animations
+     */
     constructor() {
         super();
 
@@ -55,6 +63,9 @@ class Endboss extends MovableObject {
 
     }
 
+      /**
+     * Starts aggressive chase behavior
+     */
     startAggro() {
         this.isAggro = true;
 
@@ -71,6 +82,9 @@ class Endboss extends MovableObject {
         }, 1000 / 60);
     }
 
+      /**
+     * Initiates attack sequence with timing windows
+     */
     startAttack() {
         if (this.isAttacking) return;
 
@@ -93,6 +107,9 @@ class Endboss extends MovableObject {
         this.world.statusBar.setPercentage(this.world.character.life);
     }
 
+     /**
+     * Calculates damage based on overlap intensity
+     */
     calculateDamage() {
         const overlap = this.getOverlapWithCharacter();
         const maxOverlap = 150;
@@ -124,8 +141,9 @@ class Endboss extends MovableObject {
         return Math.abs(this.x - this.world.character.x);
     }
 
-
-
+    /**
+     * Plays the correct animation based on boss state
+     */
     animate() {
         setInterval(() => {
 
