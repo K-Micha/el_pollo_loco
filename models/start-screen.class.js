@@ -66,16 +66,19 @@ class StartScreen {
     }
 
     resizeCanvasToFullscreen() {
+        const baseW = 720;
+        const baseH = 480;
+
         const scale = Math.min(
-            window.innerWidth / 720,
-            window.innerHeight / 480
+            window.innerWidth / baseW,
+            window.innerHeight / baseH
         );
 
-        const width = Math.floor(720 * scale);
-        const height = Math.floor(480 * scale);
+        const width = Math.floor(baseW * scale);
+        const height = Math.floor(baseH * scale);
 
-        this.canvas.width = 720;
-        this.canvas.height = 480;
+        this.canvas.width = baseW;
+        this.canvas.height = baseH;
         this.canvas.style.width = width + "px";
         this.canvas.style.height = height + "px";
     }
@@ -83,6 +86,8 @@ class StartScreen {
     resetCanvasSize() {
         this.canvas.width = 720;
         this.canvas.height = 480;
+        this.canvas.style.width = "720px";
+        this.canvas.style.height = "480px";
     }
 
     loadImage(path) {
@@ -291,13 +296,20 @@ class StartScreen {
 
     getScaledPos(e) {
         const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
+
+        const baseW = 720;
+        const baseH = 480;
+
+        const scaleX = rect.width / baseW;
+        const scaleY = rect.height / baseH;
+        const scale = Math.min(scaleX, scaleY);
+
+        const offsetX = (rect.width - baseW * scale) / 2;
+        const offsetY = (rect.height - baseH * scale) / 2;
 
         return {
-            x: (e.clientX - rect.left) * scaleX,
-            y: (e.clientY - rect.top) * scaleY
+            x: (e.clientX - rect.left - offsetX) / scale,
+            y: (e.clientY - rect.top - offsetY) / scale
         };
     }
 }
-

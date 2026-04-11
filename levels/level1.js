@@ -80,7 +80,7 @@ function createLevel1() {
             new Coin(300 + Math.random() * 1800, 200 + Math.random() * 150),
             new Coin(300 + Math.random() * 1800, 200 + Math.random() * 150),
             new Coin(300 + Math.random() * 1800, 200 + Math.random() * 150),
-            new Coin(300 + Math.random() * 180020, 200 + Math.random() * 150)
+            new Coin(300 + Math.random() * 1800, 200 + Math.random() * 150)
         ],
 
         [
