@@ -44,6 +44,9 @@ canvas:fullscreen {
     margin: auto;
 }
 
+canvas:-webkit-full-screen {
+    background: black;
+}
 
 h1 {
     text-align: center;

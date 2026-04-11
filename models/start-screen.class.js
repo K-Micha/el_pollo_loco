@@ -60,23 +60,39 @@ class StartScreen {
     /**
     * Toggles fullscreen mode for the canvas
     */
-    toggleFullscreen() {
-        const canvas = this.canvas;
+async toggleFullscreen() {
+    const elem = this.canvas;
 
+    try {
         if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-            if (canvas.requestFullscreen) {
-                canvas.requestFullscreen();
-            } else if (canvas.webkitRequestFullscreen) {
-                canvas.webkitRequestFullscreen();
+
+            if (elem.requestFullscreen) {
+                await elem.requestFullscreen({ navigationUI: "hide" });
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
             }
+
+            if (screen.orientation?.lock) {
+                try {
+                    await screen.orientation.lock("landscape");
+                } catch (e) {
+                    console.log("orientation lock failed");
+                }
+            }
+
         } else {
+
             if (document.exitFullscreen) {
-                document.exitFullscreen();
+                await document.exitFullscreen();
             } else if (document.webkitExitFullscreen) {
                 document.webkitExitFullscreen();
             }
         }
+
+    } catch (err) {
+        console.log('fullscreen failed:', err);
     }
+}
 
     handleTouchStart(e) {
         if (e.cancelable) e.preventDefault();
@@ -90,15 +106,20 @@ class StartScreen {
         });
     }
 
-    handleFullscreenChange() {
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-            this.resizeCanvasToFullscreen();
-        } else {
-            this.resetCanvasSize();
-        }
+handleFullscreenChange() {
+    const isFullscreen =
+        document.fullscreenElement || document.webkitFullscreenElement;
 
-        this.draw();
+    if (isFullscreen) {
+        document.body.style.backgroundColor = '#000';
+        this.resizeCanvasToFullscreen();
+    } else {
+        document.body.style.backgroundColor = '';
+        this.resetCanvasSize();
     }
+
+    this.draw();
+}
 
     resizeCanvasToFullscreen() {
         const baseW = 720;
