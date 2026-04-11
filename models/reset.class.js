@@ -9,6 +9,9 @@ class RestartController {
         this.registerEvents();
     }
 
+    /**
+    * Registers all mouse and touch events for the restart button
+    */
     registerEvents() {
         this.canvas.addEventListener("click", this.handleClick);
         this.canvas.addEventListener("mousemove", this.handleMove);
@@ -33,6 +36,9 @@ class RestartController {
         this.canvas.removeEventListener("touchmove", this.handleTouchMove);
     }
 
+    /**
+    * Detects clicks on the restart button in win or game‑over screens
+    */
     onClick(e) {
         const { x, y } = this.getMousePos(e);
 
