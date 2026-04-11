@@ -13,9 +13,9 @@ class DrawableObject {
         this.img.src = path;
     }
 
-      /**
-     * Preloads multiple images into the cache
-     */
+    /**
+   * Preloads multiple images into the cache
+   */
     loadImages(imgCache) {
         imgCache.forEach((path) => {
             let img = new Image();
@@ -24,11 +24,19 @@ class DrawableObject {
         });
     }
 
-      /**
-     * Draws the object and optional text overlay
-     */
+    /**
+   * Draws the object and optional text overlay
+   */
     draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        if (this instanceof BackgroundObject) {
+            ctx.drawImage(
+                this.img,
+                1, 0, this.img.width - 1, this.img.height,
+                this.x, this.y, this.width, this.height
+            );
+        } else {
+            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        }
 
         if (this.drawText) {
             this.drawText(ctx);

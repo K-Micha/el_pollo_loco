@@ -29,9 +29,9 @@ class ResponsiveCanvas {
         this.wrapper.appendChild(this.canvas);
     }
 
-      /**
-     * Creates and attaches the rotate‑overlay
-     */
+    /**
+   * Creates and attaches the rotate‑overlay
+   */
     initOverlay() {
         injectRotateStyles();
         this.overlay = createRotateOverlay();
@@ -47,9 +47,9 @@ class ResponsiveCanvas {
         };
     }
 
-      /**
-     * Recalculates canvas size and rotation state
-     */
+    /**
+   * Recalculates canvas size and rotation state
+   */
     update() {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
@@ -81,12 +81,13 @@ class ResponsiveCanvas {
         this.handleRotateState();
     }
 
-      /**
-     * Applies scaled width/height to canvas, wrapper and overlay
-     */
+    /**
+   * Applies scaled width/height to canvas, wrapper and overlay
+   */
     setCanvasSize(width, height) {
-        this.canvas.width = width;
-        this.canvas.height = height;
+        this.canvas.width = this.baseWidth;
+        this.canvas.height = this.baseHeight;
+
         this.canvas.style.width = width + "px";
         this.canvas.style.height = height + "px";
         this.canvas.style.display = "block";
@@ -97,9 +98,9 @@ class ResponsiveCanvas {
         this.overlay.style.height = height + "px";
     }
 
-      /**
-     * Shows or hides rotate‑overlay based on device orientation
-     */
+    /**
+   * Shows or hides rotate‑overlay based on device orientation
+   */
     handleRotateState() {
         const mustRotate = shouldLockGameToRotate();
 

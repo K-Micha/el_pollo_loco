@@ -22,8 +22,8 @@ class StartScreen {
         canvas.addEventListener("click", (e) => this.handleClick(e));
         canvas.addEventListener("mousemove", (e) => this.handleMove(e));
         canvas.addEventListener("mouseleave", () => {
-    this.canvas.style.cursor = "default";
-});
+            this.canvas.style.cursor = "default";
+        });
 
         document.addEventListener("fullscreenchange", () => {
             if (document.fullscreenElement) {
@@ -66,8 +66,18 @@ class StartScreen {
     }
 
     resizeCanvasToFullscreen() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+        const scale = Math.min(
+            window.innerWidth / 720,
+            window.innerHeight / 480
+        );
+
+        const width = Math.floor(720 * scale);
+        const height = Math.floor(480 * scale);
+
+        this.canvas.width = 720;
+        this.canvas.height = 480;
+        this.canvas.style.width = width + "px";
+        this.canvas.style.height = height + "px";
     }
 
     resetCanvasSize() {
@@ -194,31 +204,31 @@ class StartScreen {
     /**
      * Updates hover state for the start button
      */
-handleMove(e) {
-    const { x, y } = this.getScaledPos(e);
-    const w = this.canvas.width;
+    handleMove(e) {
+        const { x, y } = this.getScaledPos(e);
+        const w = this.canvas.width;
 
-    const start = this.getStartTextRect();
+        const start = this.getStartTextRect();
 
-    const overStart =
-        x >= start.x && x <= start.x + start.width &&
-        y >= start.y && y <= start.y + start.height;
+        const overStart =
+            x >= start.x && x <= start.x + start.width &&
+            y >= start.y && y <= start.y + start.height;
 
-    const overInfo = this.isHit(x, y, 20, 20);
-    const overSound = this.isHit(x, y, w - 140, 20);
-    const overFullscreen = this.isHit(x, y, w - 70, 20);
+        const overInfo = this.isHit(x, y, 20, 20);
+        const overSound = this.isHit(x, y, w - 140, 20);
+        const overFullscreen = this.isHit(x, y, w - 70, 20);
 
-    this.isHoveringStart = overStart;
+        this.isHoveringStart = overStart;
 
-    const isClickable =
-        overStart ||
-        overInfo ||
-        overSound ||
-        overFullscreen ||
-        this.showInfoPopup;
+        const isClickable =
+            overStart ||
+            overInfo ||
+            overSound ||
+            overFullscreen ||
+            this.showInfoPopup;
 
-    this.canvas.style.cursor = isClickable ? "pointer" : "default";
-}
+        this.canvas.style.cursor = isClickable ? "pointer" : "default";
+    }
 
     /**
      * Handles clicks on icons, popup and start button
