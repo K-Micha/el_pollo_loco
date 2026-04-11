@@ -2,7 +2,7 @@ class World {
     baseWidth = 720;
     baseHeight = 480;
     character = new Character();
-    level = lvl1;
+    level = null;
     canvas;
     ctx;
     keyboard;
@@ -21,6 +21,9 @@ class World {
     totalBottles = 9;
     touchUi;
     throwController;
+    intervalId = null;
+    animationFrameId = null;
+    isDestroyed = false;
 
     /**
      * Initializes world, UI, controllers and references
@@ -29,6 +32,7 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.level = createLevel1();
 
         this.setupUI();
         this.setupWinScreen();
@@ -65,9 +69,9 @@ class World {
         this.winImage = new WinImage();
     }
 
-     /**
-     * Handles boss sound, win detection and win animation
-     */
+    /**
+    * Handles boss sound, win detection and win animation
+    */
     tickEnemies() {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
 
@@ -106,7 +110,8 @@ class World {
     }
 
     run() {
-        setInterval(() => {
+        this.intervalId = setInterval(() => {
+            if (this.isDestroyed) return;
             updateWorld(this);
         }, 1000 / 60);
     }
@@ -138,9 +143,9 @@ class World {
         bottle.markedForRemoval = true;
     }
 
-     /**
-     * Applies damage to character and updates life bar
-     */
+    /**
+    * Applies damage to character and updates life bar
+    */
     handleCharacterHit() {
         if (!this.character.isHurt()) {
             this.character.hit();
@@ -154,13 +159,34 @@ class World {
         return new Type();
     }
 
-      /**
-     * Main render loop using requestAnimationFrame
-     */
+    /**
+   * Main render loop using requestAnimationFrame
+   */
     draw() {
+        if (this.isDestroyed) return;
+
         this.updateFrame();
         this.renderFrame();
-        requestAnimationFrame(() => this.draw());
+
+        this.animationFrameId = requestAnimationFrame(() => this.draw());
+    }
+
+    stop() {
+        this.isDestroyed = true;
+
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+        }
+
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+
+        if (this.restartController) {
+            this.restartController.destroy();
+        }
     }
 
     drawBossLifeBar() {
@@ -172,9 +198,9 @@ class World {
         boss.lifeBar.draw(this.ctx);
     }
 
-       /**
-     * Updates world state before rendering
-     */
+    /**
+  * Updates world state before rendering
+  */
     updateFrame() {
         this.tickEnemies();
         this.cleanupObjects();
@@ -211,9 +237,9 @@ class World {
         this.ctx.restore();
     }
 
-     /**
-     * Renders world objects (background, enemies, items, character)
-     */
+    /**
+    * Renders world objects (background, enemies, items, character)
+    */
     renderWorld() {
         this.drawBackground();
         this.drawCharacter();
@@ -233,9 +259,9 @@ class World {
         this.touchUi.draw(this.ctx);
     }
 
-     /**
-     * Draws win/game over screens and animations
-     */
+    /**
+    * Draws win/game over screens and animations
+    */
     drawGameStates() {
         if (this.gameOver) {
             this.updateGameOverAnimation();
@@ -279,9 +305,9 @@ class World {
         }
     }
 
-      /**
-     * Removes dead enemies and finished throwables
-     */
+    /**
+   * Removes dead enemies and finished throwables
+   */
     cleanupObjects() {
         this.level.enemies.forEach(enemy => {
             if (enemy.markedForRemoval) {

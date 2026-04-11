@@ -1,16 +1,12 @@
 let SOUND_ENABLED = false;
 
 class Sound {
-
-    /**
-    * Simple wrapper for HTMLAudioElement with global enable/disable
-    */
     constructor(path, volume) {
         this.audio = new Audio(path);
         this.audio.volume = volume;
     }
 
-   play() {
+    play() {
         if (!SOUND_ENABLED) return;
         this.audio.play();
     }
@@ -19,7 +15,6 @@ class Sound {
         this.audio.pause();
     }
 }
-
 
 const SOUNDS = {
     pickup: new Sound('assets/audio/loot.wav', 0.5),
@@ -34,7 +29,61 @@ const SOUNDS = {
 
 SOUNDS.boss_sound.audio.loop = true;
 
+function loadSoundState() {
+    let savedState = localStorage.getItem('soundEnabled');
+
+    if (savedState === null) {
+        SOUND_ENABLED = false;
+        return;
+    }
+
+    SOUND_ENABLED = savedState === 'true';
+}
+
+function saveSoundState() {
+    localStorage.setItem('soundEnabled', SOUND_ENABLED);
+}
+
+function toggleSound() {
+    SOUND_ENABLED = !SOUND_ENABLED;
+    saveSoundState();
+    updateSoundButton();
+}
+
 function init() {
+    loadSoundState();
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
+    updateSoundButton();
+}
+
+function stopAllSounds() {
+    Object.values(SOUNDS).forEach(sound => {
+        sound.pause();
+        sound.audio.currentTime = 0;
+    });
+}
+
+function resetKeyboard() {
+    keyboard.LEFT = false;
+    keyboard.RIGHT = false;
+    keyboard.UP = false;
+    keyboard.DOWN = false;
+    keyboard.SPACE = false;
+    keyboard.D = false;
+}
+
+function clearAllGameIntervals() {
+    for (let i = 1; i < 9999; i++) {
+        clearInterval(i);
+        clearTimeout(i);
+    }
+}
+
+function restartGame() {
+    stopAllSounds();
+    clearAllGameIntervals();
+    resetKeyboard();
+    initLevel();
+    init();
 }

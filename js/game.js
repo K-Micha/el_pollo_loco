@@ -22,6 +22,41 @@ function init() {
     };
 }
 
+function startNewGame() {
+    world = new World(canvas, keyboard);
+    setupTouchControls(canvas, world, keyboard);
+    world.start();
+    gameStarted = true;
+}
+
+function restartGame() {
+    stopAllSounds();
+    resetKeyboard();
+
+    if (world) {
+        world.stop();
+        world = null;
+    }
+
+    startNewGame();
+}
+
+function resetKeyboard() {
+    keyboard.RIGHT = false;
+    keyboard.LEFT = false;
+    keyboard.UP = false;
+    keyboard.DOWN = false;
+    keyboard.SPACE = false;
+    keyboard.D = false;
+}
+
+function stopAllSounds() {
+    Object.values(SOUNDS).forEach(sound => {
+        sound.pause();
+        sound.audio.currentTime = 0;
+    });
+}
+
 function isMobileDevice() {
     return window.innerWidth < 1060;
 }
@@ -33,13 +68,7 @@ function startGame() {
     if (shouldShowRotateOverlay()) return;
 
     startScreen.stop();
-
-    world = new World(canvas, keyboard);
-    setupTouchControls(canvas, world, keyboard);
-    
-    world.start();
-
-    gameStarted = true;
+    startNewGame();
 }
 
 function isMobileOrTablet() {

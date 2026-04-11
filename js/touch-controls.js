@@ -5,12 +5,12 @@ function isMobileGameControls() {
     const shortSide = Math.min(vw, vh);
     const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-    return isTouch && shortSide <= 600;
+    return isTouch && shortSide <= 1060;
 }
 
-    /**
-    * Sets up touch input handling for mobile gameplay
-     */
+/**
+* Sets up touch input handling for mobile gameplay
+ */
 function setupTouchControls(canvas, world, keyboard) {
     canvas.addEventListener('touchstart', (e) => {
         handleTouch(e, canvas, world, keyboard);
@@ -43,7 +43,9 @@ function setupTouchControls(canvas, world, keyboard) {
 function handleTouch(event, canvas, world, keyboard) {
     if (!isMobileGameControls()) return;
 
-    event.preventDefault();
+    if (event.cancelable) {
+        event.preventDefault();
+    }
 
     keyboard.LEFT = false;
     keyboard.RIGHT = false;

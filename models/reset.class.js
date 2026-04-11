@@ -1,34 +1,38 @@
 class RestartController {
-    /**
-     * Handles restart button input for game over / win screens
-     */
     constructor(world, canvas) {
         this.world = world;
         this.canvas = canvas;
+        this.handleClick = (e) => this.onClick(e);
+        this.handleMove = (e) => this.onMove(e);
+        this.handleTouchStart = (e) => this.onTouchStart(e);
+        this.handleTouchMove = (e) => this.onTouchMove(e);
         this.registerEvents();
     }
 
-    /**
-   * Registers mouse and touch listeners for restart interaction
-   */
     registerEvents() {
-        this.canvas.addEventListener("click", (e) => this.onClick(e));
-        this.canvas.addEventListener("mousemove", (e) => this.onMove(e));
-
-        this.canvas.addEventListener("touchstart", (e) => {
-            e.preventDefault();
-            this.onClick(e.touches[0]);
-        }, { passive: false });
-
-        this.canvas.addEventListener("touchmove", (e) => {
-            e.preventDefault();
-            this.onMove(e.touches[0]);
-        }, { passive: false });
+        this.canvas.addEventListener("click", this.handleClick);
+        this.canvas.addEventListener("mousemove", this.handleMove);
+        this.canvas.addEventListener("touchstart", this.handleTouchStart, { passive: false });
+        this.canvas.addEventListener("touchmove", this.handleTouchMove, { passive: false });
     }
 
-    /**
-    * Handles restart button clicks for win/lose screens
-    */
+    onTouchStart(e) {
+        e.preventDefault();
+        this.onClick(e.touches[0]);
+    }
+
+    onTouchMove(e) {
+        e.preventDefault();
+        this.onMove(e.touches[0]);
+    }
+
+    destroy() {
+        this.canvas.removeEventListener("click", this.handleClick);
+        this.canvas.removeEventListener("mousemove", this.handleMove);
+        this.canvas.removeEventListener("touchstart", this.handleTouchStart);
+        this.canvas.removeEventListener("touchmove", this.handleTouchMove);
+    }
+
     onClick(e) {
         const { x, y } = this.getMousePos(e);
 
@@ -38,7 +42,7 @@ class RestartController {
                 x >= b.x && x <= b.x + b.width &&
                 y >= b.y && y <= b.y + b.height;
 
-            if (inside) location.reload();
+            if (inside) restartGame();
         }
 
         if (this.world.gameOver) {
@@ -47,13 +51,10 @@ class RestartController {
                 x >= b.x && x <= b.x + b.width &&
                 y >= b.y && y <= b.y + b.height;
 
-            if (inside) location.reload();
+            if (inside) restartGame();
         }
     }
 
-      /**
-     * Updates hover state for restart button
-     */
     onMove(e) {
         const { x, y } = this.getMousePos(e);
 
@@ -72,19 +73,13 @@ class RestartController {
         }
     }
 
-     /**
-     * Converts mouse/touch coordinates to scaled canvas space
-     */
     getMousePos(e) {
         const rect = this.canvas.getBoundingClientRect();
-
         const baseW = 720;
         const baseH = 480;
-
         const scaleX = rect.width / baseW;
         const scaleY = rect.height / baseH;
         const scale = Math.min(scaleX, scaleY);
-
         const offsetX = (rect.width - baseW * scale) / 2;
         const offsetY = (rect.height - baseH * scale) / 2;
 
