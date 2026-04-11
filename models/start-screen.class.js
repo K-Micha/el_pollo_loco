@@ -25,6 +25,9 @@ class StartScreen {
             this.canvas.style.cursor = "default";
         });
 
+        document.addEventListener("fullscreenchange", () => this.handleFullscreenChange());
+        document.addEventListener("webkitfullscreenchange", () => this.handleFullscreenChange());
+
         document.addEventListener("fullscreenchange", () => {
             if (document.fullscreenElement) {
                 this.resizeCanvasToFullscreen();
@@ -58,11 +61,43 @@ class StartScreen {
     * Toggles fullscreen mode for the canvas
     */
     toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            this.canvas.requestFullscreen();
+        const canvas = this.canvas;
+
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            if (canvas.requestFullscreen) {
+                canvas.requestFullscreen();
+            } else if (canvas.webkitRequestFullscreen) {
+                canvas.webkitRequestFullscreen();
+            }
         } else {
-            document.exitFullscreen();
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
         }
+    }
+
+    handleTouchStart(e) {
+        if (e.cancelable) e.preventDefault();
+
+        const touch = e.touches[0];
+        if (!touch) return;
+
+        this.handleClick({
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+    }
+
+    handleFullscreenChange() {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+            this.resizeCanvasToFullscreen();
+        } else {
+            this.resetCanvasSize();
+        }
+
+        this.draw();
     }
 
     resizeCanvasToFullscreen() {

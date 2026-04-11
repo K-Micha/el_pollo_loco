@@ -51,9 +51,9 @@ class UI {
         this.drawPopupText(px, py, pw, ph);
     }
 
-       /**
-     * Draws dimmed overlay and popup box
-     */
+    /**
+  * Draws dimmed overlay and popup box
+  */
     drawPopupBackground(px, py, pw, ph) {
         const ctx = this.ctx;
         const w = this.canvas.width;
@@ -80,9 +80,9 @@ class UI {
         ctx.strokeRect(px, py, pw, ph);
     }
 
-     /**
-     * Draws popup title and control instructions
-     */
+    /**
+    * Draws popup title and control instructions
+    */
     drawPopupText(px, py, pw, ph) {
         const ctx = this.ctx;
         const w = this.canvas.width;
@@ -112,20 +112,21 @@ class TouchUi {
         this.buttons = [];
     }
 
-       /**
-     * Updates mobile button layout based on screen size
-     */
+    /**
+  * Updates mobile button layout based on screen size
+  */
     updateButtons() {
         if (!isMobileGameControls()) {
             this.buttons = [];
             return;
         }
 
-        const w = this.world.baseWidth;
-        const h = this.world.baseHeight;
-        const size = 58;
-        const gap = 14;
-        const bottom = h - size - 21;
+        const rect = this.world.canvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+        const size = 86;
+        const gap = 25;
+        const bottom = h - size - 8;
 
         this.buttons = [
             {
@@ -163,9 +164,9 @@ class TouchUi {
         ];
     }
 
-     /**
-     * Draws all mobile control buttons
-     */
+    /**
+    * Draws all mobile control buttons
+    */
     draw(ctx) {
         if (!isMobileGameControls()) return;
 
@@ -174,22 +175,20 @@ class TouchUi {
         this.buttons.forEach(btn => {
             ctx.save();
 
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
-            ctx.shadowBlur = 8;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 3;
-
-            ctx.globalAlpha = 0.45;
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 16);
-            ctx.fill();
-
             ctx.shadowColor = 'transparent';
 
-            ctx.globalAlpha = 1;
+            ctx.beginPath();
+            ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 16);
+
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.stroke();
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.fill();
+
             ctx.fillStyle = '#fff';
-            ctx.font = '28px Arial';
+            ctx.font = '26px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(
