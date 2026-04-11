@@ -111,23 +111,28 @@ footer {
         flex: 1;
         display: flex;
         justify-content: center;
-        align-items: center;
-        padding: 0;
+        align-items: flex-start;
+
+        padding-top: 0;
+        padding-bottom: 12px;
+        
+
         overflow: hidden;
-
     }
 
-    h1 {
-        display: none !important;
-    }
+}
 
-    footer {
-        display: none !important;
-    }
+h1 {
+    display: none !important;
+}
 
-    header {
-        display: none !important;
-    }
+footer {
+    display: none !important;
+}
+
+header {
+    display: none !important;
+}
 }
 
 @media (max-width: 749px) {
