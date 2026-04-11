@@ -121,12 +121,11 @@ class TouchUi {
             return;
         }
 
-        const rect = this.world.canvas.getBoundingClientRect();
-        const w = rect.width;
-        const h = rect.height;
-        const size = 86;
+        const w = this.world.baseWidth;
+        const h = this.world.baseHeight;
+        const size = 85;
         const gap = 25;
-        const bottom = h - size - 8;
+        const bottom = h - size - 4;
 
         this.buttons = [
             {
