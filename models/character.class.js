@@ -10,6 +10,7 @@ class Character extends MovableObject {
     deathSoundPlayed = false;
     enemiesKilled = 0;
     bossesKilled = 0;
+    lastAnimation = '';
 
     /**
     * Initializes character, loads animations and starts loops
@@ -26,6 +27,12 @@ class Character extends MovableObject {
         this.animate();
     }
 
+    setAnimationState(state) {
+        if (this.lastAnimation !== state) {
+            this.currentImage = 0;
+            this.lastAnimation = state;
+        }
+    }
     /**
     * Starts movement and animation intervals
     */
@@ -81,18 +88,37 @@ class Character extends MovableObject {
     handleAnimation() {
         const idleTime = Date.now() - this.lastInputTime;
 
-        if (idleTime > 3000) this.isSleeping = true;
-        if (this.isSleeping) return this.playSleep();
+        if (idleTime > 3000) {
+            this.isSleeping = true;
+        }
+
+        if (this.isSleeping) {
+            this.setAnimationState('sleep');
+            return this.playSleep();
+        }
 
         if (this.isDead()) {
+            this.setAnimationState('dead');
             this.playDeathSoundOnce();
             return this.playDead();
         }
 
-        if (this.isHurt()) return this.playHurt();
-        if (this.isAboveGround()) return this.playJump();
-        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) return this.playWalk();
+        if (this.isHurt()) {
+            this.setAnimationState('hurt');
+            return this.playHurt();
+        }
 
+        if (this.isAboveGround()) {
+            this.setAnimationState('jump');
+            return this.playJump();
+        }
+
+        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            this.setAnimationState('walk');
+            return this.playWalk();
+        }
+
+        this.setAnimationState('idle');
         return this.playIdle();
     }
 

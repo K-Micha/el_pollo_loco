@@ -76,11 +76,11 @@ function createLevel1() {
             new Coin(startX + COIN_BOW[3].x, startY + COIN_BOW[3].y),
             new Coin(startX + COIN_BOW[4].x, startY + COIN_BOW[4].y),
 
-            new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150),
-            new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150),
-            new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150),
-            new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150),
-            new Coin(300 + Math.random() * 2000, 200 + Math.random() * 150)
+            new Coin(300 + Math.random() * 1800, 200 + Math.random() * 150),
+            new Coin(300 + Math.random() * 1800, 200 + Math.random() * 150),
+            new Coin(300 + Math.random() * 1800, 200 + Math.random() * 150),
+            new Coin(300 + Math.random() * 1800, 200 + Math.random() * 150),
+            new Coin(300 + Math.random() * 1800, 200 + Math.random() * 150)
         ],
 
         [

@@ -361,8 +361,10 @@ class World {
         const oldX = mo.x;
         const oldY = mo.y;
 
-        mo.x = Math.round(mo.x);
-        mo.y = Math.round(mo.y);
+        if (!(mo instanceof BackgroundObject)) {
+            mo.x = Math.round(mo.x);
+            mo.y = Math.round(mo.y);
+        }
 
         if (mo.otherDirection) this.flipImage(mo);
 
