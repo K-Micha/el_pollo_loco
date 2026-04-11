@@ -5,11 +5,54 @@ let keyboard = new Keyboard();
 let responsive = null;
 window.GAME_ZOOM = window.innerWidth < 1060 ? 0.8 : 1;
 
+let rotateOverlay = null;
+
+function ensureRotateOverlay() {
+    if (rotateOverlay) return rotateOverlay;
+
+    const existingOverlay = document.querySelector('.rotate-overlay');
+    if (existingOverlay) {
+        rotateOverlay = existingOverlay;
+        return rotateOverlay;
+    }
+
+    if (typeof injectRotateStyles === 'function') {
+        injectRotateStyles();
+    }
+
+    if (typeof createRotateOverlay !== 'function') {
+        return null;
+    }
+
+    rotateOverlay = createRotateOverlay();
+    document.body.appendChild(rotateOverlay);
+
+    return rotateOverlay;
+}
+
+function updateRotateOverlay() {
+    const canvas = document.getElementById('canvas');
+    if (!canvas) return;
+
+    const overlay = ensureRotateOverlay();
+    if (!overlay) return;
+
+    const rect = canvas.getBoundingClientRect();
+
+    overlay.style.width = `${rect.width}px`;
+    overlay.style.height = `${rect.height}px`;
+    overlay.style.left = `${rect.left + window.scrollX}px`;
+    overlay.style.top = `${rect.top + window.scrollY}px`;
+    overlay.style.display = shouldShowRotateOverlay() ? 'flex' : 'none';
+}
+
 /**
- * Initializes canvas and loads start screen
- */
+* Initializes canvas and loads start screen
+*/
 function init() {
     canvas = document.getElementById('canvas');
+
+    updateRotateOverlay();
 
     if (isMobileOrTablet()) {
         responsive = new ResponsiveCanvas(canvas);
@@ -19,6 +62,7 @@ function init() {
 
     startScreen.img.onload = () => {
         startScreen.draw();
+        updateRotateOverlay();
     };
 }
 
@@ -62,8 +106,8 @@ function isMobileDevice() {
 }
 
 /**
- * Starts the game and initializes world + controls
- */
+* Starts the game and initializes world + controls
+*/
 function startGame() {
     if (shouldShowRotateOverlay()) return;
 
@@ -88,8 +132,8 @@ function shouldShowRotateOverlay() {
 }
 
 /**
- * Updates world logic and collision checks
- */
+* Updates world logic and collision checks
+*/
 function updateWorld(world) {
     if (world.gameWon) return;
 
@@ -140,4 +184,16 @@ document.addEventListener("keyup", (e) => {
         keyboard.D = false;
     }
 
+});
+
+window.addEventListener('load', () => {
+    updateRotateOverlay();
+});
+
+window.addEventListener('resize', () => {
+    updateRotateOverlay();
+});
+
+window.addEventListener('orientationchange', () => {
+    updateRotateOverlay();
 });
