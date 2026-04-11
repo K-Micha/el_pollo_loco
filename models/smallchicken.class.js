@@ -1,5 +1,4 @@
 class SmallChicken extends MovableObject {
-
     y = 380;
     height = 40;
     width = 60;
@@ -15,10 +14,17 @@ class SmallChicken extends MovableObject {
         this.x = 300 + Math.random() * 1900;
         this.speed = 0.15 + Math.random() * 0.5;
 
+        this.offset = {
+            top: 15,
+            right: 10,
+            bottom: 25,
+            left: 10
+        };
+
         this.animate();
     }
 
-      /**
+    /**
      * Starts movement and animation loops
      */
     animate() {
@@ -30,7 +36,7 @@ class SmallChicken extends MovableObject {
         if (!this.isDeadEnemy) this.moveLeft();
     }
 
-     /**
+    /**
      * Plays walking or dead animation depending on state
      */
     handleAnimation() {
@@ -40,5 +46,4 @@ class SmallChicken extends MovableObject {
                 : Images.IMAGES_WALKING_SMAL
         );
     }
-
 }
