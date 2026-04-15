@@ -119,12 +119,40 @@ class World {
 
     checkBottlePickup() {
         this.level.bottles = this.level.bottles.filter(bottle => {
-            if (bottle.isColliding(this.character)) {
-                this.collectBottle(bottle);
-                return false;
-            }
-            return true;
+            if (!this.isBottleTouching(bottle)) return true;
+            this.collectBottle(bottle);
+            return false;
         });
+    }
+
+    isBottleTouching(bottle) {
+        const charHit = this.getCharBottleHitbox();
+        const bottleHit = this.getBottleHitbox(bottle);
+
+        return (
+            charHit.x + charHit.width >= bottleHit.x &&
+            charHit.y + charHit.height >= bottleHit.y &&
+            charHit.x <= bottleHit.x + bottleHit.width &&
+            charHit.y <= bottleHit.y + bottleHit.height
+        );
+    }
+
+    getCharBottleHitbox() {
+        return {
+            x: this.character.x + 10,
+            y: this.character.y + 20,
+            width: this.character.width - 20,
+            height: this.character.height - 20
+        };
+    }
+
+    getBottleHitbox(bottle) {
+        return {
+            x: bottle.x + 18,
+            y: bottle.y + 14,
+            width: bottle.width - 80,
+            height: bottle.height - 28
+        };
     }
 
     collectBottle(bottle) {
