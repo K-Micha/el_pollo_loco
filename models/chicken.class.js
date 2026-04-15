@@ -1,25 +1,22 @@
-class Chicken extends MovableObject {
-    y = 360;
-    height = 60;
-    width = 80;
+class ChickenBase extends MovableObject {
 
-    /**
-     * Creates a chicken enemy with random position and speed
-     */
-    constructor() {
-        super().loadImage('assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png')
-        this.loadImages(Images.IMAGES_WALKING);
-        this.loadImages(Images.IMAGES_DEAD_CHICKEN);
+    constructor(config) {
+        super().loadImage(config.startImage);
+
+        this.loadImages(config.walkImages);
+        this.loadImages(config.deadImages);
 
         this.x = 300 + Math.random() * 1900;
-        this.speed = 0.15 + Math.random() * 0.4;
+        this.speed = config.minSpeed + Math.random() * config.speedRange;
 
-        this.offset = {
-            top: 25,
-            right: 12,
-            bottom: 40,
-            left: 12
-        };
+        this.y = config.y;
+        this.width = config.width;
+        this.height = config.height;
+
+        this.offset = config.offset;
+
+        this.walkImages = config.walkImages;
+        this.deadImages = config.deadImages;
 
         this.animate();
     }
@@ -30,16 +27,50 @@ class Chicken extends MovableObject {
     }
 
     handleMovement() {
-        if (!this.isDeadEnemy) {
-            this.moveLeft();
-        }
+        if (!this.isDeadEnemy) this.moveLeft();
     }
 
     handleAnimation() {
-        if (this.isDeadEnemy) {
-            this.playAnimation(Images.IMAGES_DEAD_CHICKEN);
-        } else {
-            this.playAnimation(Images.IMAGES_WALKING);
-        }
+        this.playAnimation(
+            this.isDeadEnemy ? this.deadImages : this.walkImages
+        );
+    }
+}
+
+class Chicken extends ChickenBase {
+    constructor() {
+        super({
+            startImage: 'assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
+            walkImages: Images.IMAGES_WALKING,
+            deadImages: Images.IMAGES_DEAD_CHICKEN,
+
+            y: 360,
+            width: 80,
+            height: 60,
+
+            minSpeed: 0.15,
+            speedRange: 0.4,
+
+            offset: { top: 25, right: 12, bottom: 40, left: 12 }
+        });
+    }
+}
+
+class SmallChicken extends ChickenBase {
+    constructor() {
+        super({
+            startImage: 'assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
+            walkImages: Images.IMAGES_WALKING_SMAL,
+            deadImages: Images.IMAGES_DEAD_SMAL,
+
+            y: 380,
+            width: 60,
+            height: 40,
+
+            minSpeed: 0.15,
+            speedRange: 0.5,
+
+            offset: { top: 15, right: 10, bottom: 25, left: 10 }
+        });
     }
 }

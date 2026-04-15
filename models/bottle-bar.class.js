@@ -3,14 +3,14 @@ class BottleBar extends DrawableObject {
     collected = 0;
     total = 9;
 
-     /**
-     * Initializes the bottle UI bar
-     */
+    /**
+    * Initializes the bottle UI bar
+    */
     constructor() {
         super();
         this.loadImages(Images.BOTTLE_BAR);
-        this.x = 30;    
-        this.y = 0;   
+        this.x = 30;
+        this.y = 0;
         this.width = 200;
         this.height = 60;
         this.setPercentage(0);
@@ -27,30 +27,37 @@ class BottleBar extends DrawableObject {
         this.img = this.imageCache[path];
     }
 
-      /**
-     * Draws the bar and its text
-     */
+    /**
+   * Draws the bar and its text
+   */
     draw(ctx) {
         super.draw(ctx);
         this.drawText(ctx);
     }
 
+    getTextValue() {
+        return `${this.collected}/${this.total}`;
+    }
+
+    getTextPosition() {
+        return {
+            x: this.x + this.width / 2,
+            y: this.y + this.height / 2 + 10.5
+        };
+    }
+
     drawText(ctx) {
+        const text = this.getTextValue();
+        const pos = this.getTextPosition();
+
         ctx.font = "22px Arial";
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
-        const text = `${this.collected}/${this.total}`;
-
-        const centerX = this.x + this.width / 2;
-        const centerY = this.y + this.height / 2 + 10.5;
-
         ctx.shadowColor = "black";
         ctx.shadowBlur = 4;
-
-        ctx.fillText(text, centerX, centerY);
-
+        ctx.fillText(text, pos.x, pos.y);
         ctx.shadowBlur = 0;
     }
 

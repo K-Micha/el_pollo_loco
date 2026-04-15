@@ -50,29 +50,33 @@ class ResponsiveCanvas {
     /**
    * Recalculates canvas size and rotation state
    */
-    update() {
+    getAvailableSize() {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
         const isMobile = vw < 1060;
         const isLandscape = vw > vh;
 
-        let availableWidth = vw;
-        let availableHeight = vh;
+        let w = vw;
+        let h = isLandscape ? vh : vh - 60;
 
-        if (!isLandscape) availableHeight -= 60;
-
-        if (isMobile && isLandscape) {
-            availableWidth -= 10;
-            availableHeight -= 10;
-        } else if (isMobile) {
-            availableWidth -= 20;
-            availableHeight -= 20;
+        if (isMobile) {
+            const pad = isLandscape ? 10 : 20;
+            w -= pad;
+            h -= pad;
         }
+        return { w, h };
+    }
 
-        const scale = Math.min(
-            availableWidth / this.baseWidth,
-            availableHeight / this.baseHeight
+    computeScale(w, h) {
+        return Math.min(
+            w / this.baseWidth,
+            h / this.baseHeight
         );
+    }
+
+    update() {
+        const { w, h } = this.getAvailableSize();
+        const scale = this.computeScale(w, h);
 
         const width = Math.max(1, Math.floor(this.baseWidth * scale));
         const height = Math.max(1, Math.floor(this.baseHeight * scale));
@@ -80,6 +84,7 @@ class ResponsiveCanvas {
         this.setCanvasSize(width, height);
         this.handleRotateState();
     }
+
 
     /**
    * Applies scaled width/height to canvas, wrapper and overlay

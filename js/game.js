@@ -7,15 +7,18 @@ window.GAME_ZOOM = window.innerWidth < 1060 ? 0.8 : 1;
 
 let rotateOverlay = null;
 
-function ensureRotateOverlay() {
+function getExistingRotateOverlay() {
     if (rotateOverlay) return rotateOverlay;
 
-    const existingOverlay = document.querySelector('.rotate-overlay');
-    if (existingOverlay) {
-        rotateOverlay = existingOverlay;
+    const existing = document.querySelector('.rotate-overlay');
+    if (existing) {
+        rotateOverlay = existing;
         return rotateOverlay;
     }
+    return null;
+}
 
+function initRotateOverlay() {
     if (typeof injectRotateStyles === 'function') {
         injectRotateStyles();
     }
@@ -26,9 +29,16 @@ function ensureRotateOverlay() {
 
     rotateOverlay = createRotateOverlay();
     document.body.appendChild(rotateOverlay);
-
     return rotateOverlay;
 }
+
+function ensureRotateOverlay() {
+    const existing = getExistingRotateOverlay();
+    if (existing) return existing;
+
+    return initRotateOverlay();
+}
+
 
 function updateRotateOverlay() {
     const canvas = document.getElementById('canvas');

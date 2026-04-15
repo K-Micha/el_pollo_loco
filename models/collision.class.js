@@ -95,19 +95,30 @@ class Collision {
             if (this.shouldSkipEnemy(enemy)) return;
             if (!char.isColliding(enemy)) return;
 
-            if (enemy instanceof Endboss) {
-                this.blockCharacter(world, enemy);
-            }
-
-            if (this.isStomp(world, enemy)) {
-                enemy.die();
-                return;
-            }
-
-            if (this.isFrontHit(char, enemy)) {
-                world.handleCharacterHit();
-            }
+            if (this.handleEndboss(world, enemy)) return;
+            if (this.handleStomp(world, enemy)) return;
+            this.handleFrontHit(world, char, enemy);
         });
+    }
+
+    static handleEndboss(world, enemy) {
+        if (!(enemy instanceof Endboss)) return false;
+
+        this.blockCharacter(world, enemy);
+        return true;
+    }
+
+    static handleStomp(world, enemy) {
+        if (!this.isStomp(world, enemy)) return false;
+
+        enemy.die();
+        return true;
+    }
+
+    static handleFrontHit(world, char, enemy) {
+        if (!this.isFrontHit(char, enemy)) return;
+
+        world.handleCharacterHit();
     }
 
     static isFrontHit(char, enemy) {

@@ -9,32 +9,45 @@ function isMobileGameControls() {
 }
 
 /**
-* Sets up touch input handling for mobile gameplay
+ * Sets up touch input handling for mobile gameplay
  */
 function setupTouchControls(canvas, world, keyboard) {
-    canvas.addEventListener('touchstart', (e) => {
+    setupTouchStart(canvas, world, keyboard);
+    setupTouchMove(canvas, world, keyboard);
+    setupTouchEnd(canvas, keyboard);
+    setupTouchCancel(canvas, keyboard);
+}
+
+function setupTouchStart(canvas, world, keyboard) {
+    canvas.addEventListener('touchstart', e => {
         handleTouch(e, canvas, world, keyboard);
     }, { passive: false });
+}
 
-    canvas.addEventListener('touchmove', (e) => {
+function setupTouchMove(canvas, world, keyboard) {
+    canvas.addEventListener('touchmove', e => {
         handleTouch(e, canvas, world, keyboard);
     }, { passive: false });
+}
 
+function setupTouchEnd(canvas, keyboard) {
     canvas.addEventListener('touchend', () => {
-        keyboard.LEFT = false;
-        keyboard.RIGHT = false;
-        keyboard.UP = false;
-        keyboard.SPACE = false;
-        keyboard.D = false;
+        resetTouchKeys(keyboard);
     });
+}
 
+function setupTouchCancel(canvas, keyboard) {
     canvas.addEventListener('touchcancel', () => {
-        keyboard.LEFT = false;
-        keyboard.RIGHT = false;
-        keyboard.UP = false;
-        keyboard.SPACE = false;
-        keyboard.D = false;
+        resetTouchKeys(keyboard);
     });
+}
+
+function resetTouchKeys(keyboard) {
+    keyboard.LEFT = false;
+    keyboard.RIGHT = false;
+    keyboard.UP = false;
+    keyboard.SPACE = false;
+    keyboard.D = false;
 }
 
 /**
@@ -42,34 +55,51 @@ function setupTouchControls(canvas, world, keyboard) {
  */
 function handleTouch(event, canvas, world, keyboard) {
     if (!isMobileGameControls()) return;
+    if (event.cancelable) event.preventDefault();
 
-    if (event.cancelable) {
-        event.preventDefault();
-    }
-
-    keyboard.LEFT = false;
-    keyboard.RIGHT = false;
-    keyboard.UP = false;
-    keyboard.SPACE = false;
-    keyboard.D = false;
+    resetKeys(keyboard);
 
     const rect = canvas.getBoundingClientRect();
     const scaleX = world.baseWidth / rect.width;
     const scaleY = world.baseHeight / rect.height;
 
+    return processTouches(event, rect, scaleX, scaleY, world, keyboard);
+}
+
+function processTouches(event, rect, scaleX, scaleY, world, keyboard) {
+    const touches = event.touches;
     const buttons = world.touchUi.getButtons();
 
-    for (let i = 0; i < event.touches.length; i++) {
-        const touch = event.touches[i];
-        const x = (touch.clientX - rect.left) * scaleX;
-        const y = (touch.clientY - rect.top) * scaleY;
+    for (let i = 0; i < touches.length; i++) {
+        const { x, y } = getTouchPosition(touches[i], rect, scaleX, scaleY);
 
-        buttons.forEach(btn => {
-            if (isInsideButton(x, y, btn)) {
-                setTouchKey(keyboard, btn.key, true);
-            }
-        });
+        if (world.pauseMenu.handleClick(x, y)) return true;
+
+        handleButtonTouches(x, y, buttons, keyboard);
     }
+}
+
+function getTouchPosition(touch, rect, scaleX, scaleY) {
+    return {
+        x: (touch.clientX - rect.left) * scaleX,
+        y: (touch.clientY - rect.top) * scaleY
+    };
+}
+
+function handleButtonTouches(x, y, buttons, keyboard) {
+    buttons.forEach(btn => {
+        if (isInsideButton(x, y, btn)) {
+            setTouchKey(keyboard, btn.key, true);
+        }
+    });
+}
+
+function resetKeys(keyboard) {
+    keyboard.LEFT = false;
+    keyboard.RIGHT = false;
+    keyboard.UP = false;
+    keyboard.SPACE = false;
+    keyboard.D = false;
 }
 
 function isInsideButton(x, y, btn) {
@@ -89,37 +119,4 @@ function setTouchKey(keyboard, key, value) {
     }
 
     if (key === 'THROW') keyboard.D = value;
-}
-
-function handleTouch(event, canvas, world, keyboard) {
-    if (!isMobileGameControls()) return;
-
-    if (event.cancelable) {
-        event.preventDefault();
-    }
-
-    keyboard.LEFT = false;
-    keyboard.RIGHT = false;
-    keyboard.UP = false;
-    keyboard.SPACE = false;
-    keyboard.D = false;
-
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = world.baseWidth / rect.width;
-    const scaleY = world.baseHeight / rect.height;
-    const buttons = world.touchUi.getButtons();
-
-    for (let i = 0; i < event.touches.length; i++) {
-        const touch = event.touches[i];
-        const x = (touch.clientX - rect.left) * scaleX;
-        const y = (touch.clientY - rect.top) * scaleY;
-
-        if (world.pauseMenu.handleClick(x, y)) return;
-
-        buttons.forEach(btn => {
-            if (isInsideButton(x, y, btn)) {
-                setTouchKey(keyboard, btn.key, true);
-            }
-        });
-    }
 }

@@ -8,29 +8,42 @@ class Endboss extends MovableObject {
     attackCooldown = false;
     isHurtEnemy = false;
     currentAnimation = 'idle';
-     bossesKilled = 0;
+    bossesKilled = 0;
 
     /**
      * Applies damage, triggers aggro and handles death
      */
     hit(dmg) {
+        this.applyDamage(dmg);
+        this.updateLifeBar();
+        this.triggerAggroIfNeeded();
+        this.checkDeath();
+    }
+
+    applyDamage(dmg) {
         this.life -= dmg;
+        if (this.life < 0) this.life = 0;
+    }
+
+    updateLifeBar() {
         this.lifeBar.setPercentage(this.life);
+    }
 
-        if (!this.isAggro) {
-            this.speed = 3;
-            this.startAggro();
-        }
+    triggerAggroIfNeeded() {
+        if (this.isAggro) return;
 
-        if (this.life <= 0) {
-            this.life = 0;
-            this.isDeadEnemy = true;
-            SOUNDS.win.play()
+        this.speed = 3;
+        this.startAggro();
+    }
 
-            clearInterval(this.walkInterval);
-            this.removeAfterDelay();
+    checkDeath() {
+        if (this.life > 0) return;
 
-        }
+        this.isDeadEnemy = true;
+        SOUNDS.win.play();
+
+        clearInterval(this.walkInterval);
+        this.removeAfterDelay();
     }
 
     /**
@@ -63,9 +76,9 @@ class Endboss extends MovableObject {
 
     }
 
-      /**
-     * Starts aggressive chase behavior
-     */
+    /**
+   * Starts aggressive chase behavior
+   */
     startAggro() {
         this.isAggro = true;
 
@@ -82,14 +95,17 @@ class Endboss extends MovableObject {
         }, 1000 / 60);
     }
 
-      /**
-     * Initiates attack sequence with timing windows
-     */
+    /**
+   * Initiates attack sequence with timing windows
+   */
     startAttack() {
         if (this.isAttacking) return;
 
         this.isAttacking = true;
+        this.runAttackTimers();
+    }
 
+    runAttackTimers() {
         setTimeout(() => {
             if (this.isCharacterInAttackRange()) {
                 this.performAttack();
@@ -101,15 +117,16 @@ class Endboss extends MovableObject {
         }, 600);
     }
 
+
     performAttack() {
         const dmg = this.calculateDamage();
         this.world.character.hit(dmg);
         this.world.statusBar.setPercentage(this.world.character.life);
     }
 
-     /**
-     * Calculates damage based on overlap intensity
-     */
+    /**
+    * Calculates damage based on overlap intensity
+    */
     calculateDamage() {
         const overlap = this.getOverlapWithCharacter();
         const maxOverlap = 150;
@@ -146,23 +163,16 @@ class Endboss extends MovableObject {
      */
     animate() {
         setInterval(() => {
-
-            if (this.isDeadEnemy) {
-                this.playAnimation(Images.IMAGES_BOSS_DEAD);
-            }
-            else if (this.isHurtEnemy) {
-                this.playAnimation(Images.IMAGES_BOSS_HURT);
-            }
-            else if (this.isAttacking) {
-                this.playAnimation(Images.IMAGES_BOSS_ATTACK);
-            }
-            else if (this.isAggro) {
-                this.playAnimation(Images.IMAGES_BOSS_WALK);
-            }
-            else {
-                this.playAnimation(Images.IMAGES_BOSS_IDLE);
-            }
-
+            this.playAnimation(this.getAnimationImages());
         }, 100);
+    }
+    
+    getAnimationImages() {
+        if (this.isDeadEnemy) return Images.IMAGES_BOSS_DEAD;
+        if (this.isHurtEnemy) return Images.IMAGES_BOSS_HURT;
+        if (this.isAttacking) return Images.IMAGES_BOSS_ATTACK;
+        if (this.isAggro) return Images.IMAGES_BOSS_WALK;
+
+        return Images.IMAGES_BOSS_IDLE;
     }
 }

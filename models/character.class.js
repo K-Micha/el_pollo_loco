@@ -86,41 +86,57 @@ class Character extends MovableObject {
         * Selects and plays the correct animation state
         */
     handleAnimation() {
-        const idleTime = Date.now() - this.lastInputTime;
-
-        if (idleTime > 3000) {
-            this.isSleeping = true;
-        }
-
-        if (this.isSleeping) {
-            this.setAnimationState('sleep');
-            return this.playSleep();
-        }
-
-        if (this.isDead()) {
-            this.setAnimationState('dead');
-            this.playDeathSoundOnce();
-            return this.playDead();
-        }
-
-        if (this.isHurt()) {
-            this.setAnimationState('hurt');
-            return this.playHurt();
-        }
-
-        if (this.isAboveGround()) {
-            this.setAnimationState('jump');
-            return this.playJump();
-        }
-
-        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-            this.setAnimationState('walk');
-            return this.playWalk();
-        }
+        if (this.checkSleep()) return this.playSleep();
+        if (this.checkDead()) return this.playDead();
+        if (this.checkHurt()) return this.playHurt();
+        if (this.checkJump()) return this.playJump();
+        if (this.checkWalk()) return this.playWalk();
 
         this.setAnimationState('idle');
         return this.playIdle();
     }
+
+    checkSleep() {
+        const idleTime = Date.now() - this.lastInputTime;
+        if (idleTime > 3000) this.isSleeping = true;
+
+        if (this.isSleeping) {
+            this.setAnimationState('sleep');
+            return true;
+        }
+        return false;
+    }
+
+    checkDead() {
+        if (!this.isDead()) return false;
+
+        this.setAnimationState('dead');
+        this.playDeathSoundOnce();
+        return true;
+    }
+
+    checkHurt() {
+        if (!this.isHurt()) return false;
+
+        this.setAnimationState('hurt');
+        return true;
+    }
+
+    checkJump() {
+        if (!this.isAboveGround()) return false;
+
+        this.setAnimationState('jump');
+        return true;
+    }
+
+    checkWalk() {
+        const k = this.world.keyboard;
+        if (!k.RIGHT && !k.LEFT) return false;
+
+        this.setAnimationState('walk');
+        return true;
+    }
+
 
     playDeathSoundOnce() {
         if (!this.deathSoundPlayed) {

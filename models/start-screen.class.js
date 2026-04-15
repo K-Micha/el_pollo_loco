@@ -39,6 +39,7 @@ class StartScreen {
         canvas.addEventListener("mousemove", this.boundMove);
         canvas.addEventListener("mouseleave", this.boundLeave);
 
+        canvas.addEventListener("touchend", (e) => this.handleTouchEnd(e), { passive: false });
         document.addEventListener("fullscreenchange", this.boundFullscreenChange);
         document.addEventListener("webkitfullscreenchange", this.boundFullscreenChange);
         document.addEventListener("fullscreenchange", this.boundFullscreenResize);
@@ -75,36 +76,48 @@ class StartScreen {
     * Toggles fullscreen mode for the canvas
     */
     async toggleFullscreen() {
-        const elem = this.canvas;
-
         try {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-
-                if (elem.requestFullscreen) {
-                    await elem.requestFullscreen({ navigationUI: "hide" });
-                } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen();
-                }
-
-                if (screen.orientation?.lock) {
-                    try {
-                        await screen.orientation.lock("landscape");
-                    } catch (e) {
-                        console.log("orientation lock failed");
-                    }
-                }
-
+            if (this.isFullscreen()) {
+                await this.exitFullscreen();
             } else {
-
-                if (document.exitFullscreen) {
-                    await document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                }
+                await this.enterFullscreen();
             }
-
         } catch (err) {
             console.log('fullscreen failed:', err);
+        }
+    }
+
+    isFullscreen() {
+        return document.fullscreenElement || document.webkitFullscreenElement;
+    }
+
+    async enterFullscreen() {
+        const elem = this.canvas;
+
+        if (elem.requestFullscreen) {
+            await elem.requestFullscreen({ navigationUI: "hide" });
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        }
+
+        this.lockOrientation();
+    }
+
+    async exitFullscreen() {
+        if (document.exitFullscreen) {
+            await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+
+    async lockOrientation() {
+        if (!screen.orientation?.lock) return;
+
+        try {
+            await screen.orientation.lock("landscape");
+        } catch (e) {
+            console.log("orientation lock failed");
         }
     }
 
@@ -113,6 +126,18 @@ class StartScreen {
 
         const touch = e.touches[0];
         if (!touch) return;
+
+        this.handleClick({
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+    }
+
+    handleTouchEnd(e) {
+        if (e.cancelable) e.preventDefault();
+        if (e.changedTouches.length === 0) return;
+
+        const touch = e.changedTouches[0];
 
         this.handleClick({
             clientX: touch.clientX,
@@ -136,6 +161,15 @@ class StartScreen {
     }
 
     resizeCanvasToFullscreen() {
+        const { width, height } = this.getFullscreenCanvasSize();
+
+        this.canvas.width = 720;
+        this.canvas.height = 480;
+        this.canvas.style.width = width + "px";
+        this.canvas.style.height = height + "px";
+    }
+
+    getFullscreenCanvasSize() {
         const baseW = 720;
         const baseH = 480;
 
@@ -144,13 +178,10 @@ class StartScreen {
             window.innerHeight / baseH
         );
 
-        const width = Math.floor(baseW * scale);
-        const height = Math.floor(baseH * scale);
-
-        this.canvas.width = baseW;
-        this.canvas.height = baseH;
-        this.canvas.style.width = width + "px";
-        this.canvas.style.height = height + "px";
+        return {
+            width: Math.floor(baseW * scale),
+            height: Math.floor(baseH * scale)
+        };
     }
 
     resetCanvasSize() {
@@ -280,29 +311,40 @@ class StartScreen {
      * Updates hover state for the start button
      */
     handleMove(e) {
-        const { x, y } = this.getScaledPos(e);
+        const pos = this.getScaledPos(e);
+        this.updateHoverStates(pos);
+        this.updateCursor();
+    }
+
+    updateHoverStates(pos) {
         const w = this.canvas.width;
 
         const start = this.getStartTextRect();
+        this.isHoveringStart = this.isInside(pos, start);
 
-        const overStart =
-            x >= start.x && x <= start.x + start.width &&
-            y >= start.y && y <= start.y + start.height;
+        this.overInfo = this.isHit(pos.x, pos.y, 20, 20);
+        this.overSound = this.isHit(pos.x, pos.y, w - 140, 20);
+        this.overFullscreen = this.isHit(pos.x, pos.y, w - 70, 20);
+    }
 
-        const overInfo = this.isHit(x, y, 20, 20);
-        const overSound = this.isHit(x, y, w - 140, 20);
-        const overFullscreen = this.isHit(x, y, w - 70, 20);
-
-        this.isHoveringStart = overStart;
-
-        const isClickable =
-            overStart ||
-            overInfo ||
-            overSound ||
-            overFullscreen ||
+    updateCursor() {
+        const clickable =
+            this.isHoveringStart ||
+            this.overInfo ||
+            this.overSound ||
+            this.overFullscreen ||
             this.showInfoPopup;
 
-        this.canvas.style.cursor = isClickable ? "pointer" : "default";
+        this.canvas.style.cursor = clickable ? "pointer" : "default";
+    }
+
+    isInside(pos, rect) {
+        return (
+            pos.x >= rect.x &&
+            pos.x <= rect.x + rect.width &&
+            pos.y >= rect.y &&
+            pos.y <= rect.y + rect.height
+        );
     }
 
     /**
@@ -348,26 +390,42 @@ class StartScreen {
     }
 
     handleStartClick(x, y) {
-        const b = this.getStartTextRect();
+        const rect = this.getStartTextRect();
 
-        const inside =
-            x >= b.x && x <= b.x + b.width &&
-            y >= b.y && y <= b.y + b.height;
+        if (!this.isInsideStart(x, y, rect)) return false;
 
-        if (!inside) return false;
-
-        if (!gameStarted) {
-            gameStarted = true;
-            this.stop();
-            startGame();
-        }
-
+        this.startGameIfNeeded();
         return true;
+    }
+
+    isInsideStart(x, y, rect) {
+        return (
+            x >= rect.x &&
+            x <= rect.x + rect.width &&
+            y >= rect.y &&
+            y <= rect.y + rect.height
+        );
+    }
+
+    startGameIfNeeded() {
+        if (gameStarted) return;
+
+        gameStarted = true;
+        this.stop();
+        startGame();
     }
 
     getScaledPos(e) {
         const rect = this.canvas.getBoundingClientRect();
+        const { scale, offsetX, offsetY } = this.getCanvasTransform(rect);
 
+        return {
+            x: (e.clientX - rect.left - offsetX) / scale,
+            y: (e.clientY - rect.top - offsetY) / scale
+        };
+    }
+
+    getCanvasTransform(rect) {
         const baseW = 720;
         const baseH = 480;
 
@@ -375,12 +433,10 @@ class StartScreen {
         const scaleY = rect.height / baseH;
         const scale = Math.min(scaleX, scaleY);
 
-        const offsetX = (rect.width - baseW * scale) / 2;
-        const offsetY = (rect.height - baseH * scale) / 2;
-
         return {
-            x: (e.clientX - rect.left - offsetX) / scale,
-            y: (e.clientY - rect.top - offsetY) / scale
+            scale,
+            offsetX: (rect.width - baseW * scale) / 2,
+            offsetY: (rect.height - baseH * scale) / 2
         };
     }
 }

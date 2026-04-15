@@ -40,58 +40,97 @@ class RestartController {
     * Detects clicks on the restart button in win or game‑over screens
     */
     onClick(e) {
-        const { x, y } = this.getMousePos(e);
+        const pos = this.getMousePos(e);
 
-        if (this.world.gameWon) {
-            const b = this.world.winBackground.restartButton;
-            const inside =
-                x >= b.x && x <= b.x + b.width &&
-                y >= b.y && y <= b.y + b.height;
+        if (this.world.gameWon) this.handleWinClick(pos);
+        if (this.world.gameOver) this.handleGameOverClick(pos);
+    }
 
-            if (inside) restartGame();
-        }
+    handleWinClick(pos) {
+        const b = this.world.winBackground.restartButton;
 
-        if (this.world.gameOver) {
-            const b = this.world.gameOverBackground.restartButton;
-            const inside =
-                x >= b.x && x <= b.x + b.width &&
-                y >= b.y && y <= b.y + b.height;
+        if (this.isInsideButton(pos, b)) {
 
-            if (inside) restartGame();
+            this.world.gameWon = false;
+            this.world.gameOver = false;
+            this.world.winPhase = 1;
+            this.world.gameOverPhase = 1;
+
+            restartGame();
         }
     }
 
+    handleGameOverClick(pos) {
+        const b = this.world.gameOverBackground.restartButton;
+
+        if (this.isInsideButton(pos, b)) {
+
+            this.world.gameWon = false;
+            this.world.gameOver = false;
+            this.world.winPhase = 1;
+            this.world.gameOverPhase = 1;
+
+            restartGame();
+        }
+    }
+
+    isInsideButton(pos, btn) {
+        return (
+            pos.x >= btn.x &&
+            pos.x <= btn.x + btn.width &&
+            pos.y >= btn.y &&
+            pos.y <= btn.y + btn.height
+        );
+    }
+
     onMove(e) {
-        const { x, y } = this.getMousePos(e);
+        const pos = this.getMousePos(e);
 
-        if (this.world.gameWon) {
-            const b = this.world.winBackground.restartButton;
-            this.world.winBackground.isHoveringRestart =
-                x >= b.x && x <= b.x + b.width &&
-                y >= b.y && y <= b.y + b.height;
-        }
+        if (this.world.gameWon) this.updateWinHover(pos);
+        if (this.world.gameOver) this.updateGameOverHover(pos);
+    }
 
-        if (this.world.gameOver) {
-            const b = this.world.gameOverBackground.restartButton;
-            this.world.gameOverBackground.isHoveringRestart =
-                x >= b.x && x <= b.x + b.width &&
-                y >= b.y && y <= b.y + b.height;
-        }
+    updateWinHover(pos) {
+        const b = this.world.winBackground.restartButton;
+        this.world.winBackground.isHoveringRestart = this.isInsideButton(pos, b);
+    }
+
+    updateGameOverHover(pos) {
+        const b = this.world.gameOverBackground.restartButton;
+        this.world.gameOverBackground.isHoveringRestart = this.isInsideButton(pos, b);
+    }
+
+    isInsideButton(pos, btn) {
+        return (
+            pos.x >= btn.x &&
+            pos.x <= btn.x + btn.width &&
+            pos.y >= btn.y &&
+            pos.y <= btn.y + btn.height
+        );
     }
 
     getMousePos(e) {
         const rect = this.canvas.getBoundingClientRect();
-        const baseW = 720;
-        const baseH = 480;
-        const scaleX = rect.width / baseW;
-        const scaleY = rect.height / baseH;
-        const scale = Math.min(scaleX, scaleY);
-        const offsetX = (rect.width - baseW * scale) / 2;
-        const offsetY = (rect.height - baseH * scale) / 2;
+        const { scale, offsetX, offsetY } = this.getCanvasScale(rect);
 
         return {
             x: (e.clientX - rect.left - offsetX) / scale,
             y: (e.clientY - rect.top - offsetY) / scale
+        };
+    }
+
+    getCanvasScale(rect) {
+        const baseW = 720;
+        const baseH = 480;
+
+        const scaleX = rect.width / baseW;
+        const scaleY = rect.height / baseH;
+        const scale = Math.min(scaleX, scaleY);
+
+        return {
+            scale,
+            offsetX: (rect.width - baseW * scale) / 2,
+            offsetY: (rect.height - baseH * scale) / 2
         };
     }
 }

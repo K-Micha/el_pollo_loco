@@ -1,19 +1,16 @@
 class GameOverBackground {
     constructor() {
-        this.layers = [
-            new BackgroundObject('assets/img/5_background/layers/air.png', 0),
-            new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 0),
-            new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 0),
-            new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 0)
-        ];
+        this.layers = Images.IMAGES_GAMEOVER_BG.map(path =>
+            new BackgroundObject(path, 0)
+        );
 
         this.restartButton = { x: 0, y: 0, width: 160, height: 50 };
         this.isHoveringRestart = false;
     }
 
-     /**
-     * Draws background layers and restart button when active
-     */
+    /**
+    * Draws background layers and restart button when active
+    */
     draw(ctx, world) {
         this.layers.forEach(l => l.draw(ctx));
 
@@ -22,30 +19,48 @@ class GameOverBackground {
         }
     }
 
-     /**
-     * Draws the restart button with hover styling
-     */
+    /**
+    * Draws the restart button with hover styling
+    */
     drawRestart(ctx) {
-        const x = 360;
-        const y = 480 / 2 + 120;
+        const { x, y } = this.getRestartPosition();
+        this.setRestartButton(x, y);
+        this.drawRestartText(ctx, x, y);
+    }
 
-        this.restartButton = { x: x - 80, y: y - 25, width: 160, height: 50 };
+    getRestartPosition() {
+        return {
+            x: 360,
+            y: 240 + 120
+        };
+    }
+
+    setRestartButton(x, y) {
+        this.restartButton = {
+            x: x - 80,
+            y: y - 25,
+            width: 160,
+            height: 50
+        };
+    }
+
+    drawRestartText(ctx, x, y) {
+        const hover = this.isHoveringRestart;
 
         ctx.font = "28px Arial";
         ctx.textAlign = "center";
-
-        ctx.lineWidth = this.isHoveringRestart ? 7 : 6;
-        ctx.strokeStyle = this.isHoveringRestart ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.6)";
-        ctx.fillStyle = this.isHoveringRestart ? "#ffe066" : "#ffd700";
+        ctx.lineWidth = hover ? 7 : 6;
+        ctx.strokeStyle = hover ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.6)";
+        ctx.fillStyle = hover ? "#ffe066" : "#ffd700";
 
         ctx.strokeText("Restart", x, y);
         ctx.fillText("Restart", x, y);
     }
 }
 
-    /**
-     * Loads and centers the game‑over image with fade/scale props
-     */
+/**
+ * Loads and centers the game‑over image with fade/scale props
+ */
 class GameOverImage extends DrawableObject {
     constructor() {
         super();
@@ -61,9 +76,9 @@ class GameOverImage extends DrawableObject {
         this.scale = 3;
     }
 
-      /**
-     * Draws the image with scaling and fade‑in transform
-     */
+    /**
+   * Draws the image with scaling and fade‑in transform
+   */
     draw(ctx) {
         ctx.save();
         ctx.globalAlpha = this.opacity;

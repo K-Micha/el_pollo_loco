@@ -66,16 +66,34 @@ class World {
     }
 
     bindPauseClick() {
-        this.canvas.addEventListener('click', (event) => {
-            const rect = this.canvas.getBoundingClientRect();
-            const scaleX = this.baseWidth / rect.width;
-            const scaleY = this.baseHeight / rect.height;
+        this.canvas.addEventListener('click', (e) => this.handlePauseClick(e));
+        this.canvas.addEventListener('touchend', (e) => this.handlePauseTouch(e), { passive: false });
+    }
 
-            const x = (event.clientX - rect.left) * scaleX;
-            const y = (event.clientY - rect.top) * scaleY;
+    handlePauseClick(event) {
+        const { x, y } = this.getScaledPointer(event);
+        this.pauseMenu.handleClick(x, y);
+    }
 
-            this.pauseMenu.handleClick(x, y);
-        });
+    handlePauseTouch(e) {
+        if (e.cancelable) e.preventDefault();
+
+        const touch = e.changedTouches[0];
+        if (!touch) return;
+
+        const { x, y } = this.getScaledPointer(touch);
+        this.pauseMenu.handleClick(x, y);
+    }
+
+    getScaledPointer(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.baseWidth / rect.width;
+        const scaleY = this.baseHeight / rect.height;
+
+        return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY
+        };
     }
 
     /**
@@ -90,8 +108,18 @@ class World {
     * Handles boss sound, win detection and win animation
     */
     tickEnemies() {
-        const boss = this.level.enemies.find(e => e instanceof Endboss);
+        const boss = this.getBoss();
 
+        this.updateBossSound(boss);
+        this.checkWinCondition(boss);
+        this.updateWinState();
+    }
+
+    getBoss() {
+        return this.level.enemies.find(e => e instanceof Endboss);
+    }
+
+    updateBossSound(boss) {
         if (boss && !boss.isDeadEnemy) {
             if (!this.bossSoundPlaying) {
                 SOUNDS.boss_sound.play();
@@ -103,11 +131,15 @@ class World {
                 this.bossSoundPlaying = false;
             }
         }
+    }
 
+    checkWinCondition(boss) {
         if (boss && boss.isDeadEnemy) {
             this.gameWon = true;
         }
+    }
 
+    updateWinState() {
         if (this.gameWon) {
             this.updateWinAnimation();
         }
@@ -177,19 +209,28 @@ class World {
     }
 
     collectBottle(bottle) {
+        this.playBottleSound();
+        this.incrementBottleCount();
+        this.updateBottleUI();
+        this.removeBottle(bottle);
+    }
+
+    playBottleSound() {
         SOUNDS.pickup.play();
+    }
 
+    incrementBottleCount() {
         this.bottlesCollected++;
+    }
 
-        this.bottleBar.setPercentage(
-            (this.bottlesCollected / this.totalBottles) * 100
-        );
+    updateBottleUI() {
+        const percentage = (this.bottlesCollected / this.totalBottles) * 100;
 
-        this.bottleBar.setBottles(
-            this.bottlesCollected,
-            this.totalBottles
-        );
+        this.bottleBar.setPercentage(percentage);
+        this.bottleBar.setBottles(this.bottlesCollected, this.totalBottles);
+    }
 
+    removeBottle(bottle) {
         bottle.markedForRemoval = true;
     }
 
@@ -224,16 +265,26 @@ class World {
     stop() {
         this.isDestroyed = true;
 
+        this.stopIntervalIfNeeded();
+        this.stopAnimationFrameIfNeeded();
+        this.destroyRestartControllerIfNeeded();
+    }
+
+    stopIntervalIfNeeded() {
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
+    }
 
+    stopAnimationFrameIfNeeded() {
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
+    }
 
+    destroyRestartControllerIfNeeded() {
         if (this.restartController) {
             this.restartController.destroy();
         }
@@ -256,12 +307,41 @@ class World {
         this.cleanupObjects();
     }
 
+    forceExitFullscreenIfMobileBug() {
+        if (!isMobileGameControls()) return;
+
+        const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+        if (!isFs) return;
+
+        try {
+            if (document.exitFullscreen) document.exitFullscreen();
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        } catch (e) {
+            console.log("Emergency fullscreen exit failed");
+        }
+    }
+
     /**
      * Handles scaling, camera transform and world/UI rendering
      */
     renderFrame() {
         this.clearCanvas();
 
+        const { scale, offsetX, offsetY } = this.calculateCanvasTransform();
+
+        this.ctx.save();
+        this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+
+        this.applyCameraTransform();
+        this.renderWorld();
+        this.resetCameraTransform();
+
+        this.renderUI();
+
+        this.ctx.restore();
+    }
+
+    calculateCanvasTransform() {
         const canvasWidth = this.canvas.width;
         const canvasHeight = this.canvas.height;
 
@@ -273,18 +353,15 @@ class World {
         const offsetX = (canvasWidth - this.baseWidth * scale) / 2;
         const offsetY = (canvasHeight - this.baseHeight * scale) / 2;
 
-        this.ctx.save();
-        this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+        return { scale, offsetX, offsetY };
+    }
 
+    applyCameraTransform() {
         this.ctx.translate(this.camera_x, 0);
+    }
 
-        this.renderWorld();
-
+    resetCameraTransform() {
         this.ctx.translate(-this.camera_x, 0);
-
-        this.renderUI();
-
-        this.ctx.restore();
     }
 
     /**
@@ -304,10 +381,14 @@ class World {
     }
 
     renderUI() {
-        this.drawUI();
-        this.pauseMenu.draw(this.ctx);
+
+        if (!this.gameWon && !this.gameOver) {
+            this.drawUI();
+            this.pauseMenu.draw(this.ctx);
+            this.touchUi.draw(this.ctx);
+        }
+
         this.drawGameStates();
-        this.touchUi.draw(this.ctx);
     }
 
     /**
@@ -315,17 +396,27 @@ class World {
     */
     drawGameStates() {
         if (this.gameOver) {
-            this.updateGameOverAnimation();
-            this.gameOverBackground.draw(this.ctx, this);
-            this.gameOverImage.draw(this.ctx);
+            this.drawGameOverState();
             return;
         }
 
         if (this.gameWon) {
-            this.updateWinAnimation();
-            this.winBackground.draw(this.ctx, this);
-            this.winImage.draw(this.ctx);
+            this.drawWinState();
         }
+    }
+
+    drawGameOverState() {
+        this.forceExitFullscreenIfMobileBug();
+        this.updateGameOverAnimation();
+        this.gameOverBackground.draw(this.ctx, this);
+        this.gameOverImage.draw(this.ctx);
+    }
+
+    drawWinState() {
+        this.forceExitFullscreenIfMobileBug();
+        this.updateWinAnimation();
+        this.winBackground.draw(this.ctx, this);
+        this.winImage.draw(this.ctx);
     }
 
     updateGameOverAnimation() {
@@ -341,14 +432,14 @@ class World {
         }
     }
 
-  toggleSound() {
-    SOUND_ENABLED = !SOUND_ENABLED;
-    saveSoundState();
+    toggleSound() {
+        SOUND_ENABLED = !SOUND_ENABLED;
+        saveSoundState();
 
-    if (!SOUND_ENABLED) {
-        stopAllSounds();
+        if (!SOUND_ENABLED) {
+            stopAllSounds();
+        }
     }
-}
 
     toggleFullscreen() {
         if (!document.fullscreenElement) {
@@ -363,15 +454,23 @@ class World {
         if (!this.gameWon) return;
 
         if (this.winPhase === 1) {
-            this.winImage.opacity = Math.min(this.winImage.opacity + 0.02, 1);
-            this.winImage.scale = Math.max(this.winImage.scale - 0.03, 1);
-
-            if (this.winImage.scale === 1) {
-                this.winPhase = 2;
-            }
+            this.animateWinPhaseOne();
         } else {
-            this.winImage.opacity = Math.max(this.winImage.opacity - 0.02, 0);
+            this.animateWinPhaseTwo();
         }
+    }
+
+    animateWinPhaseOne() {
+        this.winImage.opacity = Math.min(this.winImage.opacity + 0.02, 1);
+        this.winImage.scale = Math.max(this.winImage.scale - 0.03, 1);
+
+        if (this.winImage.scale === 1) {
+            this.winPhase = 2;
+        }
+    }
+
+    animateWinPhaseTwo() {
+        this.winImage.opacity = Math.max(this.winImage.opacity - 0.02, 0);
     }
 
     /**
@@ -430,20 +529,39 @@ class World {
         const oldX = mo.x;
         const oldY = mo.y;
 
+        this.roundPositionIfNeeded(mo);
+        this.applyFlipIfNeeded(mo);
+
+        mo.draw(this.ctx);
+
+        this.resetFlipIfNeeded(mo);
+        this.restoreOriginalPosition(mo, oldX, oldY);
+    }
+
+    roundPositionIfNeeded(mo) {
         if (!(mo instanceof BackgroundObject)) {
             mo.x = Math.round(mo.x);
             mo.y = Math.round(mo.y);
         }
+    }
 
-        if (mo.otherDirection) this.flipImage(mo);
+    applyFlipIfNeeded(mo) {
+        if (mo.otherDirection) {
+            this.flipImage(mo);
+        }
+    }
 
-        mo.draw(this.ctx);
+    resetFlipIfNeeded(mo) {
+        if (mo.otherDirection) {
+            this.flipImageBack(mo);
+        }
+    }
 
-        if (mo.otherDirection) this.flipImageBack(mo);
-
+    restoreOriginalPosition(mo, oldX, oldY) {
         mo.x = oldX;
         mo.y = oldY;
     }
+
 
     flipImage(mo) {
         this.ctx.save();

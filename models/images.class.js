@@ -3,6 +3,14 @@ class Images {
     * Central repository of all image asset paths
     */
 
+    static IMAGES_GAMEOVER_BG = [
+        'assets/img/5_background/layers/air.png',
+        'assets/img/5_background/layers/3_third_layer/1.png',
+        'assets/img/5_background/layers/2_second_layer/1.png',
+        'assets/img/5_background/layers/1_first_layer/1.png'
+    ];
+
+
     static IMAGES_CLOUD = [
         'assets/img/5_background/layers/4_clouds/1.png',
         'assets/img/5_background/layers/4_clouds/2.png'

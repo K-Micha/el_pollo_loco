@@ -20,9 +20,9 @@ class WinBackground extends DrawableObject {
         };
     }
 
-     /**
-     * Draws background, stats and restart button
-     */
+    /**
+    * Draws background, stats and restart button
+    */
     draw(ctx, world) {
         super.draw(ctx);
         this.drawStats(ctx, world);
@@ -30,29 +30,44 @@ class WinBackground extends DrawableObject {
     }
 
     drawRestart(ctx) {
+        const { x, y } = this.getRestartPosition();
+        this.updateRestartButton(x, y);
+
+        const styles = this.getRestartStyles();
+
         ctx.font = "28px Arial";
         ctx.textAlign = "center";
 
-        const x = this.x + this.width / 2 + 150;
-        const y = this.y + 200 + (5 * 40) + 40;
+        ctx.strokeStyle = styles.stroke;
+        ctx.lineWidth = styles.lineWidth;
+        ctx.strokeText("Restart", x, y);
 
+        ctx.fillStyle = styles.fill;
+        ctx.fillText("Restart", x, y);
+    }
+
+    getRestartPosition() {
+        return {
+            x: this.x + this.width / 2 + 150,
+            y: this.y + 200 + (5 * 40) + 40
+        };
+    }
+
+    updateRestartButton(x, y) {
         this.restartButton = {
             x: x - 80,
             y: y - 35,
             width: 160,
             height: 50
         };
+    }
 
-        const fill = this.isHoveringRestart ? "#ffe066" : "#ffd700";
-        const stroke = this.isHoveringRestart ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.6)";
-        const lineWidth = this.isHoveringRestart ? 7 : 6;
-
-        ctx.strokeStyle = stroke;
-        ctx.lineWidth = lineWidth;
-        ctx.strokeText("Restart", x, y);
-
-        ctx.fillStyle = fill;
-        ctx.fillText("Restart", x, y);
+    getRestartStyles() {
+        return {
+            fill: this.isHoveringRestart ? "#ffe066" : "#ffd700",
+            stroke: this.isHoveringRestart ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.6)",
+            lineWidth: this.isHoveringRestart ? 7 : 6
+        };
     }
 
     getStatsLines(world) {
@@ -84,9 +99,9 @@ class WinBackground extends DrawableObject {
         ctx.fillText("Restart", cx, cy);
     }
 
-       /**
-     * Sets text style for stats
-     */
+    /**
+  * Sets text style for stats
+  */
     setTextStyle(ctx) {
         ctx.fillStyle = "#ffd700";
         ctx.strokeStyle = "#000";
@@ -112,9 +127,9 @@ class WinBackground extends DrawableObject {
         ];
     }
 
-     /**
-     * Draws all stats lines with stroke + fill
-     */
+    /**
+    * Draws all stats lines with stroke + fill
+    */
     drawStats(ctx, world) {
         this.setTextStyle(ctx);
 
@@ -132,9 +147,9 @@ class WinBackground extends DrawableObject {
 
 class WinImage extends DrawableObject {
 
-       /**
-     * Initializes win image with fade/scale animation props
-     */
+    /**
+  * Initializes win image with fade/scale animation props
+  */
     constructor() {
         super();
         this.loadImage('assets/img/You won, you lost/You won A.png');
@@ -148,9 +163,9 @@ class WinImage extends DrawableObject {
         this.scale = 3;
     }
 
-     /**
-     * Draws win image with scaling + fade transform
-     */
+    /**
+    * Draws win image with scaling + fade transform
+    */
     draw(ctx) {
         ctx.save();
         ctx.globalAlpha = this.opacity;

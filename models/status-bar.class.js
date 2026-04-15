@@ -2,9 +2,9 @@ class StatusBar extends DrawableObject {
     percentage = 100;
     type = "life";
 
-     /**
-     * Initializes the status bar with default life images
-     */
+    /**
+    * Initializes the status bar with default life images
+    */
     constructor() {
         super();
         this.loadImages(Images.IMAGES);
@@ -15,9 +15,9 @@ class StatusBar extends DrawableObject {
         this.setPercentage(100);
     }
 
-     /**
-     * Updates percentage and selects correct bar image
-     */
+    /**
+    * Updates percentage and selects correct bar image
+    */
     setPercentage(percentage) {
         this.percentage = percentage;
         let Path = Images.IMAGES[this.resolvImageIndex()];
@@ -34,25 +34,36 @@ class StatusBar extends DrawableObject {
         return 0;
     }
 
-      /**
-     * Draws the text value (life %, coins, potions)
-     */
+    /**
+   * Draws the text value (life %, coins, potions)
+   */
     drawText(ctx) {
+        this.applyTextStyle(ctx);
+
+        const { text, x, y } = this.getCenteredTextData();
+        this.drawShadowedText(ctx, text, x, y);
+    }
+
+    applyTextStyle(ctx) {
         ctx.font = "22px Arial";
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
+    }
 
-        const text = this.getText();
+    getCenteredTextData() {
+        return {
+            text: this.getText(),
+            x: this.x + this.width / 2,
+            y: this.y + this.height / 2 + 10.5
+        };
+    }
 
-        const centerX = this.x + this.width / 2;
-
-        const centerY = this.y + this.height / 2 + 10.5;
-
+    drawShadowedText(ctx, text, x, y) {
         ctx.shadowColor = "black";
         ctx.shadowBlur = 4;
 
-        ctx.fillText(text, centerX, centerY);
+        ctx.fillText(text, x, y);
 
         ctx.shadowBlur = 0;
     }

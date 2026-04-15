@@ -1,3 +1,10 @@
+const ICONS = {
+    LEFT: ['◀', '<'],
+    RIGHT: ['▶', '>'],
+    JUMP: ['▲', '^'],
+    THROW: ['🧴', '*']
+};
+
 class UI {
     constructor(ctx, canvas) {
         this.ctx = ctx;
@@ -170,34 +177,39 @@ class TouchUi {
         if (!isMobileGameControls()) return;
 
         this.updateButtons();
+        this.buttons.forEach(btn => this.drawButton(ctx, btn));
+    }
 
-        this.buttons.forEach(btn => {
-            ctx.save();
+    drawButton(ctx, btn) {
+        ctx.save();
 
-            ctx.shadowColor = 'transparent';
+        ctx.shadowColor = 'transparent';
 
-            ctx.beginPath();
-            ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 16);
+        ctx.beginPath();
+        ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 16);
 
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.stroke();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.stroke();
 
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-            ctx.fill();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.fill();
 
-            ctx.fillStyle = '#fff';
-            ctx.font = '26px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(
-                btn.label,
-                btn.x + btn.width / 2,
-                btn.y + btn.height / 2
-            );
+        ctx.fillStyle = '#fff';
+        ctx.font = '26px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
 
-            ctx.restore();
-        });
+        const [primary, fallback] = ICONS[btn.key];
+        const icon = primary || fallback;
+
+        ctx.fillText(
+            icon,
+            btn.x + btn.width / 2,
+            btn.y + btn.height / 2
+        );
+
+        ctx.restore();
     }
 
     getButtons() {

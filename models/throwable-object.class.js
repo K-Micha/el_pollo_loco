@@ -16,50 +16,50 @@ class ThrowableObject extends MovableObject {
         this.img = this.imageCache[Images.BOTTLE_IMAGE[0]];
     }
 
-     /**
-     * Starts a throw from given position with upward force
-     */
+    /**
+    * Starts a throw from given position with upward force
+    */
     throw(x, y) {
         this.x = x;
         this.y = y;
         this.speedY = 30;
-        
+
 
         this.applyGravity();
         this.startThrowLoop();
     }
 
-     /**
-     * Starts interval loop for movement + animation
-     */
+    /**
+    * Starts interval loop for movement + animation
+    */
     startThrowLoop() {
         this.throwInterval = setInterval(() => this.updateThrow(), 25);
     }
 
-     /**
-     * Updates bottle movement, collision and animation state
-     */
+    /**
+    * Updates bottle movement, collision and animation state
+    */
     updateThrow() {
+        if (this.shouldBreakOnGround()) return this.breakOnGround();
+        this.handleThrowState();
+    }
 
-        if (this.y >= 360 && !this.isBroken) {
-            this.y = 360;
-            this.break();
-            return;
-        }
+    shouldBreakOnGround() {
+        return this.y >= 360 && !this.isBroken;
+    }
 
+    handleThrowState() {
         if (!this.isBroken) {
             this.x += 10 * this.direction;
             this.playAnimation(Images.BOTTLE_IMAGE);
-        }
-
-        else {
+        } else {
             this.playAnimation(Images.BOTTLE_SPLASH);
         }
     }
 
-     /**
-     * Plays break sound, switches to splash animation and schedules removal
-     */
+    /**
+    * Plays break sound, switches to splash animation and schedules removal
+    */
     break() {
         SOUNDS.break.play();
 
