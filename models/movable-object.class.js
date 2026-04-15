@@ -11,11 +11,13 @@ class MovableObject extends DrawableObject {
     isDeadEnemy = false;
     walkingSoundPlaying = false;
 
-     /**
-     * Applies gravity and vertical movement over time
-     */
+    /**
+    * Applies gravity and vertical movement over time
+    */
     applyGravity() {
         setInterval(() => {
+            if (this.world?.isPaused) return;
+
             if (this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
@@ -52,9 +54,9 @@ class MovableObject extends DrawableObject {
         }
     }
 
-      /**
-     * Removes object after a short delay
-     */
+    /**
+   * Removes object after a short delay
+   */
     removeAfterDelay() {
         setTimeout(() => {
             this.markedForRemoval = true;
@@ -102,18 +104,21 @@ class MovableObject extends DrawableObject {
     }
 
     moveRight() {
+        if (this.world?.isPaused) return;
         this.x += this.speed;
     }
 
     moveLeft() {
+        if (this.world?.isPaused) return;
         this.x -= this.speed;
-
     }
 
-     /**
-     * Plays next frame of an animation sequence
-     */
+    /**
+    * Plays next frame of an animation sequence
+    */
     playAnimation(images) {
+        if (this.world?.isPaused) return;
+
         let i = this.currentImage % images.length;
         let path = images[i];
         this.img = this.imageCache[path];

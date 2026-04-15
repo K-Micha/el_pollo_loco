@@ -24,6 +24,7 @@ class World {
     intervalId = null;
     animationFrameId = null;
     isDestroyed = false;
+    isPaused = false;
 
     /**
      * Initializes world, UI, controllers and references
@@ -43,6 +44,8 @@ class World {
 
         this.restartController = new RestartController(this, canvas);
         this.touchUi = new TouchUi(this);
+        this.pauseMenu = new PauseMenu(this);
+        this.bindPauseClick();
         this.throwController = new ThrowController(this);
 
         this.setWorld();
@@ -60,6 +63,19 @@ class World {
         this.statusBar = new StatusBar();
         this.coinBar = new CoinBar();
         this.bottleBar = new BottleBar();
+    }
+
+    bindPauseClick() {
+        this.canvas.addEventListener('click', (event) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const scaleX = this.baseWidth / rect.width;
+            const scaleY = this.baseHeight / rect.height;
+
+            const x = (event.clientX - rect.left) * scaleX;
+            const y = (event.clientY - rect.top) * scaleY;
+
+            this.pauseMenu.handleClick(x, y);
+        });
     }
 
     /**
@@ -103,7 +119,12 @@ class World {
     setWorld() {
         this.character.world = this;
 
+        this.level.enemies.forEach(enemy => {
+            enemy.world = this;
+        });
+
         const boss = this.level.enemies.find(e => e instanceof Endboss);
+
         if (boss) {
             boss.world = this;
             boss.lifeBar = new LifeBarBoss(boss);
@@ -112,7 +133,7 @@ class World {
 
     run() {
         this.intervalId = setInterval(() => {
-            if (this.isDestroyed) return;
+            if (this.isDestroyed || this.isPaused) return;
             updateWorld(this);
         }, 1000 / 60);
     }
@@ -150,7 +171,7 @@ class World {
         return {
             x: bottle.x + 18,
             y: bottle.y + 14,
-            width: bottle.width - 80,
+            width: bottle.width - 70,
             height: bottle.height - 28
         };
     }
@@ -284,6 +305,7 @@ class World {
 
     renderUI() {
         this.drawUI();
+        this.pauseMenu.draw(this.ctx);
         this.drawGameStates();
         this.touchUi.draw(this.ctx);
     }
@@ -317,6 +339,24 @@ class World {
                 this.gameOverPhase = 2;
             }
         }
+    }
+
+  toggleSound() {
+    SOUND_ENABLED = !SOUND_ENABLED;
+    saveSoundState();
+
+    if (!SOUND_ENABLED) {
+        stopAllSounds();
+    }
+}
+
+    toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            this.canvas.requestFullscreen();
+            return;
+        }
+
+        document.exitFullscreen();
     }
 
     updateWinAnimation() {

@@ -19,23 +19,29 @@ class StartScreen {
         this.isMuted = !SOUND_ENABLED;
         this.showInfoPopup = false;
 
-        canvas.addEventListener("click", (e) => this.handleClick(e));
-        canvas.addEventListener("mousemove", (e) => this.handleMove(e));
-        canvas.addEventListener("mouseleave", () => {
+        this.boundClick = (e) => this.handleClick(e);
+        this.boundMove = (e) => this.handleMove(e);
+        this.boundLeave = () => {
             this.canvas.style.cursor = "default";
-        });
+        };
 
-        document.addEventListener("fullscreenchange", () => this.handleFullscreenChange());
-        document.addEventListener("webkitfullscreenchange", () => this.handleFullscreenChange());
-
-        document.addEventListener("fullscreenchange", () => {
+        this.boundFullscreenChange = () => this.handleFullscreenChange();
+        this.boundFullscreenResize = () => {
             if (document.fullscreenElement) {
                 this.resizeCanvasToFullscreen();
             } else {
                 this.resetCanvasSize();
             }
             this.draw();
-        });
+        };
+
+        canvas.addEventListener("click", this.boundClick);
+        canvas.addEventListener("mousemove", this.boundMove);
+        canvas.addEventListener("mouseleave", this.boundLeave);
+
+        document.addEventListener("fullscreenchange", this.boundFullscreenChange);
+        document.addEventListener("webkitfullscreenchange", this.boundFullscreenChange);
+        document.addEventListener("fullscreenchange", this.boundFullscreenResize);
 
         this.loadAllImages([
             this.img,
@@ -55,44 +61,52 @@ class StartScreen {
     */
     stop() {
         clearInterval(this.loop);
+
+        this.canvas.removeEventListener("click", this.boundClick);
+        this.canvas.removeEventListener("mousemove", this.boundMove);
+        this.canvas.removeEventListener("mouseleave", this.boundLeave);
+
+        document.removeEventListener("fullscreenchange", this.boundFullscreenChange);
+        document.removeEventListener("webkitfullscreenchange", this.boundFullscreenChange);
+        document.removeEventListener("fullscreenchange", this.boundFullscreenResize);
     }
 
     /**
     * Toggles fullscreen mode for the canvas
     */
-async toggleFullscreen() {
-    const elem = this.canvas;
+    async toggleFullscreen() {
+        const elem = this.canvas;
 
-    try {
-        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        try {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
 
-            if (elem.requestFullscreen) {
-                await elem.requestFullscreen({ navigationUI: "hide" });
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            }
+                if (elem.requestFullscreen) {
+                    await elem.requestFullscreen({ navigationUI: "hide" });
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                }
 
-            if (screen.orientation?.lock) {
-                try {
-                    await screen.orientation.lock("landscape");
-                } catch (e) {
-                    console.log("orientation lock failed");
+                if (screen.orientation?.lock) {
+                    try {
+                        await screen.orientation.lock("landscape");
+                    } catch (e) {
+                        console.log("orientation lock failed");
+                    }
+                }
+
+            } else {
+
+                if (document.exitFullscreen) {
+                    await document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
                 }
             }
 
-        } else {
-
-            if (document.exitFullscreen) {
-                await document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            }
+        } catch (err) {
+            console.log('fullscreen failed:', err);
         }
-
-    } catch (err) {
-        console.log('fullscreen failed:', err);
     }
-}
 
     handleTouchStart(e) {
         if (e.cancelable) e.preventDefault();
@@ -106,20 +120,20 @@ async toggleFullscreen() {
         });
     }
 
-handleFullscreenChange() {
-    const isFullscreen =
-        document.fullscreenElement || document.webkitFullscreenElement;
+    handleFullscreenChange() {
+        const isFullscreen =
+            document.fullscreenElement || document.webkitFullscreenElement;
 
-    if (isFullscreen) {
-        document.body.style.backgroundColor = '#000';
-        this.resizeCanvasToFullscreen();
-    } else {
-        document.body.style.backgroundColor = '';
-        this.resetCanvasSize();
+        if (isFullscreen) {
+            document.body.style.backgroundColor = '#000';
+            this.resizeCanvasToFullscreen();
+        } else {
+            document.body.style.backgroundColor = '';
+            this.resetCanvasSize();
+        }
+
+        this.draw();
     }
-
-    this.draw();
-}
 
     resizeCanvasToFullscreen() {
         const baseW = 720;
@@ -344,6 +358,7 @@ handleFullscreenChange() {
 
         if (!gameStarted) {
             gameStarted = true;
+            this.stop();
             startGame();
         }
 

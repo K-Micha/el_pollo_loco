@@ -115,7 +115,7 @@ footer {
 
         padding-top: 0;
         padding-bottom: 12px;
-        
+
 
         overflow: hidden;
     }
@@ -133,7 +133,7 @@ footer {
 header {
     display: none !important;
 }
-}
+
 
 @media (max-width: 749px) {
 

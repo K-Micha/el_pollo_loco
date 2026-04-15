@@ -137,19 +137,19 @@ class Collision {
     /**
    * Checks if character is performing a stomp attack
    */
-static isStomp(world, enemy) {
-    const char = world.character;
-    const charBottom = char.y + char.height;
-    const charCenter = char.x + char.width / 2;
-    const enemyTop = enemy.y;
-    const stompHeight = enemy.height + 10;
+    static isStomp(world, enemy) {
+        const char = world.character;
+        const charBottom = char.y + char.height;
+        const charCenter = char.x + char.width / 2;
+        const enemyTop = enemy.y;
+        const stompHeight = enemy.height + 10;
 
-    return (
-        char.speedY < 0 &&
-        charBottom >= enemyTop &&
-        charBottom <= enemyTop + stompHeight &&
-        charCenter >= enemy.x + 10 &&
-        charCenter <= enemy.x + enemy.width - 10
-    );
-}
+        return (
+            char.speedY < 0 &&
+            charBottom >= enemyTop &&
+            charBottom <= enemyTop + stompHeight &&
+            charCenter >= enemy.x + 10 &&
+            charCenter <= enemy.x + enemy.width - 10
+        );
+    }
 }

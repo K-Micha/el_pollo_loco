@@ -90,3 +90,36 @@ function setTouchKey(keyboard, key, value) {
 
     if (key === 'THROW') keyboard.D = value;
 }
+
+function handleTouch(event, canvas, world, keyboard) {
+    if (!isMobileGameControls()) return;
+
+    if (event.cancelable) {
+        event.preventDefault();
+    }
+
+    keyboard.LEFT = false;
+    keyboard.RIGHT = false;
+    keyboard.UP = false;
+    keyboard.SPACE = false;
+    keyboard.D = false;
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = world.baseWidth / rect.width;
+    const scaleY = world.baseHeight / rect.height;
+    const buttons = world.touchUi.getButtons();
+
+    for (let i = 0; i < event.touches.length; i++) {
+        const touch = event.touches[i];
+        const x = (touch.clientX - rect.left) * scaleX;
+        const y = (touch.clientY - rect.top) * scaleY;
+
+        if (world.pauseMenu.handleClick(x, y)) return;
+
+        buttons.forEach(btn => {
+            if (isInsideButton(x, y, btn)) {
+                setTouchKey(keyboard, btn.key, true);
+            }
+        });
+    }
+}
