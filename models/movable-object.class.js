@@ -82,8 +82,8 @@ class MovableObject extends DrawableObject {
     /**
      * Applies damage and triggers game over if life reaches zero
      */
-    hit() {
-        this.life -= 10;
+    hit(damage = 10) {
+        this.life -= damage;
 
         if (this.life <= 0) {
             this.life = 0;

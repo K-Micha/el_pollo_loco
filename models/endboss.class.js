@@ -9,6 +9,8 @@ class Endboss extends MovableObject {
     isHurtEnemy = false;
     currentAnimation = 'idle';
     bossesKilled = 0;
+    rageSpeed = 4.5;
+    baseSpeed = 3;
 
     /**
      * Applies damage, triggers aggro and handles death
@@ -31,9 +33,23 @@ class Endboss extends MovableObject {
 
     triggerAggroIfNeeded() {
         if (this.isAggro) return;
-
-        this.speed = 3;
+        this.speed = this.baseSpeed;
         this.startAggro();
+    }
+
+    getOverlapFactor(overlap) {
+        return Math.min(overlap / 150, 1);
+    }
+
+    getRageBonus() {
+        if (this.life <= 30) return 0.8;
+        if (this.life <= 60) return 0.4;
+        return 0.2;
+    }
+
+    updateChaseSpeed() {
+        const distance = this.distanceToPlayer();
+        this.speed = distance > 220 ? this.rageSpeed : this.baseSpeed;
     }
 
     checkDeath() {
@@ -83,18 +99,16 @@ class Endboss extends MovableObject {
         this.isAggro = true;
 
         this.walkInterval = setInterval(() => {
+            this.updateChaseSpeed();
 
-            const distance = this.distanceToPlayer();
-
-            if (distance < this.attackRange) {
+            if (this.isCharacterInAttackRange()) {
                 this.startAttack();
-            } else {
-                this.moveLeft();
+                return;
             }
 
+            this.moveLeft();
         }, 1000 / 60);
     }
-
     /**
    * Initiates attack sequence with timing windows
    */
@@ -117,7 +131,6 @@ class Endboss extends MovableObject {
         }, 600);
     }
 
-
     performAttack() {
         const dmg = this.calculateDamage();
         this.world.character.hit(dmg);
@@ -129,11 +142,12 @@ class Endboss extends MovableObject {
     */
     calculateDamage() {
         const overlap = this.getOverlapWithCharacter();
-        const maxOverlap = 150;
-        const factor = Math.min(overlap / maxOverlap, 1);
+        const factor = this.getOverlapFactor(overlap);
+        const rageBonus = this.getRageBonus();
 
         const baseDamage = 15;
-        return baseDamage * (1 + factor * 0.5);
+
+        return baseDamage * (1 + factor * 0.5 + rageBonus);
     }
 
     getOverlapWithCharacter() {
@@ -166,7 +180,7 @@ class Endboss extends MovableObject {
             this.playAnimation(this.getAnimationImages());
         }, 100);
     }
-    
+
     getAnimationImages() {
         if (this.isDeadEnemy) return Images.IMAGES_BOSS_DEAD;
         if (this.isHurtEnemy) return Images.IMAGES_BOSS_HURT;
