@@ -3,8 +3,8 @@ class ThrowableObject extends MovableObject {
     markedForRemoval = false;
 
     /**
-     * Initializes throwable bottle with images and size
-     */
+    * Initializes throwable bottle with images and size
+    */
     constructor() {
         super();
         this.width = 50;
@@ -40,7 +40,7 @@ class ThrowableObject extends MovableObject {
     * Updates bottle movement, collision and animation state
     */
     updateThrow() {
-        if (this.shouldBreakOnGround()) return this.breakOnGround();
+        if (this.shouldBreakOnGround()) return this.break();
         this.handleThrowState();
     }
 
