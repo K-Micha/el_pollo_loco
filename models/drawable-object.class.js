@@ -37,7 +37,7 @@ class DrawableObject {
                 this.x, this.y, this.width, this.height
             );
         } else {
-            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+            ctx.drawImage(this.img, Math.floor(this.x), this.y, this.width, this.height);
         }
 
         if (this.drawText) {
