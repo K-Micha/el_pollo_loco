@@ -7,6 +7,8 @@ window.GAME_ZOOM = window.innerWidth < 1060 ? 0.8 : 1;
 
 let rotateOverlay = null;
 
+window.worldReady = false;
+
 /**
 * Returns an existing rotate overlay if present.
 */
@@ -145,6 +147,7 @@ function isMobileDevice() {
 * Starts the game if the rotate overlay is not visible.
 */
 function startGame() {
+    if (!window.worldReady) return;
     if (shouldShowRotateOverlay()) return;
 
     startScreen.stop();
@@ -247,6 +250,7 @@ document.addEventListener("keyup", (e) => {
 */
 window.addEventListener('load', () => {
     updateRotateOverlay();
+     window.worldReady = true;
 });
 
 /**
