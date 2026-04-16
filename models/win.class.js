@@ -29,6 +29,9 @@ class WinBackground extends DrawableObject {
         this.drawRestart(ctx);
     }
 
+    /**
+     *  Draws the restart text with hover styling.
+     */
     drawRestart(ctx) {
         const { x, y } = this.getRestartPosition();
         this.updateRestartButton(x, y);
@@ -46,6 +49,9 @@ class WinBackground extends DrawableObject {
         ctx.fillText("Restart", x, y);
     }
 
+    /**
+     * Returns the restart button text position.
+     */
     getRestartPosition() {
         return {
             x: this.x + this.width / 2 + 150,
@@ -53,6 +59,9 @@ class WinBackground extends DrawableObject {
         };
     }
 
+    /**
+     * Updates the restart button hitbox based on text position.
+     */
     updateRestartButton(x, y) {
         this.restartButton = {
             x: x - 80,
@@ -62,6 +71,9 @@ class WinBackground extends DrawableObject {
         };
     }
 
+    /**
+     * Returns fill and stroke styles depending on hover state.
+     */
     getRestartStyles() {
         return {
             fill: this.isHoveringRestart ? "#ffe066" : "#ffd700",
@@ -70,16 +82,9 @@ class WinBackground extends DrawableObject {
         };
     }
 
-    getStatsLines(world) {
-        return [
-            `Enemies killed: ${world.character.enemiesKilled}`,
-            `Bosses killed: ${world.character.bossesKilled}`,
-            `Health left: ${world.character.life}`,
-            `Bottles left: ${world.bottlesCollected}`,
-            `Coins collected: ${world.character.coins}`
-        ];
-    }
-
+    /**
+     * Draws the rectangular restart button variant
+     */
     drawRestartButton(ctx) {
         const b = this.restartButton;
 
@@ -110,6 +115,9 @@ class WinBackground extends DrawableObject {
         ctx.textAlign = "center";
     }
 
+    /**
+     * Returns the position where stats should be drawn.
+     */
     getStatsPosition() {
         return {
             x: this.x + this.width / 2 + 150,
@@ -117,6 +125,9 @@ class WinBackground extends DrawableObject {
         };
     }
 
+    /**
+     * Returns all win‑screen stats as formatted text lines.
+     */
     getStatsLines(world) {
         return [
             `Enemies killed: ${world.enemiesKilled}`,
