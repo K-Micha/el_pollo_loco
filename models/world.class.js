@@ -227,26 +227,26 @@ class World {
     }
 
     /**
-    *  Returns the character's bottle pickup hitbox.
+    * Returns the character's bottle pickup hitbox (tightened).
     */
     getCharBottleHitbox() {
         return {
-            x: this.character.x + 10,
-            y: this.character.y + 20,
-            width: this.character.width - 20,
-            height: this.character.height - 20
+            x: this.character.x + 20,
+            y: this.character.y + 30,
+            width: this.character.width - 70,
+            height: this.character.height - 90
         };
     }
 
     /**
-    * Returns the bottle's pickup hitbox.
+    * Returns the bottle's pickup hitbox (tightened).
     */
     getBottleHitbox(bottle) {
         return {
-            x: bottle.x + 18,
-            y: bottle.y + 14,
-            width: bottle.width - 70,
-            height: bottle.height - 28
+            x: bottle.x + 10,
+            y: bottle.y + 10,
+            width: bottle.width - 20,
+            height: bottle.height - 20
         };
     }
 
