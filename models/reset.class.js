@@ -54,8 +54,25 @@ class RestartController {
     onClick(e) {
         const pos = this.getMousePos(e);
 
-        if (this.world.gameWon) this.handleWinClick(pos);
-        if (this.world.gameOver) this.handleGameOverClick(pos);
+        if (this.world.gameWon) {
+            this.handleWinClick(pos);
+            this.handleHomeClick(pos);
+        }
+
+        if (this.world.gameOver) {
+            this.handleGameOverClick(pos);
+            this.handleHomeClick(pos);
+        }
+    }
+
+    /**
+     * Handles click detection for the Home button on win/game‑over screens.
+     */
+    handleHomeClick(pos) {
+        const b = this.world.winBackground.homeButton;
+        if (this.isInsideButton(pos, b)) {
+            window.location.href = "index.html";
+        }
     }
 
     /**

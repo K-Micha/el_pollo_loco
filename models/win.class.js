@@ -18,6 +18,14 @@ class WinBackground extends DrawableObject {
             width: 160,
             height: 50
         };
+
+        this.homeButton = {
+            x: 20,
+            y: 20,
+            width: 60,
+            height: 60
+        };
+
     }
 
     /**
@@ -35,6 +43,7 @@ class WinBackground extends DrawableObject {
     drawRestart(ctx) {
         const { x, y } = this.getRestartPosition();
         this.updateRestartButton(x, y);
+        this.drawHome(ctx);
 
         const styles = this.getRestartStyles();
 
@@ -47,6 +56,60 @@ class WinBackground extends DrawableObject {
 
         ctx.fillStyle = styles.fill;
         ctx.fillText("Restart", x, y);
+    }
+
+    /**
+    * Draws the Home button text with hover styling.
+    * Uses modular helpers for position, hitbox update and style retrieval.
+    */
+    drawHome(ctx) {
+        const { x, y } = this.getHomePosition();
+        this.updateHomeButton(x, y);
+
+        const styles = this.getHomeStyles();
+
+        ctx.font = "28px Arial";
+        ctx.textAlign = "center";
+
+        ctx.strokeStyle = styles.stroke;
+        ctx.lineWidth = styles.lineWidth;
+        ctx.strokeText("Home", x, y);
+
+        ctx.fillStyle = styles.fill;
+        ctx.fillText("Home", x, y);
+    }
+
+    /**
+    * Calculates the Home button's text center position.
+    */
+    getHomePosition() {
+        return {
+            x: this.homeButton.x + this.homeButton.width / 2,
+            y: this.homeButton.y + this.homeButton.height / 2 + 10
+        };
+    }
+
+    /**
+     *  Updates the Home button hitbox based on the rendered text center.
+     */
+    updateHomeButton(x, y) {
+        this.homeButton = {
+            x: x - 80,
+            y: y - 35,
+            width: 160,
+            height: 50
+        };
+    }
+
+    /**
+     * Mirrors Restart button styling for visual consistency.
+     */
+    getHomeStyles() {
+        return {
+            fill: this.isHoveringHome ? "#ffe066" : "#ffd700",
+            stroke: this.isHoveringHome ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.6)",
+            lineWidth: this.isHoveringHome ? 7 : 6
+        };
     }
 
     /**
@@ -155,6 +218,7 @@ class WinBackground extends DrawableObject {
             y += 40;
         }
     }
+
 }
 
 
