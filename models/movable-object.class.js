@@ -78,14 +78,18 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-    * Checks basic AABB collision with another object.
+    * Checks collision using optional offsets (safe for all objects).
     */
     isColliding(mo) {
-        return this.x + this.width > mo.x &&
-            this.y + this.height > mo.y &&
-            this.x < mo.x + mo.width &&
-            this.y < mo.y + mo.height;
+        const a = this.offset || { top: 0, right: 0, bottom: 0, left: 0 };
+        const b = mo.offset || { top: 0, right: 0, bottom: 0, left: 0 };
 
+        return (
+            this.x + this.width - a.right > mo.x + b.left &&
+            this.x + a.left < mo.x + mo.width - b.right &&
+            this.y + this.height - a.bottom > mo.y + b.top &&
+            this.y + a.top < mo.y + mo.height - b.bottom
+        );
     }
 
     /**

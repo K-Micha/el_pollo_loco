@@ -64,7 +64,7 @@ class Chicken extends ChickenBase {
             minSpeed: 0.15,
             speedRange: 0.4,
 
-            offset: { top: 15, right: 12, bottom: 40, left: 12 }
+            offset: { top: 10, right: 5, bottom: 25, left: 5 }
         });
     }
 }
@@ -86,7 +86,7 @@ class SmallChicken extends ChickenBase {
             minSpeed: 0.15,
             speedRange: 0.5,
 
-            offset: { top: 10, right: 10, bottom: 25, left: 10 }
+            offset: { top: 8, right: 4, bottom: 18, left: 4 }
         });
     }
 }

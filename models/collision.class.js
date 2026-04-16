@@ -142,8 +142,8 @@ class Collision {
     static isFrontHit(char, enemy) {
         const charCenter = char.x + char.width / 2;
 
-        const enemyBack = enemy.x + enemy.width * 0.30;
-        const enemyFront = enemy.x + enemy.width * 0.85;
+        const enemyBack = enemy.x + enemy.width * 0.10; 
+        const enemyFront = enemy.x + enemy.width * 0.90;
 
         return charCenter >= enemyBack && charCenter <= enemyFront;
     }
