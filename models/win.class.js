@@ -105,8 +105,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-  * Sets text style for stats
-  */
+    * Sets text style for stats
+    */
     setTextStyle(ctx) {
         ctx.fillStyle = "#ffd700";
         ctx.strokeStyle = "#000";
@@ -128,15 +128,17 @@ class WinBackground extends DrawableObject {
     /**
      * Returns all win‑screen stats as formatted text lines.
      */
+
     getStatsLines(world) {
         return [
             `Enemies killed: ${world.enemiesKilled}`,
             `Bosses killed: ${world.bossesKilled}`,
-            `Health left: ${world.character.life}`,
+            `Health left: ${Math.round(world.character.life)}`,
             `Bottles left: ${world.bottlesCollected}`,
             `Coins collected: ${world.character.coins}`
         ];
     }
+
 
     /**
     * Draws all stats lines with stroke + fill
