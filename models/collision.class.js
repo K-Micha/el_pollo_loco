@@ -66,7 +66,7 @@ class Collision {
         const dx = Math.abs(charCenterX - coinCenterX);
         const dy = Math.abs(charCenterY - coinCenterY);
 
-        return dx < 45 && dy < 70;
+        return dx < 30 && dy < 50;
     }
 
     /**
