@@ -140,10 +140,12 @@ class Collision {
      * Returns true if the collision is a frontal hit.
      */
     static isFrontHit(char, enemy) {
-        const charFront = char.x + char.width - 5;
-        const enemyFrontZone = enemy.x + enemy.width * 0.5;
+        const charCenter = char.x + char.width / 2;
 
-        return charFront <= enemyFrontZone;
+        const enemyBack = enemy.x + enemy.width * 0.30;
+        const enemyFront = enemy.x + enemy.width * 0.85;
+
+        return charCenter >= enemyBack && charCenter <= enemyFront;
     }
 
     /**

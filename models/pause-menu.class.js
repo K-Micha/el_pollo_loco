@@ -184,8 +184,6 @@ class PauseMenu {
         return true;
     }
 
-
-
     /**
      * Toggles fullscreen mode.
      */
