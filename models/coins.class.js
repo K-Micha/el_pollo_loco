@@ -23,6 +23,9 @@ class Coin extends MovableObject {
         setInterval(() => this.handleAnimation(), 100);
     }
 
+    /**
+     * Updates the coin animation.
+     */
     handleAnimation() {
         this.playAnimation(Images.COIN_ANIM);
     }
@@ -37,6 +40,9 @@ class Coin extends MovableObject {
             this.y + 30 + 40 > mo.y;
     }
 
+    /**
+     * Draws the coin's hitbox for debugging.
+     */
     drawBorder(ctx) {
         const hit = {
             x: this.x + 30,
@@ -71,6 +77,9 @@ class CoinBar extends DrawableObject {
         this.animate();
     }
 
+    /**
+     * Updates the displayed coin amount.
+     */
     setCoins(amount) {
         this.coins = amount;
     }

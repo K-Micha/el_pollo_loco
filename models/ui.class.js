@@ -6,11 +6,17 @@ const ICONS = {
 };
 
 class UI {
+    /**
+     * Creates a renderer with canvas and context references.
+     */
     constructor(ctx, canvas) {
         this.ctx = ctx;
         this.canvas = canvas;
     }
 
+    /**
+     * Creates a rounded rectangle path.
+     */
     roundedPath(x, y, w, h, r) {
         const ctx = this.ctx;
         ctx.beginPath();
@@ -26,6 +32,9 @@ class UI {
         ctx.closePath();
     }
 
+    /**
+     * Draws a filled rounded rectangle.
+     */
     roundedRect(x, y, w, h, r, fillStyle) {
         const ctx = this.ctx;
         ctx.fillStyle = fillStyle;
@@ -33,6 +42,9 @@ class UI {
         ctx.fill();
     }
 
+    /**
+     *  Applies title text styling.
+     */
     setTitleStyle() {
         const ctx = this.ctx;
         ctx.fillStyle = "#4a2500";
@@ -42,6 +54,9 @@ class UI {
         ctx.textAlign = "center";
     }
 
+    /**
+     * Applies body text styling.
+     */
     setBodyStyle() {
         const ctx = this.ctx;
         ctx.fillStyle = "#3a1a00";
@@ -180,6 +195,9 @@ class TouchUi {
         this.buttons.forEach(btn => this.drawButton(ctx, btn));
     }
 
+    /**
+     * Draws a rounded icon button with its assigned symbol.
+     */
     drawButton(ctx, btn) {
         ctx.save();
 
@@ -212,6 +230,9 @@ class TouchUi {
         ctx.restore();
     }
 
+    /**
+     * Returns the list of interactive buttons.
+     */
     getButtons() {
         return this.buttons;
     }

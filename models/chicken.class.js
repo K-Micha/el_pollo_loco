@@ -1,5 +1,9 @@
 class ChickenBase extends MovableObject {
 
+    /**
+     * Initializes the chicken with config values and animations.
+     * @param config 
+     */
     constructor(config) {
         super().loadImage(config.startImage);
 
@@ -21,15 +25,24 @@ class ChickenBase extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Starts movement and animation intervals.
+     */
     animate() {
         setInterval(() => this.handleMovement(), 1000 / 60);
         setInterval(() => this.handleAnimation(), 100);
     }
 
+    /**
+     * Handles leftward movement while alive.
+     */
     handleMovement() {
         if (!this.isDeadEnemy) this.moveLeft();
     }
 
+    /**
+     *  Plays walking or dead animation depending on state.
+     */
     handleAnimation() {
         this.playAnimation(
             this.isDeadEnemy ? this.deadImages : this.walkImages
@@ -57,6 +70,9 @@ class Chicken extends ChickenBase {
 }
 
 class SmallChicken extends ChickenBase {
+    /**
+     * Smaller chicken enemy with faster movement and reduced size.
+     */
     constructor() {
         super({
             startImage: 'assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',

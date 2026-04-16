@@ -87,10 +87,16 @@ class StartScreen {
         }
     }
 
+    /**
+     * Returns true if the game is currently in fullscreen mode.
+     */
     isFullscreen() {
         return document.fullscreenElement || document.webkitFullscreenElement;
     }
 
+    /**
+     * Enters fullscreen mode and locks device orientation.
+     */
     async enterFullscreen() {
         const elem = this.canvas;
 
@@ -103,6 +109,9 @@ class StartScreen {
         this.lockOrientation();
     }
 
+    /**
+     *  Exits fullscreen mode.
+     */
     async exitFullscreen() {
         if (document.exitFullscreen) {
             await document.exitFullscreen();
@@ -111,6 +120,9 @@ class StartScreen {
         }
     }
 
+    /**
+     * Locks device orientation to landscape if supported.
+     */
     async lockOrientation() {
         if (!screen.orientation?.lock) return;
 
@@ -121,6 +133,9 @@ class StartScreen {
         }
     }
 
+    /**
+     * Handles touch start and forwards it as a click event.
+     */
     handleTouchStart(e) {
         if (e.cancelable) e.preventDefault();
 
@@ -133,6 +148,9 @@ class StartScreen {
         });
     }
 
+    /**
+     * Handles touch end and forwards it as a click event.
+     */
     handleTouchEnd(e) {
         if (e.cancelable) e.preventDefault();
         if (e.changedTouches.length === 0) return;
@@ -145,6 +163,9 @@ class StartScreen {
         });
     }
 
+    /**
+     * Handles fullscreen changes and updates canvas layout.
+     */
     handleFullscreenChange() {
         const isFullscreen =
             document.fullscreenElement || document.webkitFullscreenElement;
@@ -160,6 +181,9 @@ class StartScreen {
         this.draw();
     }
 
+    /**
+     * Resizes the canvas to match fullscreen dimensions.
+     */
     resizeCanvasToFullscreen() {
         const { width, height } = this.getFullscreenCanvasSize();
 
@@ -169,6 +193,9 @@ class StartScreen {
         this.canvas.style.height = height + "px";
     }
 
+    /**
+     * Calculates scaled fullscreen canvas size.
+     */
     getFullscreenCanvasSize() {
         const baseW = 720;
         const baseH = 480;
@@ -184,6 +211,9 @@ class StartScreen {
         };
     }
 
+    /**
+     * Resets the canvas to its default size.
+     */
     resetCanvasSize() {
         this.canvas.width = 720;
         this.canvas.height = 480;
@@ -191,12 +221,18 @@ class StartScreen {
         this.canvas.style.height = "480px";
     }
 
+    /**
+     * Loads an image and returns the Image object.
+     */
     loadImage(path) {
         const img = new Image();
         img.src = path;
         return img;
     }
 
+    /**
+     * Waits until all images are fully loaded, then runs the callback.
+     */
     loadAllImages(images, callback) {
         let loaded = 0;
         images.forEach(img => {
@@ -207,6 +243,9 @@ class StartScreen {
         });
     }
 
+    /**
+     *  Draws a 48×48 icon at the given position.
+     */
     drawIcon(img, x, y) {
         const size = 48;
         this.ctx.drawImage(img, x, y, size, size);
@@ -250,13 +289,16 @@ class StartScreen {
         this.drawUI(w);
     }
 
+    /**
+     * Draws the background image stretched to the given size.
+     */
     drawBackground(w, h) {
         this.ctx.drawImage(this.img, 0, 0, w, h);
     }
 
     /**
-   * Draws info, sound and fullscreen icons
-   */
+    * Draws info, sound and fullscreen icons
+    */
     drawUI(w) {
         this.drawIcon(this.iconInfo, 20, 20);
         this.drawIcon(this.isMuted ? this.iconMute : this.iconVolume, w - 140, 20);
@@ -279,10 +321,16 @@ class StartScreen {
         ctx.fillText(text, x, y);
     }
 
+    /**
+     * Returns the start button text based on screen width.
+     */
     getStartText() {
         return window.innerWidth < 910 ? "START" : "START GAME";
     }
 
+    /**
+     * Toggles sound state and redraws the UI.
+     */
     toggleSound() {
         SOUND_ENABLED = !SOUND_ENABLED;
         this.isMuted = !SOUND_ENABLED;
@@ -303,6 +351,9 @@ class StartScreen {
         };
     }
 
+    /**
+     * Returns true if the point is inside the given hitbox.
+     */
     isHit(x, y, bx, by, bw = 48, bh = 48) {
         return x >= bx && x <= bx + bw && y >= by && y <= by + bh;
     }
@@ -316,6 +367,9 @@ class StartScreen {
         this.updateCursor();
     }
 
+    /**
+     * Updates hover states for all interactive UI elements.
+     */
     updateHoverStates(pos) {
         const w = this.canvas.width;
 
@@ -327,6 +381,9 @@ class StartScreen {
         this.overFullscreen = this.isHit(pos.x, pos.y, w - 70, 20);
     }
 
+    /**
+     * Updates the cursor based on current hover states.
+     */
     updateCursor() {
         const clickable =
             this.isHoveringStart ||
@@ -338,6 +395,9 @@ class StartScreen {
         this.canvas.style.cursor = clickable ? "pointer" : "default";
     }
 
+    /**
+     * Returns true if the position is inside the given rectangle.
+     */
     isInside(pos, rect) {
         return (
             pos.x >= rect.x &&
@@ -359,6 +419,9 @@ class StartScreen {
         if (this.handleStartClick(x, y)) return;
     }
 
+    /**
+     * Handles clicks on the info popup and toggles its visibility.
+     */
     handlePopupClick(x, y) {
         if (this.showInfoPopup) {
             this.showInfoPopup = false;
@@ -375,6 +438,9 @@ class StartScreen {
         return false;
     }
 
+    /**
+     * Handles clicks on sound and fullscreen icons.
+     */
     handleIconClick(x, y, w) {
         if (this.isHit(x, y, w - 140, 20)) {
             this.toggleSound();
@@ -389,6 +455,9 @@ class StartScreen {
         return false;
     }
 
+    /**
+     * Handles clicks on the start button.
+     */
     handleStartClick(x, y) {
         const rect = this.getStartTextRect();
 
@@ -398,6 +467,9 @@ class StartScreen {
         return true;
     }
 
+    /**
+     *  Returns true if the point is inside the start button area.
+     */
     isInsideStart(x, y, rect) {
         return (
             x >= rect.x &&
@@ -407,6 +479,9 @@ class StartScreen {
         );
     }
 
+    /**
+     *  Starts the game if it hasn't started yet.
+     */
     startGameIfNeeded() {
         if (gameStarted) return;
 
@@ -415,6 +490,9 @@ class StartScreen {
         startGame();
     }
 
+    /**
+     * Converts mouse/touch coordinates to scaled canvas coordinates.
+     */
     getScaledPos(e) {
         const rect = this.canvas.getBoundingClientRect();
         const { scale, offsetX, offsetY } = this.getCanvasTransform(rect);
@@ -425,6 +503,9 @@ class StartScreen {
         };
     }
 
+    /**
+     * Calculates canvas scale and offsets for responsive layout.
+     */
     getCanvasTransform(rect) {
         const baseW = 720;
         const baseH = 480;

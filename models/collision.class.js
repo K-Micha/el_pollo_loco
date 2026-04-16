@@ -15,6 +15,9 @@ class Collision {
         });
     }
 
+    /**
+     * Returns reduced hitbox for a coin.
+     */
     static getCoinHitbox(coin) {
         return {
             x: coin.x + 28,
@@ -24,6 +27,9 @@ class Collision {
         };
     }
 
+    /**
+     * Returns reduced hitbox for the character when collecting coins.
+     */
     static getCharacterCoinHitbox(char) {
         return {
             x: char.x + 20,
@@ -101,6 +107,9 @@ class Collision {
         });
     }
 
+    /**
+     *  Handles collision with the endboss.
+     */
     static handleEndboss(world, enemy) {
         if (!(enemy instanceof Endboss)) return false;
 
@@ -108,6 +117,9 @@ class Collision {
         return true;
     }
 
+    /**
+     *  Handles stomp kill on an enemy.
+     */
     static handleStomp(world, enemy) {
         if (!this.isStomp(world, enemy)) return false;
 
@@ -115,12 +127,18 @@ class Collision {
         return true;
     }
 
+    /**
+     * Handles frontal collision where the character gets hurt.
+     */
     static handleFrontHit(world, char, enemy) {
         if (!this.isFrontHit(char, enemy)) return;
 
         world.handleCharacterHit();
     }
 
+    /**
+     * Returns true if the collision is a frontal hit.
+     */
     static isFrontHit(char, enemy) {
         const charFront = char.x + char.width - 5;
         const enemyFrontZone = enemy.x + enemy.width * 0.5;
@@ -128,6 +146,9 @@ class Collision {
         return charFront <= enemyFrontZone;
     }
 
+    /**
+     * Returns true if enemy should be ignored (dead).
+     */
     static shouldSkipEnemy(enemy) {
         return enemy.isDeadEnemy;
     }

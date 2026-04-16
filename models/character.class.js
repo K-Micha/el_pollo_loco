@@ -27,12 +27,16 @@ class Character extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Updates animation state if it changed.
+     */
     setAnimationState(state) {
         if (this.lastAnimation !== state) {
             this.currentImage = 0;
             this.lastAnimation = state;
         }
     }
+
     /**
     * Starts movement and animation intervals
     */
@@ -57,6 +61,9 @@ class Character extends MovableObject {
 
     }
 
+    /**
+     * Plays walking sound with cooldown.
+     */
     handleWalkingSound() {
         const kb = this.world.keyboard;
         const isWalking = (kb.RIGHT || kb.LEFT) && !this.isAboveGround();
@@ -73,6 +80,9 @@ class Character extends MovableObject {
         }
     }
 
+    /**
+     * Selects and plays the correct animation state.
+     */
     updateIdleTimer() {
         const kb = this.world.keyboard;
 
@@ -83,8 +93,8 @@ class Character extends MovableObject {
     }
 
     /**
-        * Selects and plays the correct animation state
-        */
+    * Selects and plays the correct animation state
+    */
     handleAnimation() {
         if (this.checkSleep()) return this.playSleep();
         if (this.checkDead()) return this.playDead();
@@ -96,6 +106,10 @@ class Character extends MovableObject {
         return this.playIdle();
     }
 
+    /**
+     *  Checks if the character should enter sleep mode.
+     * @returns 
+     */
     checkSleep() {
         const idleTime = Date.now() - this.lastInputTime;
         if (idleTime > 3000) this.isSleeping = true;
@@ -107,6 +121,10 @@ class Character extends MovableObject {
         return false;
     }
 
+    /**
+     * Checks if the character is dead.
+     * @returns 
+     */
     checkDead() {
         if (!this.isDead()) return false;
 
@@ -115,6 +133,10 @@ class Character extends MovableObject {
         return true;
     }
 
+    /**
+     *  Checks if the character is hurt.
+     * @returns 
+     */
     checkHurt() {
         if (!this.isHurt()) return false;
 
@@ -122,6 +144,10 @@ class Character extends MovableObject {
         return true;
     }
 
+    /**
+     * Checks if the character is jumping.
+     * @returns 
+     */
     checkJump() {
         if (!this.isAboveGround()) return false;
 
@@ -129,6 +155,10 @@ class Character extends MovableObject {
         return true;
     }
 
+    /**
+     * Checks if the character is walking.
+     * @returns 
+     */
     checkWalk() {
         const k = this.world.keyboard;
         if (!k.RIGHT && !k.LEFT) return false;
@@ -137,7 +167,9 @@ class Character extends MovableObject {
         return true;
     }
 
-
+    /**
+     * Plays the death sound once.
+     */
     playDeathSoundOnce() {
         if (!this.deathSoundPlayed) {
             SOUNDS.lose.play();
@@ -160,7 +192,9 @@ class Character extends MovableObject {
         this.speedY = 30;
     }
 
-
+    /**
+     * Draws the character's hitbox for debugging.
+     */
     drawBorder(ctx) {
         /* ctx.strokeStyle = 'red'; */
         ctx.rect(
@@ -171,6 +205,10 @@ class Character extends MovableObject {
         );
         ctx.stroke();
     }
+
+    /**
+     * Handles character death and triggers game over.
+     */
     onDeath(world) {
         world.gameOver = true;
     }

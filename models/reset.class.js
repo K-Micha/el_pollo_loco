@@ -1,4 +1,7 @@
 class RestartController {
+    /**
+     * Initializes restart input handling and registers all events.
+     */
     constructor(world, canvas) {
         this.world = world;
         this.canvas = canvas;
@@ -19,16 +22,25 @@ class RestartController {
         this.canvas.addEventListener("touchmove", this.handleTouchMove, { passive: false });
     }
 
+    /**
+     * Handles touch start and forwards it as a click.
+     */
     onTouchStart(e) {
         e.preventDefault();
         this.onClick(e.touches[0]);
     }
 
+    /**
+     * Handles touch movement and forwards it as hover.
+     */
     onTouchMove(e) {
         e.preventDefault();
         this.onMove(e.touches[0]);
     }
 
+    /**
+     * Removes all registered event listeners.
+     */
     destroy() {
         this.canvas.removeEventListener("click", this.handleClick);
         this.canvas.removeEventListener("mousemove", this.handleMove);
@@ -46,6 +58,9 @@ class RestartController {
         if (this.world.gameOver) this.handleGameOverClick(pos);
     }
 
+    /**
+     * Handles restart click during win screen.
+     */
     handleWinClick(pos) {
         const b = this.world.winBackground.restartButton;
 
@@ -60,6 +75,9 @@ class RestartController {
         }
     }
 
+    /**
+     * Handles restart click during game‑over screen.
+     */
     handleGameOverClick(pos) {
         const b = this.world.gameOverBackground.restartButton;
 
@@ -74,6 +92,9 @@ class RestartController {
         }
     }
 
+    /**
+     * Returns true if the position is inside the button hitbox.
+     */
     isInsideButton(pos, btn) {
         return (
             pos.x >= btn.x &&
@@ -83,6 +104,9 @@ class RestartController {
         );
     }
 
+    /**
+     * Handles hover detection for win and game‑over screens.
+     */
     onMove(e) {
         const pos = this.getMousePos(e);
 
@@ -90,11 +114,17 @@ class RestartController {
         if (this.world.gameOver) this.updateGameOverHover(pos);
     }
 
+    /**
+     * Updates hover state for win screen.
+     */
     updateWinHover(pos) {
         const b = this.world.winBackground.restartButton;
         this.world.winBackground.isHoveringRestart = this.isInsideButton(pos, b);
     }
 
+    /**
+     * Updates hover state for game‑over screen.
+     */
     updateGameOverHover(pos) {
         const b = this.world.gameOverBackground.restartButton;
         this.world.gameOverBackground.isHoveringRestart = this.isInsideButton(pos, b);
@@ -109,6 +139,9 @@ class RestartController {
         );
     }
 
+    /**
+     * Converts mouse/touch coordinates to canvas coordinates.
+     */
     getMousePos(e) {
         const rect = this.canvas.getBoundingClientRect();
         const { scale, offsetX, offsetY } = this.getCanvasScale(rect);
@@ -119,6 +152,9 @@ class RestartController {
         };
     }
 
+    /**
+     *  Calculates canvas scale and offsets for responsive layout.
+     */
     getCanvasScale(rect) {
         const baseW = 720;
         const baseH = 480;

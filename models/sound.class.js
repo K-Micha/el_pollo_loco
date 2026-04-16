@@ -1,21 +1,33 @@
 let SOUND_ENABLED = false;
 
 class Sound {
+    /**
+     * Creates a sound instance with path and volume.
+     */
     constructor(path, volume) {
         this.audio = new Audio(path);
         this.audio.volume = volume;
     }
 
+    /**
+     * Plays the sound if sound is enabled.
+     */
     play() {
         if (!SOUND_ENABLED) return;
         this.audio.play();
     }
 
+    /**
+     * Pauses the sound.
+     */
     pause() {
         this.audio.pause();
     }
 }
 
+    /**
+     * Collection of all game sound effects.
+    */
 const SOUNDS = {
     pickup: new Sound('assets/audio/loot.wav', 0.5),
     jump: new Sound('assets/audio/jump.wav', 0.1),
@@ -29,6 +41,9 @@ const SOUNDS = {
 
 SOUNDS.boss_sound.audio.loop = true;
 
+    /**
+     *  Loads saved sound state from localStorage.
+     */
 function loadSoundState() {
     let savedState = localStorage.getItem('soundEnabled');
 
@@ -40,16 +55,25 @@ function loadSoundState() {
     SOUND_ENABLED = savedState === 'true';
 }
 
+    /**
+     *  Saves current sound state to localStorage.
+     */
 function saveSoundState() {
     localStorage.setItem('soundEnabled', SOUND_ENABLED);
 }
 
+    /**
+     * Toggles sound on/off and updates UI.
+     */
 function toggleSound() {
     SOUND_ENABLED = !SOUND_ENABLED;
     saveSoundState();
     updateSoundButton();
 }
 
+    /**
+     * Initializes world, canvas and sound state.
+     */
 function init() {
     loadSoundState();
     canvas = document.getElementById('canvas');
@@ -57,6 +81,9 @@ function init() {
     updateSoundButton();
 }
 
+    /**
+     * Stops all sounds and resets their playback position.
+     */
 function stopAllSounds() {
     Object.values(SOUNDS).forEach(sound => {
         sound.pause();
@@ -64,6 +91,9 @@ function stopAllSounds() {
     });
 }
 
+    /**
+     * Resets all keyboard input states.
+     */
 function resetKeyboard() {
     keyboard.LEFT = false;
     keyboard.RIGHT = false;
@@ -73,6 +103,9 @@ function resetKeyboard() {
     keyboard.D = false;
 }
 
+    /**
+     * lears all active intervals and timeouts.
+     */
 function clearAllGameIntervals() {
     for (let i = 1; i < 9999; i++) {
         clearInterval(i);
@@ -80,6 +113,9 @@ function clearAllGameIntervals() {
     }
 }
 
+    /**
+     *  Fully restarts the game and resets all systems.
+     */
 function restartGame() {
     stopAllSounds();
     clearAllGameIntervals();

@@ -13,6 +13,9 @@ class Cloud extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Starts continuous leftward movement.
+     */
     animate() {
         setInterval(() => this.moveLeft(), 1000 / 60);
     }

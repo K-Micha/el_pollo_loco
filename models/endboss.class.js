@@ -22,36 +22,57 @@ class Endboss extends MovableObject {
         this.checkDeath();
     }
 
+    /**
+     * Reduces boss life by damage amount.
+     */
     applyDamage(dmg) {
         this.life -= dmg;
         if (this.life < 0) this.life = 0;
     }
 
+    /**
+     * Updates the boss life bar UI.
+     */
     updateLifeBar() {
         this.lifeBar.setPercentage(this.life);
     }
 
+    /**
+     * Starts aggro mode if not already active.
+     */
     triggerAggroIfNeeded() {
         if (this.isAggro) return;
         this.speed = this.baseSpeed;
         this.startAggro();
     }
 
+    /**
+     * Returns normalized overlap factor for damage scaling.
+     */
     getOverlapFactor(overlap) {
         return Math.min(overlap / 150, 1);
     }
 
+    /**
+     * Returns rage bonus based on remaining life
+     */
     getRageBonus() {
         if (this.life <= 30) return 0.8;
         if (this.life <= 60) return 0.4;
         return 0.2;
     }
 
+    /**
+     *  Updates chase speed depending on distance to player.
+     */
     updateChaseSpeed() {
         const distance = this.distanceToPlayer();
         this.speed = distance > 220 ? this.rageSpeed : this.baseSpeed;
     }
 
+    /**
+     * Checks if boss is dead and triggers death sequence.
+     */
     checkDeath() {
         if (this.life > 0) return;
 
@@ -119,6 +140,9 @@ class Endboss extends MovableObject {
         this.runAttackTimers();
     }
 
+    /**
+     * Runs attack timing windows for hit detection.
+     */
     runAttackTimers() {
         setTimeout(() => {
             if (this.isCharacterInAttackRange()) {
@@ -131,6 +155,9 @@ class Endboss extends MovableObject {
         }, 600);
     }
 
+    /**
+     * Deals damage to the player.
+     */
     performAttack() {
         const dmg = this.calculateDamage();
         this.world.character.hit(dmg);
@@ -150,6 +177,9 @@ class Endboss extends MovableObject {
         return baseDamage * (1 + factor * 0.5 + rageBonus);
     }
 
+    /**
+     *  Returns horizontal overlap with the character.
+     */
     getOverlapWithCharacter() {
         const char = this.world.character;
 
@@ -159,6 +189,9 @@ class Endboss extends MovableObject {
         return Math.min(left, right);
     }
 
+    /**
+     * Returns true if the character is within attack range.
+     */
     isCharacterInAttackRange() {
         const char = this.world.character;
 
@@ -168,6 +201,9 @@ class Endboss extends MovableObject {
         return horizontal && vertical;
     }
 
+    /**
+     * Returns distance to the player.
+     */
     distanceToPlayer() {
         return Math.abs(this.x - this.world.character.x);
     }
@@ -181,6 +217,9 @@ class Endboss extends MovableObject {
         }, 100);
     }
 
+    /**
+     * Returns animation frames for the current state.
+     */
     getAnimationImages() {
         if (this.isDeadEnemy) return Images.IMAGES_BOSS_DEAD;
         if (this.isHurtEnemy) return Images.IMAGES_BOSS_HURT;

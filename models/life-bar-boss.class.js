@@ -19,10 +19,16 @@ class LifeBarBoss extends DrawableObject {
         this.updatePosition();
     }
 
+    /**
+     * Returns bar width based on screen size.
+     */
     getBarWidth() {
         return window.innerWidth < 1060 ? 160 : 200;
     }
 
+    /**
+     *  Returns right offset based on screen size.
+     */
     getRightOffset() {
         return window.innerWidth < 1060 ? 10 : 20;
     }
@@ -56,6 +62,9 @@ class LifeBarBoss extends DrawableObject {
         this.img = this.imageCache[path];
     }
 
+    /**
+     *  Resolves the correct image index based on percentage.
+     */
     resolveImageIndex() {
         if (this.percentage >= 100) return 5;
         if (this.percentage >= 80) return 4;
@@ -66,6 +75,9 @@ class LifeBarBoss extends DrawableObject {
         return 0;
     }
 
+    /**
+     * Draws the bar and its text if the boss is visible. 
+     */
     draw(ctx) {
         if (!this.isBossVisible()) return;
 

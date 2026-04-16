@@ -1,4 +1,7 @@
 class GameOverBackground {
+    /**
+     * Initializes the game‑over background and restart button.
+     */
     constructor() {
         this.layers = Images.IMAGES_GAMEOVER_BG.map(path =>
             new BackgroundObject(path, 0)
@@ -28,6 +31,9 @@ class GameOverBackground {
         this.drawRestartText(ctx, x, y);
     }
 
+    /**
+     * Returns the centered restart button position.
+     */
     getRestartPosition() {
         return {
             x: 360,
@@ -35,6 +41,9 @@ class GameOverBackground {
         };
     }
 
+    /**
+     * Updates restart button hitbox.
+     */
     setRestartButton(x, y) {
         this.restartButton = {
             x: x - 80,
@@ -44,6 +53,9 @@ class GameOverBackground {
         };
     }
 
+    /**
+     *  Draws the restart button text.
+     */
     drawRestartText(ctx, x, y) {
         const hover = this.isHoveringRestart;
 

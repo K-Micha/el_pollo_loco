@@ -24,6 +24,9 @@ class StatusBar extends DrawableObject {
         this.img = this.imageCache[Path];
     }
 
+    /**
+     * Returns the image index based on the current percentage.
+     */
     resolvImageIndex() {
         if (this.percentage >= 100) return 5;
         if (this.percentage >= 80) return 4;
@@ -44,6 +47,9 @@ class StatusBar extends DrawableObject {
         this.drawShadowedText(ctx, text, x, y);
     }
 
+    /**
+     *  Applies the default text style for UI labels.
+     */
     applyTextStyle(ctx) {
         ctx.font = "22px Arial";
         ctx.fillStyle = "white";
@@ -51,6 +57,9 @@ class StatusBar extends DrawableObject {
         ctx.textBaseline = "middle";
     }
 
+    /**
+     * Returns centered text and position data for rendering.
+     */
     getCenteredTextData() {
         return {
             text: this.getText(),
@@ -59,6 +68,9 @@ class StatusBar extends DrawableObject {
         };
     }
 
+    /**
+     * Draws text with a soft shadow for better readability.
+     */
     drawShadowedText(ctx, text, x, y) {
         ctx.shadowColor = "black";
         ctx.shadowBlur = 4;

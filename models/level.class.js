@@ -4,6 +4,9 @@ class Level {
     backgroundObjects;
     level_end_x = 720 * 3;
 
+    /**
+     *  Initializes the level with enemies, clouds, background, coins and bottles.
+     */
     constructor(enemies, clouds, backgroundObjects, coins, bottles) {
         this.enemies = enemies;
         this.clouds = clouds;

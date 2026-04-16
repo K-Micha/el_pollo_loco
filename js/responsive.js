@@ -38,6 +38,9 @@ class ResponsiveCanvas {
         this.wrapper.appendChild(this.overlay);
     }
 
+    /**
+   * Returns wrapper CSS styles.
+   */
     getWrapperStyles() {
         return {
             position: "relative",
@@ -67,6 +70,9 @@ class ResponsiveCanvas {
         return { w, h };
     }
 
+    /**
+     * Computes the scale factor based on available space.
+     */
     computeScale(w, h) {
         return Math.min(
             w / this.baseWidth,
@@ -74,6 +80,9 @@ class ResponsiveCanvas {
         );
     }
 
+    /**
+     * Updates canvas size, scale and rotation state.
+     */
     update() {
         const { w, h } = this.getAvailableSize();
         const scale = this.computeScale(w, h);
@@ -118,6 +127,9 @@ class ResponsiveCanvas {
         }
     }
 
+    /**
+     * Disables all game input keys.
+     */
     disableGameInput() {
         if (typeof keyboard !== "undefined") {
             keyboard.LEFT = false;
@@ -129,21 +141,30 @@ class ResponsiveCanvas {
         }
     }
 
+    /**
+     * Enables game input keys.
+     */
     enableGameInput() {
     }
 
+    /**
+     * Displays the rotate overlay.
+     */
     showOverlay() {
         this.overlay.style.display = "flex";
     }
 
+    /**
+     * Hides the rotate overlay.
+     */
     hideOverlay() {
         this.overlay.style.display = "none";
     }
 }
 
-/**
- * Determines if the game should force rotate‑overlay
- */
+    /**
+    * Determines if the game should force rotate‑overlay
+    */
 function shouldLockGameToRotate() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;

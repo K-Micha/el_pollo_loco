@@ -1,3 +1,6 @@
+    /**
+    * Defines the relative positions for the coin bow formation.
+    */
 const COIN_BOW = [
     { x: 0, y: 0 },
     { x: 50, y: -30 },
@@ -6,18 +9,27 @@ const COIN_BOW = [
     { x: 200, y: 0 }
 ];
 
+    /**
+    * Returns a random enemy instance (Chicken or SmallChicken).
+        */
 function randomEnemy() {
     const types = [Chicken, SmallChicken];
     const Type = types[Math.floor(Math.random() * types.length)];
     return new Type();
 }
 
+    /**
+    * Returns a randomly positioned bottle with a random variant.
+    */
 function randomBottle() {
     const x = 100 + Math.random() * 1800;
     const variant = Math.random() < 0.5 ? 'ground1' : 'ground2';
     return new Bottle(x, variant);
 }
 
+    /**
+    * Creates and returns Level 1 with enemies, clouds, background, coins and bottles.
+    */
 function createLevel1() {
     let startX = 300 + Math.random() * 1700;
     let startY = 120 + Math.random() * 40;

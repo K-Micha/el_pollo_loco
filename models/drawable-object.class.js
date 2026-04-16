@@ -7,7 +7,9 @@ class DrawableObject {
     imageCache = {};
     currentImage = 0;
 
-
+    /**
+     * Loads a single image.
+     */
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
@@ -43,6 +45,9 @@ class DrawableObject {
         }
     }
 
+    /**
+     * Draws the object's hitbox for debugging
+     */
     drawBorder(ctx) {
 
         if ([Character, Chicken, SmallChicken, Endboss]

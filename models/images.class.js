@@ -2,7 +2,6 @@ class Images {
     /**
     * Central repository of all image asset paths
     */
-
     static IMAGES_GAMEOVER_BG = [
         'assets/img/5_background/layers/air.png',
         'assets/img/5_background/layers/3_third_layer/1.png',

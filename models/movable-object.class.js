@@ -46,6 +46,9 @@ class MovableObject extends DrawableObject {
         }
     }
 
+    /**
+     * Marks the enemy as dead and schedules removal.
+     */
     die() {
         if (!this.isDeadEnemy) {
             this.isDeadEnemy = true;
@@ -63,6 +66,9 @@ class MovableObject extends DrawableObject {
         }, 500);
     }
 
+    /**
+     * Returns true if object is above ground level.
+     */
     isAboveGround() {
         if (this instanceof ThrowableObject) {
             return true;
@@ -71,6 +77,9 @@ class MovableObject extends DrawableObject {
         }
     }
 
+    /**
+     * Checks basic AABB collision with another object.
+     */
     isColliding(mo) {
         return this.x + this.width > mo.x &&
             this.y + this.height > mo.y &&
@@ -93,21 +102,33 @@ class MovableObject extends DrawableObject {
         }
     }
 
+    /**
+     * Returns true if recently hit.
+     */
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;
         timepassed = timepassed / 1000;
         return timepassed < 0.5;
     }
 
+    /**
+     * Returns true if life is zero.
+     */
     isDead() {
         return this.life == 0;
     }
 
+    /**
+     * Moves object to the right.
+     */
     moveRight() {
         if (this.world?.isPaused) return;
         this.x += this.speed;
     }
 
+    /**
+     * Moves object to the left.
+     */
     moveLeft() {
         if (this.world?.isPaused) return;
         this.x -= this.speed;
@@ -125,6 +146,9 @@ class MovableObject extends DrawableObject {
         this.currentImage++;
     }
 
+    /**
+     * Triggers a jump by setting vertical speed.
+     */
     jump() {
         this.speedY = 30;
     }
