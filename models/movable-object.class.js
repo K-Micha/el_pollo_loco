@@ -30,8 +30,8 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-     * Prevents chickens from overlapping by slowing them down
-     */
+    * Prevents chickens from overlapping by slowing them down
+    */
     checkCrowding(enemies) {
         if (!this.isChicken) return;
 
@@ -47,8 +47,8 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-     * Marks the enemy as dead and schedules removal.
-     */
+    * Marks the enemy as dead and schedules removal.
+    */
     die() {
         if (!this.isDeadEnemy) {
             this.isDeadEnemy = true;
@@ -58,8 +58,8 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-   * Removes object after a short delay
-   */
+    * Removes object after a short delay
+    */
     removeAfterDelay() {
         setTimeout(() => {
             this.markedForRemoval = true;
@@ -67,8 +67,8 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-     * Returns true if object is above ground level.
-     */
+    * Returns true if object is above ground level.
+    */
     isAboveGround() {
         if (this instanceof ThrowableObject) {
             return true;
@@ -78,8 +78,8 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-     * Checks basic AABB collision with another object.
-     */
+    * Checks basic AABB collision with another object.
+    */
     isColliding(mo) {
         return this.x + this.width > mo.x &&
             this.y + this.height > mo.y &&
@@ -89,8 +89,8 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-     * Applies damage and triggers game over if life reaches zero
-     */
+    * Applies damage and triggers game over if life reaches zero
+    */
     hit(damage = 10) {
         this.life -= damage;
 
@@ -103,8 +103,8 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-     * Returns true if recently hit.
-     */
+    * Returns true if recently hit.
+    */
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;
         timepassed = timepassed / 1000;
@@ -112,23 +112,23 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-     * Returns true if life is zero.
-     */
+    * Returns true if life is zero.
+    */
     isDead() {
         return this.life == 0;
     }
 
     /**
-     * Moves object to the right.
-     */
+    * Moves object to the right.
+    */
     moveRight() {
         if (this.world?.isPaused) return;
         this.x += this.speed;
     }
 
     /**
-     * Moves object to the left.
-     */
+    * Moves object to the left.
+    */
     moveLeft() {
         if (this.world?.isPaused) return;
         this.x -= this.speed;
@@ -147,8 +147,8 @@ class MovableObject extends DrawableObject {
     }
 
     /**
-     * Triggers a jump by setting vertical speed.
-     */
+    * Triggers a jump by setting vertical speed.
+    */
     jump() {
         this.speedY = 30;
     }

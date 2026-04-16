@@ -1,9 +1,9 @@
 class LifeBarBoss extends DrawableObject {
     percentage = 100;
 
-     /**
-     * Initializes boss life bar and positions it relative to the world
-     */
+    /**
+    * Initializes boss life bar and positions it relative to the world
+    */
     constructor(boss) {
         super();
         this.boss = boss;
@@ -20,30 +20,30 @@ class LifeBarBoss extends DrawableObject {
     }
 
     /**
-     * Returns bar width based on screen size.
-     */
+    * Returns bar width based on screen size.
+    */
     getBarWidth() {
         return window.innerWidth < 1060 ? 160 : 200;
     }
 
     /**
-     *  Returns right offset based on screen size.
-     */
+    *  Returns right offset based on screen size.
+    */
     getRightOffset() {
         return window.innerWidth < 1060 ? 10 : 20;
     }
 
-     /**
-     * Repositions the bar based on screen size and camera
-     */
+    /**
+    * Repositions the bar based on screen size and camera
+    */
     updatePosition() {
         this.width = this.getBarWidth();
         this.x = this.world.baseWidth - this.width - this.getRightOffset();
     }
 
     /**
-     * Checks if boss is currently visible on screen
-     */
+    * Checks if boss is currently visible on screen
+    */
     isBossVisible() {
         const bossScreenX = this.boss.x + this.world.camera_x;
 
@@ -53,9 +53,9 @@ class LifeBarBoss extends DrawableObject {
         );
     }
 
-     /**
-     * Updates life percentage and selects correct image frame
-     */
+    /**
+    * Updates life percentage and selects correct image frame
+    */
     setPercentage(percentage) {
         this.percentage = percentage;
         let path = Images.IMAGES_BOSS_LIFE[this.resolveImageIndex()];
@@ -63,8 +63,8 @@ class LifeBarBoss extends DrawableObject {
     }
 
     /**
-     *  Resolves the correct image index based on percentage.
-     */
+    *  Resolves the correct image index based on percentage.
+    */
     resolveImageIndex() {
         if (this.percentage >= 100) return 5;
         if (this.percentage >= 80) return 4;
@@ -76,8 +76,8 @@ class LifeBarBoss extends DrawableObject {
     }
 
     /**
-     * Draws the bar and its text if the boss is visible. 
-     */
+    * Draws the bar and its text if the boss is visible. 
+    */
     draw(ctx) {
         if (!this.isBossVisible()) return;
 
@@ -86,9 +86,9 @@ class LifeBarBoss extends DrawableObject {
         this.drawText(ctx);
     }
 
-     /**
-     * Draws percentage text centered on the bar
-     */
+    /**
+    * Draws percentage text centered on the bar
+    */
     drawText(ctx) {
         ctx.font = "22px Arial";
         ctx.fillStyle = "white";

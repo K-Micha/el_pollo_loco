@@ -8,16 +8,16 @@ class DrawableObject {
     currentImage = 0;
 
     /**
-     * Loads a single image.
-     */
+    * Loads a single image.
+    */
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
     }
 
     /**
-   * Preloads multiple images into the cache
-   */
+    * Preloads multiple images into the cache
+    */
     loadImages(imgCache) {
         imgCache.forEach((path) => {
             let img = new Image();
@@ -27,8 +27,8 @@ class DrawableObject {
     }
 
     /**
-   * Draws the object and optional text overlay
-   */
+    * Draws the object and optional text overlay
+    */
     draw(ctx) {
         if (this instanceof BackgroundObject) {
             ctx.drawImage(
@@ -46,8 +46,8 @@ class DrawableObject {
     }
 
     /**
-     * Draws the object's hitbox for debugging
-     */
+    * Draws the object's hitbox for debugging
+    */
     drawBorder(ctx) {
 
         if ([Character, Chicken, SmallChicken, Endboss]

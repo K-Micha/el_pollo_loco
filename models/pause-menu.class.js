@@ -8,8 +8,8 @@ class PauseMenu {
     }
 
     /**
-     * Loads one icon image.
-     */
+    * Loads one icon image.
+    */
     loadImage(path) {
         const img = new Image();
         img.src = path;
@@ -17,8 +17,8 @@ class PauseMenu {
     }
 
     /**
-     * Draws pause button and overlay menu.
-     */
+    * Draws pause button and overlay menu.
+    */
     draw(ctx) {
         ctx.imageSmoothingEnabled = false;
 
@@ -32,8 +32,8 @@ class PauseMenu {
     }
 
     /**
-     * Draws the pause button.
-     */
+    * Draws the pause button.
+    */
     drawPauseButton(ctx) {
         ctx.save();
         this.drawRoundBox(ctx, 450, 20, 40, 40, 10, 'rgba(0, 0, 0, 0.45)');
@@ -44,8 +44,8 @@ class PauseMenu {
     }
 
     /**
-     * Draws dark overlay.
-     */
+    * Draws dark overlay.
+    */
     drawOverlay(ctx) {
         ctx.save();
         ctx.fillStyle = 'rgba(0, 0, 0, 0.26)';
@@ -54,8 +54,8 @@ class PauseMenu {
     }
 
     /**
-     * Draws the main panel.
-     */
+    * Draws the main panel.
+    */
     drawPanel(ctx) {
         ctx.save();
         this.drawRoundBox(ctx, 200, 105, 320, 225, 16, 'rgba(240, 173, 63, 0.96)');
@@ -64,8 +64,8 @@ class PauseMenu {
     }
 
     /**
-     * Draws title text.
-     */
+    * Draws title text.
+    */
     drawTitle(ctx) {
         ctx.save();
         ctx.fillStyle = '#2d1b08';
@@ -76,8 +76,8 @@ class PauseMenu {
     }
 
     /**
-     * Draws all menu buttons.
-     */
+    * Draws all menu buttons.
+    */
     drawButtons(ctx) {
         this.drawTextButton(ctx, 245, 170, 230, 42, 'Resume');
         this.drawIconButton(ctx, 245, 222, 230, 42, this.getSoundLabel(), this.getSoundIcon());
@@ -85,8 +85,8 @@ class PauseMenu {
     }
 
     /**
-     * Draws one text-only button.
-     */
+    * Draws one text-only button.
+    */
     drawTextButton(ctx, x, y, w, h, text) {
         ctx.save();
         this.drawRoundBox(ctx, x, y, w, h, 10, 'rgba(255, 244, 215, 0.32)');
@@ -99,8 +99,8 @@ class PauseMenu {
     }
 
     /**
-     * Draws one button with text and right icon.
-     */
+    * Draws one button with text and right icon.
+    */
     drawIconButton(ctx, x, y, w, h, text, icon) {
         ctx.save();
         this.drawRoundBox(ctx, x, y, w, h, 10, 'rgba(255, 244, 215, 0.32)');
@@ -119,8 +119,8 @@ class PauseMenu {
     }
 
     /**
-     * Draws a rounded box.
-     */
+    * Draws a rounded box.
+    */
     drawRoundBox(ctx, x, y, w, h, r, color) {
         ctx.beginPath();
         ctx.moveTo(x + r, y);
@@ -138,8 +138,8 @@ class PauseMenu {
     }
 
     /**
-     * Handles click input.
-     */
+    * Handles click input.
+    */
     handleClick(x, y) {
         if (this.isPauseClicked(x, y)) return this.toggleAndConsume();
         if (!this.isOpen) return false;
@@ -150,8 +150,8 @@ class PauseMenu {
     }
 
     /**
-     * Toggles pause state.
-     */
+    * Toggles pause state.
+    */
     toggleAndConsume() {
         this.isOpen = !this.isOpen;
         this.world.isPaused = this.isOpen;
@@ -159,8 +159,8 @@ class PauseMenu {
     }
 
     /**
-     * Closes menu and resumes game.
-     */
+    * Closes menu and resumes game.
+    */
     playAndConsume() {
         this.isOpen = false;
         this.world.isPaused = false;
@@ -168,8 +168,8 @@ class PauseMenu {
     }
 
     /**
-     * Toggles sound state.
-     */
+    * Toggles sound state.
+    */
     muteAndConsume() {
         this.world.toggleSound();
 
@@ -185,51 +185,51 @@ class PauseMenu {
     }
 
     /**
-     * Toggles fullscreen mode.
-     */
+    * Toggles fullscreen mode.
+    */
     fullAndConsume() {
         this.world.toggleFullscreen();
         return true;
     }
 
     /**
-     * Returns current sound icon.
-     */
+    * Returns current sound icon.
+    */
     getSoundIcon() {
         return SOUND_ENABLED ? this.iconVolume : this.iconMute;
     }
 
     /**
-     * Returns current sound label.
-     */
+    * Returns current sound label.
+    */
     getSoundLabel() {
         return SOUND_ENABLED ? 'Sound On' : 'Muted';
     }
 
     /**
-     * Checks pause button area.
-     */
+    * Checks pause button area.
+    */
     isPauseClicked(x, y) {
         return x >= 450 && x <= 490 && y >= 20 && y <= 60;
     }
 
     /**
-     * Checks play button area.
-     */
+    * Checks play button area.
+    */
     isPlayClicked(x, y) {
         return x >= 245 && x <= 475 && y >= 170 && y <= 212;
     }
 
     /**
-     * Checks mute button area.
-     */
+    * Checks mute button area.
+    */
     isMuteClicked(x, y) {
         return x >= 245 && x <= 475 && y >= 222 && y <= 264;
     }
 
     /**
-     * Checks fullscreen button area.
-     */
+    * Checks fullscreen button area.
+    */
     isFullClicked(x, y) {
         return x >= 245 && x <= 475 && y >= 274 && y <= 316;
     }

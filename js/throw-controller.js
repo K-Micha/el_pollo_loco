@@ -1,23 +1,23 @@
 class ThrowController {
     /**
-     * Manages bottle throwing logic for the world.
-     */
+    * Manages bottle throwing logic for the world.
+    */
     constructor(world) {
         this.world = world;
     }
 
-     /**
-     * Updates throw state and triggers a throw if allowed.
-     */
+    /**
+    * Updates throw state and triggers a throw if allowed.
+    */
     update() {
         if (this.canThrow()) {
             this.throwBottle();
         }
     }
 
-     /**
-     * Returns true if the player can currently throw a bottle.
-     */
+    /**
+    * Returns true if the player can currently throw a bottle.
+    */
     canThrow() {
         return this.world.keyboard.D
             && this.world.canThrow
@@ -51,9 +51,9 @@ class ThrowController {
             this.world.canThrow = true;
         }, 600);
     }
-      /**
-     * Updates the UI elements for bottle count and percentage.
-     */
+    /**
+    * Updates the UI elements for bottle count and percentage.
+    */
     updateBottleUi() {
         this.world.bottleBar.setPercentage(
             (this.world.bottlesCollected / this.world.totalBottles) * 100
@@ -65,9 +65,9 @@ class ThrowController {
         );
     }
 
-     /**
-     * Resets throw state when the throw key is released.
-     */
+    /**
+    * Resets throw state when the throw key is released.
+    */
     resetState() {
         if (!this.world.keyboard.D) {
             this.world.canThrow = true;

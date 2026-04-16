@@ -2,8 +2,8 @@ class WinBackground extends DrawableObject {
     isHoveringRestart = false;
 
     /**
-     * Initializes win screen background and restart button
-     */
+    * Initializes win screen background and restart button
+    */
     constructor() {
         super();
         this.loadImage('assets/img/pepe-win.png');
@@ -38,8 +38,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-     *  Draws the restart text with hover styling.
-     */
+    *  Draws the restart text with hover styling.
+    */
     drawRestart(ctx) {
         const { x, y } = this.getRestartPosition();
         this.updateRestartButton(x, y);
@@ -90,8 +90,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-     *  Updates the Home button hitbox based on the rendered text center.
-     */
+    *  Updates the Home button hitbox based on the rendered text center.
+    */
     updateHomeButton(x, y) {
         this.homeButton = {
             x: x - 80,
@@ -102,8 +102,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-     * Mirrors Restart button styling for visual consistency.
-     */
+    * Mirrors Restart button styling for visual consistency.
+    */
     getHomeStyles() {
         return {
             fill: this.isHoveringHome ? "#ffe066" : "#ffd700",
@@ -113,8 +113,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-     * Returns the restart button text position.
-     */
+    * Returns the restart button text position.
+    */
     getRestartPosition() {
         return {
             x: this.x + this.width / 2 + 150,
@@ -123,8 +123,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-     * Updates the restart button hitbox based on text position.
-     */
+    * Updates the restart button hitbox based on text position.
+    */
     updateRestartButton(x, y) {
         this.restartButton = {
             x: x - 80,
@@ -135,8 +135,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-     * Returns fill and stroke styles depending on hover state.
-     */
+    * Returns fill and stroke styles depending on hover state.
+    */
     getRestartStyles() {
         return {
             fill: this.isHoveringRestart ? "#ffe066" : "#ffd700",
@@ -146,8 +146,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-     * Draws the rectangular restart button variant
-     */
+    * Draws the rectangular restart button variant
+    */
     drawRestartButton(ctx) {
         const b = this.restartButton;
 
@@ -179,8 +179,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-     * Returns the position where stats should be drawn.
-     */
+    * Returns the position where stats should be drawn.
+    */
     getStatsPosition() {
         return {
             x: this.x + this.width / 2 + 150,
@@ -189,8 +189,8 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-     * Returns all win‑screen stats as formatted text lines.
-     */
+    * Returns all win‑screen stats as formatted text lines.
+    */
 
     getStatsLines(world) {
         return [
@@ -225,8 +225,8 @@ class WinBackground extends DrawableObject {
 class WinImage extends DrawableObject {
 
     /**
-  * Initializes win image with fade/scale animation props
-  */
+    * Initializes win image with fade/scale animation props
+    */
     constructor() {
         super();
         this.loadImage('assets/img/You won, you lost/You won A.png');

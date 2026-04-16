@@ -1,8 +1,8 @@
 class Collision {
 
     /**
-   * Handles coin pickup and removes collected coins
-   */
+    * Handles coin pickup and removes collected coins
+    */
     static checkCoinCollision(world) {
         world.level.coins = world.level.coins.filter(coin => {
             if (this.isCoinPickup(world.character, coin)) {
@@ -16,8 +16,8 @@ class Collision {
     }
 
     /**
-     * Returns reduced hitbox for a coin.
-     */
+    * Returns reduced hitbox for a coin.
+    */
     static getCoinHitbox(coin) {
         return {
             x: coin.x + 28,
@@ -28,8 +28,8 @@ class Collision {
     }
 
     /**
-     * Returns reduced hitbox for the character when collecting coins.
-     */
+    * Returns reduced hitbox for the character when collecting coins.
+    */
     static getCharacterCoinHitbox(char) {
         return {
             x: char.x + 20,
@@ -54,8 +54,8 @@ class Collision {
     }
 
     /**
-   * Checks if character is close enough to pick up a coin
-   */
+    * Checks if character is close enough to pick up a coin
+    */
     static isCoinPickup(char, coin) {
         const charCenterX = char.x + char.width / 2;
         const charCenterY = char.y + char.height * 0.7;
@@ -70,8 +70,8 @@ class Collision {
     }
 
     /**
-   * Handles bottle collisions with enemies and boss
-   */
+    * Handles bottle collisions with enemies and boss
+    */
     static checkBottleCollision(world) {
         world.throwableObjects.forEach(bottle => {
             if (bottle.isBroken) return;
@@ -92,8 +92,8 @@ class Collision {
     }
 
     /**
-   * Handles character collision with enemies and stomp logic
-   */
+    * Handles character collision with enemies and stomp logic
+    */
     static checkEnemyCollision(world) {
         const char = world.character;
 
@@ -108,8 +108,8 @@ class Collision {
     }
 
     /**
-     *  Handles collision with the endboss.
-     */
+    *  Handles collision with the endboss.
+    */
     static handleEndboss(world, enemy) {
         if (!(enemy instanceof Endboss)) return false;
 
@@ -118,8 +118,8 @@ class Collision {
     }
 
     /**
-     *  Handles stomp kill on an enemy.
-     */
+    *  Handles stomp kill on an enemy.
+    */
     static handleStomp(world, enemy) {
         if (!this.isStomp(world, enemy)) return false;
 
@@ -128,8 +128,8 @@ class Collision {
     }
 
     /**
-     * Handles frontal collision where the character gets hurt.
-     */
+    * Handles frontal collision where the character gets hurt.
+    */
     static handleFrontHit(world, char, enemy) {
         if (!this.isFrontHit(char, enemy)) return;
 
@@ -137,8 +137,8 @@ class Collision {
     }
 
     /**
-     * Returns true if the collision is a frontal hit.
-     */
+    * Returns true if the collision is a frontal hit.
+    */
     static isFrontHit(char, enemy) {
         const charCenter = char.x + char.width / 2;
 
@@ -149,15 +149,15 @@ class Collision {
     }
 
     /**
-     * Returns true if enemy should be ignored (dead).
-     */
+    * Returns true if enemy should be ignored (dead).
+    */
     static shouldSkipEnemy(enemy) {
         return enemy.isDeadEnemy;
     }
 
     /**
-   * Prevents character from clipping into the boss
-   */
+    * Prevents character from clipping into the boss
+    */
     static blockCharacter(world, boss) {
         const padding = 150;
         const char = world.character;
@@ -169,8 +169,8 @@ class Collision {
     }
 
     /**
-   * Checks if character is performing a stomp attack
-   */
+    * Checks if character is performing a stomp attack
+    */
     static isStomp(world, enemy) {
         const char = world.character;
         const charBottom = char.y + char.height;

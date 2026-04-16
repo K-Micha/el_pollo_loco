@@ -1,6 +1,6 @@
-    /**
-    * Returns true if mobile touch controls should be enabled.
-    */
+/**
+* Returns true if mobile touch controls should be enabled.
+*/
 function isMobileGameControls() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
@@ -11,9 +11,9 @@ function isMobileGameControls() {
     return isTouch && shortSide <= 1060;
 }
 
-    /**
-    * Sets up touch input handling for mobile gameplay
-    */
+/**
+* Sets up touch input handling for mobile gameplay
+*/
 function setupTouchControls(canvas, world, keyboard) {
     setupTouchStart(canvas, world, keyboard);
     setupTouchMove(canvas, world, keyboard);
@@ -21,45 +21,45 @@ function setupTouchControls(canvas, world, keyboard) {
     setupTouchCancel(canvas, keyboard);
 }
 
-    /**
-    * Registers touchstart handling for movement and actions.
-    */
+/**
+* Registers touchstart handling for movement and actions.
+*/
 function setupTouchStart(canvas, world, keyboard) {
     canvas.addEventListener('touchstart', e => {
         handleTouch(e, canvas, world, keyboard);
     }, { passive: false });
 }
 
-    /**
-    * Registers touchmove handling for continuous input.
-    */
+/**
+* Registers touchmove handling for continuous input.
+*/
 function setupTouchMove(canvas, world, keyboard) {
     canvas.addEventListener('touchmove', e => {
         handleTouch(e, canvas, world, keyboard);
     }, { passive: false });
 }
 
-    /**
-    * Registers touchend handling to reset input.
-     */
+/**
+* Registers touchend handling to reset input.
+*/
 function setupTouchEnd(canvas, keyboard) {
     canvas.addEventListener('touchend', () => {
         resetTouchKeys(keyboard);
     });
 }
 
-    /**
-    * Registers touchcancel handling to reset input.
-    */
+/**
+* Registers touchcancel handling to reset input.
+*/
 function setupTouchCancel(canvas, keyboard) {
     canvas.addEventListener('touchcancel', () => {
         resetTouchKeys(keyboard);
     });
 }
 
-    /**
-    * Resets all virtual touch keys.
-    */
+/**
+* Resets all virtual touch keys.
+*/
 function resetTouchKeys(keyboard) {
     keyboard.LEFT = false;
     keyboard.RIGHT = false;
@@ -68,9 +68,9 @@ function resetTouchKeys(keyboard) {
     keyboard.D = false;
 }
 
-    /**
-    * Processes touch input and maps it to virtual keys
-    */
+/**
+* Processes touch input and maps it to virtual keys
+*/
 function handleTouch(event, canvas, world, keyboard) {
     if (!isMobileGameControls()) return;
     if (event.cancelable) event.preventDefault();
@@ -84,9 +84,9 @@ function handleTouch(event, canvas, world, keyboard) {
     return processTouches(event, rect, scaleX, scaleY, world, keyboard);
 }
 
-    /**
-    * Processes all active touches and triggers UI interactions.
-    */
+/**
+* Processes all active touches and triggers UI interactions.
+*/
 function processTouches(event, rect, scaleX, scaleY, world, keyboard) {
     const touches = event.touches;
     const buttons = world.touchUi.getButtons();
@@ -100,9 +100,9 @@ function processTouches(event, rect, scaleX, scaleY, world, keyboard) {
     }
 }
 
-    /**
-    * Converts a touch position to scaled canvas coordinates.
-    */
+/**
+* Converts a touch position to scaled canvas coordinates.
+*/
 function getTouchPosition(touch, rect, scaleX, scaleY) {
     return {
         x: (touch.clientX - rect.left) * scaleX,
@@ -110,9 +110,9 @@ function getTouchPosition(touch, rect, scaleX, scaleY) {
     };
 }
 
-    /**
-    * Checks which virtual buttons are touched and sets keys.
-    */
+/**
+* Checks which virtual buttons are touched and sets keys.
+*/
 function handleButtonTouches(x, y, buttons, keyboard) {
     buttons.forEach(btn => {
         if (isInsideButton(x, y, btn)) {
@@ -121,9 +121,9 @@ function handleButtonTouches(x, y, buttons, keyboard) {
     });
 }
 
-    /**
-    * Resets all keyboard movement and action keys.
-    */
+/**
+* Resets all keyboard movement and action keys.
+*/
 function resetKeys(keyboard) {
     keyboard.LEFT = false;
     keyboard.RIGHT = false;
@@ -132,9 +132,9 @@ function resetKeys(keyboard) {
     keyboard.D = false;
 }
 
-    /**
-    * Returns true if a touch is inside a button's bounds.
-    */
+/**
+* Returns true if a touch is inside a button's bounds.
+*/
 function isInsideButton(x, y, btn) {
     return x >= btn.x &&
         x <= btn.x + btn.width &&
@@ -142,9 +142,9 @@ function isInsideButton(x, y, btn) {
         y <= btn.y + btn.height;
 }
 
-    /**
-    * Sets a virtual key based on a button mapping.
-    */
+/**
+* Sets a virtual key based on a button mapping.
+*/
 function setTouchKey(keyboard, key, value) {
     if (key === 'LEFT') keyboard.LEFT = value;
     if (key === 'RIGHT') keyboard.RIGHT = value;

@@ -3,8 +3,8 @@ class Bottle extends MovableObject {
     height = 80;
 
     /**
-     * Creates a ground bottle with the chosen variant.
-     */
+    * Creates a ground bottle with the chosen variant.
+    */
     constructor(x, variant = 'ground1') {
         super();
         this.loadBottleImage(variant);
@@ -16,8 +16,8 @@ class Bottle extends MovableObject {
     }
 
     /**
-     * Loads the correct bottle image.
-     */
+    * Loads the correct bottle image.
+    */
     loadBottleImage(variant) {
         const variants = {
             ground1: 'assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
@@ -28,15 +28,15 @@ class Bottle extends MovableObject {
     }
 
     /**
-     * Returns the bottle ground position.
-     */
+    * Returns the bottle ground position.
+    */
     getGroundY() {
         return 155 + 280 - this.height;
     }
 
     /**
-     * Checks collision with a smaller bottle hitbox.
-     */
+    * Checks collision with a smaller bottle hitbox.
+    */
     isColliding(obj) {
         return (
             this.x + this.width - 18 > obj.x &&

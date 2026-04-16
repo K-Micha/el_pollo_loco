@@ -7,16 +7,16 @@ const ICONS = {
 
 class UI {
     /**
-     * Creates a renderer with canvas and context references.
-     */
+    * Creates a renderer with canvas and context references.
+    */
     constructor(ctx, canvas) {
         this.ctx = ctx;
         this.canvas = canvas;
     }
 
     /**
-     * Creates a rounded rectangle path.
-     */
+    * Creates a rounded rectangle path.
+    */
     roundedPath(x, y, w, h, r) {
         const ctx = this.ctx;
         ctx.beginPath();
@@ -33,8 +33,8 @@ class UI {
     }
 
     /**
-     * Draws a filled rounded rectangle.
-     */
+    * Draws a filled rounded rectangle.
+    */
     roundedRect(x, y, w, h, r, fillStyle) {
         const ctx = this.ctx;
         ctx.fillStyle = fillStyle;
@@ -43,8 +43,8 @@ class UI {
     }
 
     /**
-     *  Applies title text styling.
-     */
+    *  Applies title text styling.
+    */
     setTitleStyle() {
         const ctx = this.ctx;
         ctx.fillStyle = "#4a2500";
@@ -55,8 +55,8 @@ class UI {
     }
 
     /**
-     * Applies body text styling.
-     */
+    * Applies body text styling.
+    */
     setBodyStyle() {
         const ctx = this.ctx;
         ctx.fillStyle = "#3a1a00";
@@ -66,16 +66,16 @@ class UI {
     }
 
     /**
-     * Draws popup background and text
-     */
+    * Draws popup background and text
+    */
     drawPopup(px, py, pw, ph) {
         this.drawPopupBackground(px, py, pw, ph);
         this.drawPopupText(px, py, pw, ph);
     }
 
     /**
-  * Draws dimmed overlay and popup box
-  */
+    * Draws dimmed overlay and popup box
+    */
     drawPopupBackground(px, py, pw, ph) {
         const ctx = this.ctx;
         const w = this.canvas.width;
@@ -135,8 +135,8 @@ class TouchUi {
     }
 
     /**
-  * Updates mobile button layout based on screen size
-  */
+    * Updates mobile button layout based on screen size
+    */
     updateButtons() {
         if (!isMobileGameControls()) {
             this.buttons = [];
@@ -196,8 +196,8 @@ class TouchUi {
     }
 
     /**
-     * Draws a rounded icon button with its assigned symbol.
-     */
+    * Draws a rounded icon button with its assigned symbol.
+    */
     drawButton(ctx, btn) {
         ctx.save();
 
@@ -231,8 +231,8 @@ class TouchUi {
     }
 
     /**
-     * Returns the list of interactive buttons.
-     */
+    * Returns the list of interactive buttons.
+    */
     getButtons() {
         return this.buttons;
     }

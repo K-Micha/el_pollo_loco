@@ -25,8 +25,8 @@ class StatusBar extends DrawableObject {
     }
 
     /**
-     * Returns the image index based on the current percentage.
-     */
+    * Returns the image index based on the current percentage.
+    */
     resolvImageIndex() {
         if (this.percentage >= 100) return 5;
         if (this.percentage >= 80) return 4;
@@ -38,8 +38,8 @@ class StatusBar extends DrawableObject {
     }
 
     /**
-   * Draws the text value (life %, coins, potions)
-   */
+    * Draws the text value (life %, coins, potions)
+    */
     drawText(ctx) {
         this.applyTextStyle(ctx);
 
@@ -48,8 +48,8 @@ class StatusBar extends DrawableObject {
     }
 
     /**
-     *  Applies the default text style for UI labels.
-     */
+    * Applies the default text style for UI labels.
+    */
     applyTextStyle(ctx) {
         ctx.font = "22px Arial";
         ctx.fillStyle = "white";
@@ -58,8 +58,8 @@ class StatusBar extends DrawableObject {
     }
 
     /**
-     * Returns centered text and position data for rendering.
-     */
+    * Returns centered text and position data for rendering.
+    */
     getCenteredTextData() {
         return {
             text: this.getText(),
@@ -69,8 +69,8 @@ class StatusBar extends DrawableObject {
     }
 
     /**
-     * Draws text with a soft shadow for better readability.
-     */
+    * Draws text with a soft shadow for better readability.
+    */
     drawShadowedText(ctx, text, x, y) {
         ctx.shadowColor = "black";
         ctx.shadowBlur = 4;
@@ -81,8 +81,8 @@ class StatusBar extends DrawableObject {
     }
 
     /**
-     * Returns the displayed text based on bar type
-     */
+    * Returns the displayed text based on bar type
+    */
     getText() {
         if (this.type === "life") {
             return `${Math.round(this.percentage)}%`;

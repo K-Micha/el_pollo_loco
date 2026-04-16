@@ -45,15 +45,15 @@ class ThrowableObject extends MovableObject {
     }
 
     /**
-     * Returns true if the bottle should break after hitting the ground.
-     */
+    * Returns true if the bottle should break after hitting the ground.
+    */
     shouldBreakOnGround() {
         return this.y >= 360 && !this.isBroken;
     }
 
     /**
-     * Updates bottle movement or splash animation depending on state.
-     */
+    * Updates bottle movement or splash animation depending on state.
+    */
     handleThrowState() {
         if (!this.isBroken) {
             this.x += 10 * this.direction;

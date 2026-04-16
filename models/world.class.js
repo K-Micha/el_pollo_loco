@@ -27,8 +27,8 @@ class World {
     isPaused = false;
 
     /**
-     * Initializes world, UI, controllers and references
-     */
+    * Initializes world, UI, controllers and references
+    */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.ctx.imageSmoothingEnabled = false;
@@ -52,16 +52,16 @@ class World {
     }
 
     /**
-     * Starts update loop and render loop
-     */
+    * Starts update loop and render loop
+    */
     start() {
         this.run();
         this.draw();
     }
 
     /**
-     * Initializes all UI bars.
-     */
+    * Initializes all UI bars.
+    */
     setupUI() {
         this.statusBar = new StatusBar();
         this.coinBar = new CoinBar();
@@ -69,24 +69,24 @@ class World {
     }
 
     /**
-     * Binds click and touch handlers for the pause menu.
-     */
+    * Binds click and touch handlers for the pause menu.
+    */
     bindPauseClick() {
         this.canvas.addEventListener('click', (e) => this.handlePauseClick(e));
         this.canvas.addEventListener('touchend', (e) => this.handlePauseTouch(e), { passive: false });
     }
 
     /**
-     * Handles pause button clicks.
-     */
+    * Handles pause button clicks.
+    */
     handlePauseClick(event) {
         const { x, y } = this.getScaledPointer(event);
         this.pauseMenu.handleClick(x, y);
     }
 
     /**
-     *  Handles pause button touches.
-     */
+    *  Handles pause button touches.
+    */
     handlePauseTouch(e) {
         if (e.cancelable) e.preventDefault();
 
@@ -98,8 +98,8 @@ class World {
     }
 
     /**
-     * Converts pointer coordinates to game‑scaled coordinates.
-     */
+    * Converts pointer coordinates to game‑scaled coordinates.
+    */
     getScaledPointer(e) {
         const rect = this.canvas.getBoundingClientRect();
         const scaleX = this.baseWidth / rect.width;
@@ -112,8 +112,8 @@ class World {
     }
 
     /**
-     * Creates win screen objects
-     */
+    * Creates win screen objects
+    */
     setupWinScreen() {
         this.winBackground = new WinBackground();
         this.winImage = new WinImage();
@@ -131,15 +131,15 @@ class World {
     }
 
     /**
-     * Returns the endboss instance if present.
-     */
+    * Returns the endboss instance if present.
+    */
     getBoss() {
         return this.level.enemies.find(e => e instanceof Endboss);
     }
 
     /**
-     * Plays or stops boss sound depending on state.
-     */
+    * Plays or stops boss sound depending on state.
+    */
     updateBossSound(boss) {
         if (boss && !boss.isDeadEnemy) {
             if (!this.bossSoundPlaying) {
@@ -155,8 +155,8 @@ class World {
     }
 
     /**
-     * Sets win state when boss is dead.
-     */
+    * Sets win state when boss is dead.
+    */
     checkWinCondition(boss) {
         if (boss && boss.isDeadEnemy) {
             this.gameWon = true;
@@ -164,8 +164,8 @@ class World {
     }
 
     /**
-     * Updates win animation if game is won.
-     */
+    * Updates win animation if game is won.
+    */
     updateWinState() {
         if (this.gameWon) {
             this.updateWinAnimation();
@@ -173,8 +173,8 @@ class World {
     }
 
     /**
-     * Injects world reference into character and boss
-     */
+    * Injects world reference into character and boss
+    */
     setWorld() {
         this.character.world = this;
 
@@ -191,8 +191,8 @@ class World {
     }
 
     /**
-     * Starts the main world update loop.
-     */
+    * Starts the main world update loop.
+    */
     run() {
         this.intervalId = setInterval(() => {
             if (this.isDestroyed || this.isPaused) return;
@@ -201,8 +201,8 @@ class World {
     }
 
     /**
-     * Checks and handles bottle pickups.
-     */
+    * Checks and handles bottle pickups.
+    */
     checkBottlePickup() {
         this.level.bottles = this.level.bottles.filter(bottle => {
             if (!this.isBottleTouching(bottle)) return true;
@@ -212,8 +212,8 @@ class World {
     }
 
     /**
-     *  Returns true if character touches the bottle hitbox.
-     */
+    *  Returns true if character touches the bottle hitbox.
+    */
     isBottleTouching(bottle) {
         const charHit = this.getCharBottleHitbox();
         const bottleHit = this.getBottleHitbox(bottle);
@@ -227,8 +227,8 @@ class World {
     }
 
     /**
-     *  Returns the character's bottle pickup hitbox.
-     */
+    *  Returns the character's bottle pickup hitbox.
+    */
     getCharBottleHitbox() {
         return {
             x: this.character.x + 10,
@@ -239,8 +239,8 @@ class World {
     }
 
     /**
-     * Returns the bottle's pickup hitbox.
-     */
+    * Returns the bottle's pickup hitbox.
+    */
     getBottleHitbox(bottle) {
         return {
             x: bottle.x + 18,
@@ -251,8 +251,8 @@ class World {
     }
 
     /**
-     *  Handles bottle pickup logic.
-     */
+    *  Handles bottle pickup logic.
+    */
     collectBottle(bottle) {
         this.playBottleSound();
         this.incrementBottleCount();
@@ -261,22 +261,22 @@ class World {
     }
 
     /**
-     * Plays the bottle pickup sound.
-     */
+    * Plays the bottle pickup sound.
+    */
     playBottleSound() {
         SOUNDS.pickup.play();
     }
 
     /**
-     * Increments collected bottle count.
-     */
+    * Increments collected bottle count.
+    */
     incrementBottleCount() {
         this.bottlesCollected++;
     }
 
     /**
-     * Updates bottle UI percentage and count.
-     */
+    * Updates bottle UI percentage and count.
+    */
     updateBottleUI() {
         const percentage = (this.bottlesCollected / this.totalBottles) * 100;
 
@@ -285,8 +285,8 @@ class World {
     }
 
     /**
-     * Marks bottle for removal.
-     */
+    * Marks bottle for removal.
+    */
     removeBottle(bottle) {
         bottle.markedForRemoval = true;
     }
@@ -302,8 +302,8 @@ class World {
     }
 
     /**
-     *  Returns a random enemy instance (Chicken or SmallChicken).
-     */
+    *  Returns a random enemy instance (Chicken or SmallChicken).
+    */
     randomEnemy() {
         let types = [Chicken, SmallChicken];
         let Type = types[Math.floor(Math.random() * types.length)];
@@ -311,8 +311,8 @@ class World {
     }
 
     /**
-   * Main render loop using requestAnimationFrame
-   */
+    * Main render loop using requestAnimationFrame
+    */
     draw() {
         if (this.isDestroyed) return;
 
@@ -323,8 +323,8 @@ class World {
     }
 
     /**
-     *  Stops all world loops and destroys restart controller.
-     */
+    *  Stops all world loops and destroys restart controller.
+    */
     stop() {
         this.isDestroyed = true;
 
@@ -334,8 +334,8 @@ class World {
     }
 
     /**
-     * Clears the running interval if active.
-     */
+    * Clears the running interval if active.
+    */
     stopIntervalIfNeeded() {
         if (this.intervalId) {
             clearInterval(this.intervalId);
@@ -344,8 +344,8 @@ class World {
     }
 
     /**
-     * Cancels the active animation frame if running.
-     */
+    * Cancels the active animation frame if running.
+    */
     stopAnimationFrameIfNeeded() {
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
@@ -354,8 +354,8 @@ class World {
     }
 
     /**
-     * Destroys the restart controller if present.
-     */
+    * Destroys the restart controller if present.
+    */
     destroyRestartControllerIfNeeded() {
         if (this.restartController) {
             this.restartController.destroy();
@@ -363,8 +363,8 @@ class World {
     }
 
     /**
-     *  Draws the boss life bar if the boss is visible.
-     */
+    *  Draws the boss life bar if the boss is visible.
+    */
     drawBossLifeBar() {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
 
@@ -375,16 +375,16 @@ class World {
     }
 
     /**
-  * Updates world state before rendering
-  */
+    * Updates world state before rendering
+    */
     updateFrame() {
         this.tickEnemies();
         this.cleanupObjects();
     }
 
     /**
-     *  Exits fullscreen on mobile to avoid known browser bugs.
-     */
+    *  Exits fullscreen on mobile to avoid known browser bugs.
+    */
     forceExitFullscreenIfMobileBug() {
         if (!isMobileGameControls()) return;
 
@@ -400,8 +400,8 @@ class World {
     }
 
     /**
-     * Handles scaling, camera transform and world/UI rendering
-     */
+    * Handles scaling, camera transform and world/UI rendering
+    */
     renderFrame() {
         this.clearCanvas();
 
@@ -420,8 +420,8 @@ class World {
     }
 
     /**
-     * Calculates canvas scale and offsets for responsive rendering.
-     */
+    * Calculates canvas scale and offsets for responsive rendering.
+    */
     calculateCanvasTransform() {
         const canvasWidth = this.canvas.width;
         const canvasHeight = this.canvas.height;
@@ -438,15 +438,15 @@ class World {
     }
 
     /**
-     *  Applies the camera offset to the canvas
-     */
+    *  Applies the camera offset to the canvas
+    */
     applyCameraTransform() {
         this.ctx.translate(this.camera_x, 0);
     }
 
     /**
-     * Resets the camera offset on the canvas.
-     */
+    * Resets the camera offset on the canvas.
+    */
     resetCameraTransform() {
         this.ctx.translate(-this.camera_x, 0);
     }
@@ -468,8 +468,8 @@ class World {
     }
 
     /**
-     * Renders all UI elements depending on game state.
-     */
+    * Renders all UI elements depending on game state.
+    */
     renderUI() {
 
         if (!this.gameWon && !this.gameOver) {
@@ -496,8 +496,8 @@ class World {
     }
 
     /**
-     * Draws the game over screen with animation.
-     */
+    * Draws the game over screen with animation.
+    */
     drawGameOverState() {
         this.forceExitFullscreenIfMobileBug();
         this.updateGameOverAnimation();
@@ -506,8 +506,8 @@ class World {
     }
 
     /**
-     * Draws the win screen with animation.
-     */
+    * Draws the win screen with animation.
+    */
     drawWinState() {
         this.forceExitFullscreenIfMobileBug();
         this.updateWinAnimation();
@@ -516,8 +516,8 @@ class World {
     }
 
     /**
-     * Updates the game over fade/scale animation.
-     */
+    * Updates the game over fade/scale animation.
+    */
     updateGameOverAnimation() {
         if (!this.gameOver) return;
 
@@ -532,8 +532,8 @@ class World {
     }
 
     /**
-     * Toggles global sound state and stops audio if muted.
-     */
+    * Toggles global sound state and stops audio if muted.
+    */
     toggleSound() {
         SOUND_ENABLED = !SOUND_ENABLED;
         saveSoundState();
@@ -544,8 +544,8 @@ class World {
     }
 
     /**
-     * Toggles fullscreen mode for the canvas.
-     */
+    * Toggles fullscreen mode for the canvas.
+    */
     toggleFullscreen() {
         if (!document.fullscreenElement) {
             this.canvas.requestFullscreen();
@@ -556,8 +556,8 @@ class World {
     }
 
     /**
-     * Updates the win animation based on current phase.
-     */
+    * Updates the win animation based on current phase.
+    */
     updateWinAnimation() {
         if (!this.gameWon) return;
 
@@ -569,8 +569,8 @@ class World {
     }
 
     /**
-     *  Animates the first win phase (fade in + scale down).
-     */
+    *  Animates the first win phase (fade in + scale down).
+    */
     animateWinPhaseOne() {
         this.winImage.opacity = Math.min(this.winImage.opacity + 0.02, 1);
         this.winImage.scale = Math.max(this.winImage.scale - 0.03, 1);
@@ -581,15 +581,15 @@ class World {
     }
 
     /**
-     * Animates the second win phase (fade out).
-     */
+    * Animates the second win phase (fade out).
+    */
     animateWinPhaseTwo() {
         this.winImage.opacity = Math.max(this.winImage.opacity - 0.02, 0);
     }
 
     /**
-   * Removes dead enemies and finished throwables
-   */
+    * Removes dead enemies and finished throwables
+    */
     cleanupObjects() {
         this.level.enemies.forEach(enemy => {
             if (enemy.markedForRemoval) {
@@ -603,36 +603,36 @@ class World {
     }
 
     /**
-     * Clears the entire canvas.
-     */
+    * Clears the entire canvas.
+    */
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     /**
-     * Draws all background layers.
-     */
+    * Draws all background layers.
+    */
     drawBackground() {
         this.addObjectsToMap(this.level.backgroundObjects);
     }
 
     /**
-     *  Draws the main character.
-     */
+    *  Draws the main character.
+    */
     drawCharacter() {
         this.addToMap(this.character);
     }
 
     /**
-     *  Draws all clouds.
-     */
+    *  Draws all clouds.
+    */
     drawClouds() {
         this.addObjectsToMap(this.level.clouds);
     }
 
     /**
-     *  Draws all enemies.
-     */
+    *  Draws all enemies.
+    */
     drawEnemies() {
         this.level.enemies.forEach(enemy => {
             this.addToMap(enemy);
@@ -640,15 +640,15 @@ class World {
     }
 
     /**
-     * Draws all throwable objects
-     */
+    * Draws all throwable objects
+    */
     drawThrowables() {
         this.addObjectsToMap(this.throwableObjects);
     }
 
     /**
-     * Draws all UI elements
-     */
+    * Draws all UI elements
+    */
     drawUI() {
         this.addToMap(this.statusBar);
         this.addToMap(this.coinBar);
@@ -657,15 +657,15 @@ class World {
     }
 
     /**
-     * Adds multiple objects to the map.
-     */
+    * Adds multiple objects to the map.
+    */
     addObjectsToMap(objects) {
         objects.forEach(o => this.addToMap(o));
     }
 
     /**
-     *  Draws a single movable object with flip and rounding logic.
-     */
+    *  Draws a single movable object with flip and rounding logic.
+    */
     addToMap(mo) {
         const oldX = mo.x;
         const oldY = mo.y;
@@ -680,8 +680,8 @@ class World {
     }
 
     /**
-     * Rounds object position unless it's a background layer.
-     */
+    * Rounds object position unless it's a background layer.
+    */
     roundPositionIfNeeded(mo) {
         if (!(mo instanceof BackgroundObject)) {
             mo.x = Math.round(mo.x);
@@ -690,8 +690,8 @@ class World {
     }
 
     /**
-     * Applies horizontal flip if needed.
-     */
+    * Applies horizontal flip if needed.
+    */
     applyFlipIfNeeded(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);
@@ -699,8 +699,8 @@ class World {
     }
 
     /**
-     *  Resets horizontal flip if applied.
-     */
+    *  Resets horizontal flip if applied.
+    */
     resetFlipIfNeeded(mo) {
         if (mo.otherDirection) {
             this.flipImageBack(mo);
@@ -708,16 +708,16 @@ class World {
     }
 
     /**
-     * Restores original object position after drawing.
-     */
+    * Restores original object position after drawing.
+    */
     restoreOriginalPosition(mo, oldX, oldY) {
         mo.x = oldX;
         mo.y = oldY;
     }
 
     /**
-     * Flips the image horizontally.
-     */
+    * Flips the image horizontally.
+    */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -726,8 +726,8 @@ class World {
     }
 
     /**
-     * Reverts the horizontal flip.
-     */
+    * Reverts the horizontal flip.
+    */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();

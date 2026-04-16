@@ -4,8 +4,8 @@ class Coin extends MovableObject {
     width = 100;
 
     /**
-     * Creates a coin at the given position
-     */
+    * Creates a coin at the given position
+    */
     constructor(x, y) {
         super().loadImage('assets/img/8_coin/coin_1.png');
         this.loadImages(Images.COIN_ANIM);
@@ -17,15 +17,15 @@ class Coin extends MovableObject {
     }
 
     /**
-   * Plays coin animation frames
-   */
+    * Plays coin animation frames
+    */
     animate() {
         setInterval(() => this.handleAnimation(), 100);
     }
 
     /**
-     * Updates the coin animation.
-     */
+    * Updates the coin animation.
+    */
     handleAnimation() {
         this.playAnimation(Images.COIN_ANIM);
     }
@@ -41,8 +41,8 @@ class Coin extends MovableObject {
     }
 
     /**
-     * Draws the coin's hitbox for debugging.
-     */
+    * Draws the coin's hitbox for debugging.
+    */
     drawBorder(ctx) {
         const hit = {
             x: this.x + 30,
@@ -58,8 +58,8 @@ class Coin extends MovableObject {
 class CoinBar extends DrawableObject {
 
     /**
-     * Initializes the coin UI bar
-     */
+    * Initializes the coin UI bar
+    */
     constructor() {
         super();
 
@@ -78,15 +78,15 @@ class CoinBar extends DrawableObject {
     }
 
     /**
-     * Updates the displayed coin amount.
-     */
+    * Updates the displayed coin amount.
+    */
     setCoins(amount) {
         this.coins = amount;
     }
 
     /**
-   * Draws the coin bar and its text
-   */
+    * Draws the coin bar and its text
+    */
     draw(ctx) {
         super.draw(ctx);
 
@@ -106,8 +106,8 @@ class CoinBar extends DrawableObject {
     }
 
     /**
-     * Animates the coin icon by cycling frames
-     */
+    * Animates the coin icon by cycling frames
+    */
     animate() {
         setInterval(() => {
             this.currentFrame = (this.currentFrame + 1) % this.images.length;

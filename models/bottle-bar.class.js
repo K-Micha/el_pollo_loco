@@ -16,17 +16,17 @@ class BottleBar extends DrawableObject {
         this.setPercentage(0);
     }
 
-      /**
-     * Updates collected and total bottle values.
-     */
+    /**
+    * Updates collected and total bottle values.
+    */
     setBottles(collected, total) {
         this.collected = collected;
         this.total = total;
     }
 
-       /**
-     * Updates the bar image based on percentage.
-     */
+    /**
+    * Updates the bar image based on percentage.
+    */
     setPercentage(p) {
         this.percentage = p;
         const path = Images.BOTTLE_BAR[this.resolveImageIndex()];
@@ -34,23 +34,23 @@ class BottleBar extends DrawableObject {
     }
 
     /**
-   * Draws the bar and its text
-   */
+    * Draws the bar and its text
+    */
     draw(ctx) {
         super.draw(ctx);
         this.drawText(ctx);
     }
 
-      /**
-     * Returns the text value (e.g., "3/9").
-     */
+    /**
+    * Returns the text value (e.g., "3/9").
+    */
     getTextValue() {
         return `${this.collected}/${this.total}`;
     }
 
     /**
-     * Returns the position where the text should be drawn.
-     */
+    * Returns the position where the text should be drawn.
+    */
     getTextPosition() {
         return {
             x: this.x + this.width / 2,
@@ -59,8 +59,8 @@ class BottleBar extends DrawableObject {
     }
 
     /**
-     * Draws the bottle count text on the bar.
-     */
+    * Draws the bottle count text on the bar.
+    */
     drawText(ctx) {
         const text = this.getTextValue();
         const pos = this.getTextPosition();
@@ -76,9 +76,9 @@ class BottleBar extends DrawableObject {
         ctx.shadowBlur = 0;
     }
 
-      /**
-     * Resolves the image index based on percentage.
-     */
+    /**
+    * Resolves the image index based on percentage.
+    */
     resolveImageIndex() {
         if (this.percentage >= 100) return 5;
         if (this.percentage >= 80) return 4;
