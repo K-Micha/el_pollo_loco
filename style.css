@@ -120,7 +120,6 @@ footer {
         overflow: hidden;
     }
 
-}
 
 h1 {
     display: none !important;
@@ -133,7 +132,7 @@ footer {
 header {
     display: none !important;
 }
-
+}
 
 @media (max-width: 749px) {
 
