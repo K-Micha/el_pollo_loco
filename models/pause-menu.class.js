@@ -19,17 +19,17 @@ class PauseMenu {
     /**
      * Draws pause button and overlay menu.
      */
-draw(ctx) {
-    ctx.imageSmoothingEnabled = false;
+    draw(ctx) {
+        ctx.imageSmoothingEnabled = false;
 
-    this.drawPauseButton(ctx);
-    if (!this.isOpen) return;
+        this.drawPauseButton(ctx);
+        if (!this.isOpen) return;
 
-    this.drawOverlay(ctx);
-    this.drawPanel(ctx);
-    this.drawTitle(ctx);
-    this.drawButtons(ctx);
-}
+        this.drawOverlay(ctx);
+        this.drawPanel(ctx);
+        this.drawTitle(ctx);
+        this.drawButtons(ctx);
+    }
 
     /**
      * Draws the pause button.
@@ -172,8 +172,19 @@ draw(ctx) {
      */
     muteAndConsume() {
         this.world.toggleSound();
+
+        if (SOUND_ENABLED) {
+            if (!this.world.bossSoundPlaying) {
+                SOUNDS.boss_sound.play();
+                this.world.bossSoundPlaying = true;
+            }
+
+            SOUNDS.boss_sound.play();
+        }
         return true;
     }
+
+
 
     /**
      * Toggles fullscreen mode.
@@ -203,7 +214,7 @@ draw(ctx) {
     isPauseClicked(x, y) {
         return x >= 450 && x <= 490 && y >= 20 && y <= 60;
     }
-    
+
     /**
      * Checks play button area.
      */
