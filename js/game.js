@@ -3,6 +3,7 @@ let world = null;
 let gameStarted = false;
 let keyboard = new Keyboard();
 let responsive = null;
+loadSoundState();
 window.GAME_ZOOM = window.innerWidth < 1060 ? 0.8 : 1;
 
 let rotateOverlay = null;

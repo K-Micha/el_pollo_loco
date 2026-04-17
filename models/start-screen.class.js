@@ -2,6 +2,7 @@ class StartScreen {
     isHoveringStart = false;
     gameStarted = false;
 
+
     /**
     * Initializes start screen UI, icons, events and render loop
     */
@@ -333,6 +334,7 @@ class StartScreen {
     */
     toggleSound() {
         SOUND_ENABLED = !SOUND_ENABLED;
+        saveSoundState();
         this.isMuted = !SOUND_ENABLED;
         this.draw();
     }
