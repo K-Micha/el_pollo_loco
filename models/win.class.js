@@ -2,30 +2,63 @@ class WinBackground extends DrawableObject {
     isHoveringRestart = false;
 
     /**
-    * Initializes win screen background and restart button
-    */
+     * Initializes win screen background and buttons.
+     */
     constructor() {
         super();
+
+        this.initImage();
+        this.initDimensions();
+        this.initButtons();
+    }
+
+    /**
+    * Loads win screen image.
+    */
+    initImage() {
         this.loadImage('assets/img/pepe-win.png');
+    }
+
+    /**
+    * Sets base dimensions.
+    */
+    initDimensions() {
         this.x = 0;
         this.y = 0;
         this.width = 720;
         this.height = 480;
+    }
 
-        this.restartButton = {
+    /**
+    * Initializes UI buttons.
+    */
+    initButtons() {
+        this.restartButton = this.createRestartButton();
+        this.homeButton = this.createHomeButton();
+    }
+
+    /**
+    * Creates restart button config.
+    */
+    createRestartButton() {
+        return {
             x: 720 - 200,
             y: 480 - 70,
             width: 160,
             height: 50
         };
+    }
 
-        this.homeButton = {
+    /**
+    * Creates home button config.
+    */
+    createHomeButton() {
+        return {
             x: 20,
             y: 20,
             width: 60,
             height: 60
         };
-
     }
 
     /**
@@ -38,45 +71,69 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-    *  Draws the restart text with hover styling.
+    * Draws the restart text with hover styling.
     */
     drawRestart(ctx) {
-        const { x, y } = this.getRestartPosition();
-        this.updateRestartButton(x, y);
-        this.drawHome(ctx);
+        const pos = this.getRestartPosition();
 
-        const styles = this.getRestartStyles();
+        this.updateRestartButton(pos.x, pos.y);
+        this.applyRestartTextStyle(ctx);
+        this.drawRestartText(ctx, pos);
+    }
 
+    /**
+    * Applies font and alignment for restart button.
+    */
+    applyRestartTextStyle(ctx) {
         ctx.font = "28px Arial";
         ctx.textAlign = "center";
+    }
+
+    /**
+    * Draws the Restart text with styles.
+    */
+    drawRestartText(ctx, pos) {
+        const styles = this.getRestartStyles();
 
         ctx.strokeStyle = styles.stroke;
         ctx.lineWidth = styles.lineWidth;
-        ctx.strokeText("Restart", x, y);
+        ctx.strokeText("Restart", pos.x, pos.y);
 
         ctx.fillStyle = styles.fill;
-        ctx.fillText("Restart", x, y);
+        ctx.fillText("Restart", pos.x, pos.y);
     }
 
     /**
     * Draws the Home button text with hover styling.
-    * Uses modular helpers for position, hitbox update and style retrieval.
     */
     drawHome(ctx) {
-        const { x, y } = this.getHomePosition();
-        this.updateHomeButton(x, y);
+        const pos = this.getHomePosition();
 
-        const styles = this.getHomeStyles();
+        this.updateHomeButton(pos.x, pos.y);
+        this.applyHomeTextStyle(ctx);
+        this.drawHomeText(ctx, pos);
+    }
 
+    /**
+    * Applies font and alignment for home button.
+    */
+    applyHomeTextStyle(ctx) {
         ctx.font = "28px Arial";
         ctx.textAlign = "center";
+    }
+
+    /**
+    * Draws the Home text with styles.
+    */
+    drawHomeText(ctx, pos) {
+        const styles = this.getHomeStyles();
 
         ctx.strokeStyle = styles.stroke;
         ctx.lineWidth = styles.lineWidth;
-        ctx.strokeText("Home", x, y);
+        ctx.strokeText("Home", pos.x, pos.y);
 
         ctx.fillStyle = styles.fill;
-        ctx.fillText("Home", x, y);
+        ctx.fillText("Home", pos.x, pos.y);
     }
 
     /**
@@ -146,25 +203,52 @@ class WinBackground extends DrawableObject {
     }
 
     /**
-    * Draws the rectangular restart button variant
+    * Draws the rectangular restart button variant.
     */
     drawRestartButton(ctx) {
-        const b = this.restartButton;
+        const button = this.restartButton;
+        const center = this.getButtonCenter(button);
 
+        this.drawRestartBox(ctx, button);
+        this.applyRestartButtonStyle(ctx);
+        this.drawRestartLabel(ctx, center);
+    }
+
+    /**
+    * Returns the text center of a button.
+    */
+    getButtonCenter(button) {
+        return {
+            x: button.x + button.width / 2,
+            y: button.y + button.height / 2 + 10
+        };
+    }
+
+    /**
+    * Draws the restart button background box.
+    */
+    drawRestartBox(ctx, button) {
         ctx.fillStyle = "rgba(0,0,0,0.6)";
-        ctx.fillRect(b.x, b.y, b.width, b.height);
+        ctx.fillRect(button.x, button.y, button.width, button.height);
+    }
 
+    /**
+    * Applies the restart button text style.
+    */
+    applyRestartButtonStyle(ctx) {
         ctx.fillStyle = "#ffd700";
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 3;
         ctx.font = "26px Arial";
         ctx.textAlign = "center";
+    }
 
-        const cx = b.x + b.width / 2;
-        const cy = b.y + b.height / 2 + 10;
-
-        ctx.strokeText("Restart", cx, cy);
-        ctx.fillText("Restart", cx, cy);
+    /**
+    * Draws the restart button label.
+    */
+    drawRestartLabel(ctx, center) {
+        ctx.strokeText("Restart", center.x, center.y);
+        ctx.fillText("Restart", center.x, center.y);
     }
 
     /**

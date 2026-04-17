@@ -25,32 +25,72 @@ class ThrowController {
     }
 
     /**
-    * Spawns and throws a new bottle object
+    * Spawns and throws a new bottle object.
     */
     throwBottle() {
+        this.disableThrow();
+
+        const bottle = this.createBottle();
+        this.launchBottle(bottle);
+        this.registerBottle(bottle);
+
+        this.updateBottleUi();
+        this.enableThrowWithDelay();
+    }
+
+    /**
+    * Disables throwing temporarily.
+    */
+    disableThrow() {
         this.world.canThrow = false;
+    }
 
+    /**
+    * Creates a new bottle with direction.
+    */
+    createBottle() {
+        const bottle = new ThrowableObject();
+        bottle.direction = this.getThrowDirection();
+        return bottle;
+    }
+
+    /**
+    * Returns throw direction based on character.
+    */
+    getThrowDirection() {
+        return this.world.character.otherDirection ? -1 : 1;
+    }
+
+    /**
+    * Launches the bottle from character position.
+    */
+    launchBottle(bottle) {
         const char = this.world.character;
-        const dir = char.otherDirection ? -1 : 1;
         const offsetX = char.otherDirection ? -20 : 100;
-
-        let bottle = new ThrowableObject();
-        bottle.direction = dir;
 
         bottle.throw(
             char.x + offsetX,
             char.y + 150
         );
+    }
 
+    /**
+    * Adds bottle to world and updates count.
+    */
+    registerBottle(bottle) {
         this.world.throwableObjects.push(bottle);
         this.world.bottlesCollected--;
+    }
 
-        this.updateBottleUi();
-
+    /**
+    * Enables throwing again after delay.
+    */
+    enableThrowWithDelay() {
         setTimeout(() => {
             this.world.canThrow = true;
         }, 600);
     }
+
     /**
     * Updates the UI elements for bottle count and percentage.
     */

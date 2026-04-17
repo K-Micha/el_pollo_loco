@@ -103,19 +103,38 @@ class PauseMenu {
     */
     drawIconButton(ctx, x, y, w, h, text, icon) {
         ctx.save();
+
+        this.drawIconButtonBox(ctx, x, y, w, h);
+        this.drawIconButtonText(ctx, text, x, y);
+        this.drawIconButtonImage(ctx, icon, x, y, w);
+
+        ctx.restore();
+    }
+
+    /**
+    * Draws the icon button background.
+    */
+    drawIconButtonBox(ctx, x, y, w, h) {
         this.drawRoundBox(ctx, x, y, w, h, 10, 'rgba(255, 244, 215, 0.32)');
         this.drawRoundBox(ctx, x + 2, y + 2, w - 4, h - 4, 9, 'rgba(255, 255, 255, 0.12)');
+    }
 
+    /**
+    * Draws the icon button label.
+    */
+    drawIconButtonText(ctx, text, x, y) {
         ctx.fillStyle = '#2d1b08';
         ctx.font = 'bold 20px Arial';
         ctx.textAlign = 'left';
         ctx.fillText(text, x + 18, y + 27);
+    }
 
-        if (icon && icon.complete && icon.naturalWidth > 0) {
-            ctx.drawImage(icon, x + w - 42, y + 7, 28, 28);
-        }
-
-        ctx.restore();
+    /**
+    * Draws the right icon if loaded.
+    */
+    drawIconButtonImage(ctx, icon, x, y, w) {
+        if (!icon || !icon.complete || icon.naturalWidth <= 0) return;
+        ctx.drawImage(icon, x + w - 42, y + 7, 28, 28);
     }
 
     /**

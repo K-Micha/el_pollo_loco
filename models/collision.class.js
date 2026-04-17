@@ -142,7 +142,7 @@ class Collision {
     static isFrontHit(char, enemy) {
         const charCenter = char.x + char.width / 2;
 
-        const enemyBack = enemy.x + enemy.width * 0.10; 
+        const enemyBack = enemy.x + enemy.width * 0.10;
         const enemyFront = enemy.x + enemy.width * 0.90;
 
         return charCenter >= enemyBack && charCenter <= enemyFront;
@@ -185,5 +185,55 @@ class Collision {
             charCenter >= enemy.x + 10 &&
             charCenter <= enemy.x + enemy.width - 10
         );
+    }
+
+    /**
+     * Checks and handles bottle pickups.
+     */
+    static checkBottlePickup(world) {
+        world.level.bottles = world.level.bottles.filter(bottle => {
+            if (!this.isBottleTouching(world, bottle)) return true;
+            world.collectBottle(bottle);
+            return false;
+        });
+    }
+
+    /**
+     * Returns true if character touches the bottle hitbox.
+     */
+    static isBottleTouching(world, bottle) {
+        const charHit = this.getCharBottleHitbox(world.character);
+        const bottleHit = this.getBottleHitbox(bottle);
+
+        return (
+            charHit.x + charHit.width >= bottleHit.x &&
+            charHit.y + charHit.height >= bottleHit.y &&
+            charHit.x <= bottleHit.x + bottleHit.width &&
+            charHit.y <= bottleHit.y + bottleHit.height
+        );
+    }
+
+    /**
+     * Returns the character's bottle pickup hitbox (tightened).
+     */
+    static getCharBottleHitbox(character) {
+        return {
+            x: character.x + 20,
+            y: character.y + 30,
+            width: character.width - 70,
+            height: character.height - 90
+        };
+    }
+
+    /**
+     * Returns the bottle's pickup hitbox (tightened).
+     */
+    static getBottleHitbox(bottle) {
+        return {
+            x: bottle.x + 10,
+            y: bottle.y + 10,
+            width: bottle.width - 20,
+            height: bottle.height - 20
+        };
     }
 }

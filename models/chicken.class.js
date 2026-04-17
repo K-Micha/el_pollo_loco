@@ -1,28 +1,51 @@
 class ChickenBase extends MovableObject {
 
     /**
-    * Initializes the chicken with config values and animations.
-    * @param config 
-    */
+     * Initializes the chicken with config values and animations.
+     * @param {Object} config Chicken configuration.
+     */
     constructor(config) {
         super().loadImage(config.startImage);
 
+        this.loadAnimationImages(config);
+        this.applyConfig(config);
+        this.animate();
+    }
+
+    /**
+    * Loads all animation images.
+    */
+    loadAnimationImages(config) {
         this.loadImages(config.walkImages);
         this.loadImages(config.deadImages);
+    }
 
-        this.x = 300 + Math.random() * 1900;
-        this.speed = config.minSpeed + Math.random() * config.speedRange;
-
+    /**
+    * Applies config values to the chicken.
+    */
+    applyConfig(config) {
+        this.x = this.getRandomStartX();
+        this.speed = this.getRandomSpeed(config);
         this.y = config.y;
         this.width = config.width;
         this.height = config.height;
-
         this.offset = config.offset;
-
         this.walkImages = config.walkImages;
         this.deadImages = config.deadImages;
+    }
 
-        this.animate();
+    /**
+    * Returns a random start position.
+    */
+    getRandomStartX() {
+        return 300 + Math.random() * 1900;
+    }
+
+    /**
+    * Returns a random speed based on config.
+    */
+    getRandomSpeed(config) {
+        return config.minSpeed + Math.random() * config.speedRange;
     }
 
     /**

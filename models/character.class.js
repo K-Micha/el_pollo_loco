@@ -65,19 +65,60 @@ class Character extends MovableObject {
     * Plays walking sound with cooldown.
     */
     handleWalkingSound() {
-        const kb = this.world.keyboard;
-        const isWalking = (kb.RIGHT || kb.LEFT) && !this.isAboveGround();
-
-        if (isWalking) {
-            if (this.stepCooldown <= 0) {
-                SOUNDS.walking.play();
-                this.stepCooldown = this.stepInterval;
-            } else {
-                this.stepCooldown -= 1000 / 60;
-            }
-        } else {
-            this.stepCooldown = 0;
+        if (!this.isWalking()) {
+            this.resetStepCooldown();
+            return;
         }
+
+        this.updateStepSound();
+    }
+
+    /**
+    * Returns true if character is walking on ground.
+    */
+    isWalking() {
+        const kb = this.world.keyboard;
+        return (kb.RIGHT || kb.LEFT) && !this.isAboveGround();
+    }
+
+    /**
+    * Updates step sound cooldown logic.
+    */
+    updateStepSound() {
+        if (this.stepCooldown <= 0) {
+            this.playStepSound();
+            this.resetCooldown();
+        } else {
+            this.reduceCooldown();
+        }
+    }
+
+    /**
+    * Plays step sound.
+    */
+    playStepSound() {
+        SOUNDS.walking.play();
+    }
+
+    /**
+    * Resets cooldown to interval.
+    */
+    resetCooldown() {
+        this.stepCooldown = this.stepInterval;
+    }
+
+    /**
+    * Reduces cooldown over time.
+    */
+    reduceCooldown() {
+        this.stepCooldown -= 1000 / 60;
+    }
+
+    /**
+    * Resets cooldown when not walking.
+    */
+    resetStepCooldown() {
+        this.stepCooldown = 0;
     }
 
     /**

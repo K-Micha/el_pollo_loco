@@ -33,22 +33,61 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.ctx.imageSmoothingEnabled = false;
         this.canvas = canvas;
+
+        this.initSystems();
+
         this.keyboard = keyboard;
         this.level = createLevel1();
 
-        this.setupUI();
-        this.setupWinScreen();
+        this.initGame();
 
+        this.setWorld();
+    }
+
+    /**
+    * Initializes all game setup steps.
+    */
+    initGame() {
+        this.setupUI();
+        this.setupScreens();
+        this.setupControllers();
+        this.setupSystems();
+    }
+
+    /**
+    * Initializes core systems (UI, renderer, state, lifecycle).
+    */
+    initSystems() {
+        this.ui = new UI(this.ctx, this.canvas, this);
+        this.renderer = new WorldRenderer(this);
+        this.state = new WorldState(this);
+        this.lifecycle = new WorldLifecycle(this);
+    }
+
+    /**
+    * Initializes all screen-related elements (win and game over).
+    */
+    setupScreens() {
+        this.setupWinScreen();
         this.gameOverImage = new GameOverImage();
         this.gameOverBackground = new GameOverBackground();
+    }
 
-        this.restartController = new RestartController(this, canvas);
+    /**
+    * Initializes all game controllers (input, restart, throw logic).
+    */
+    setupControllers() {
+        this.restartController = new RestartController(this, this.canvas);
+        this.throwController = new ThrowController(this);
+    }
+
+    /**
+    * Initializes gameplay systems (UI, pause handling, touch input).
+    */
+    setupSystems() {
         this.touchUi = new TouchUi(this);
         this.pauseMenu = new PauseMenu(this);
         this.bindPauseClick();
-        this.throwController = new ThrowController(this);
-
-        this.setWorld();
     }
 
     /**
@@ -120,17 +159,6 @@ class World {
     }
 
     /**
-    * Handles boss sound, win detection and win animation
-    */
-    tickEnemies() {
-        const boss = this.getBoss();
-
-        this.updateBossSound(boss);
-        this.checkWinCondition(boss);
-        this.updateWinState();
-    }
-
-    /**
     * Returns the endboss instance if present.
     */
     getBoss() {
@@ -164,12 +192,13 @@ class World {
     }
 
     /**
-    * Updates win animation if game is won.
+    * Handles boss sound, win detection and win animation
     */
-    updateWinState() {
-        if (this.gameWon) {
-            this.updateWinAnimation();
-        }
+    tickEnemies() {
+        const boss = this.getBoss();
+
+        this.updateBossSound(boss);
+        this.checkWinCondition(boss);
     }
 
     /**
@@ -201,53 +230,19 @@ class World {
     }
 
     /**
-    * Checks and handles bottle pickups.
+    * Main render loop using requestAnimationFrame
     */
-    checkBottlePickup() {
-        this.level.bottles = this.level.bottles.filter(bottle => {
-            if (!this.isBottleTouching(bottle)) return true;
-            this.collectBottle(bottle);
-            return false;
-        });
+    draw() {
+        if (this.isDestroyed) return;
+
+        this.updateFrame();
+        this.renderer.renderFrame();
+
+        this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
 
-    /**
-    *  Returns true if character touches the bottle hitbox.
-    */
-    isBottleTouching(bottle) {
-        const charHit = this.getCharBottleHitbox();
-        const bottleHit = this.getBottleHitbox(bottle);
-
-        return (
-            charHit.x + charHit.width >= bottleHit.x &&
-            charHit.y + charHit.height >= bottleHit.y &&
-            charHit.x <= bottleHit.x + bottleHit.width &&
-            charHit.y <= bottleHit.y + bottleHit.height
-        );
-    }
-
-    /**
-    * Returns the character's bottle pickup hitbox (tightened).
-    */
-    getCharBottleHitbox() {
-        return {
-            x: this.character.x + 20,
-            y: this.character.y + 30,
-            width: this.character.width - 70,
-            height: this.character.height - 90
-        };
-    }
-
-    /**
-    * Returns the bottle's pickup hitbox (tightened).
-    */
-    getBottleHitbox(bottle) {
-        return {
-            x: bottle.x + 10,
-            y: bottle.y + 10,
-            width: bottle.width - 20,
-            height: bottle.height - 20
-        };
+    stop() {
+        this.lifecycle.stop();
     }
 
     /**
@@ -311,74 +306,11 @@ class World {
     }
 
     /**
-    * Main render loop using requestAnimationFrame
-    */
-    draw() {
-        if (this.isDestroyed) return;
-
-        this.updateFrame();
-        this.renderFrame();
-
-        this.animationFrameId = requestAnimationFrame(() => this.draw());
-    }
-
-    /**
-    *  Stops all world loops and destroys restart controller.
-    */
-    stop() {
-        this.isDestroyed = true;
-
-        this.stopIntervalIfNeeded();
-        this.stopAnimationFrameIfNeeded();
-        this.destroyRestartControllerIfNeeded();
-    }
-
-    /**
-    * Clears the running interval if active.
-    */
-    stopIntervalIfNeeded() {
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-            this.intervalId = null;
-        }
-    }
-
-    /**
-    * Cancels the active animation frame if running.
-    */
-    stopAnimationFrameIfNeeded() {
-        if (this.animationFrameId) {
-            cancelAnimationFrame(this.animationFrameId);
-            this.animationFrameId = null;
-        }
-    }
-
-    /**
-    * Destroys the restart controller if present.
-    */
-    destroyRestartControllerIfNeeded() {
-        if (this.restartController) {
-            this.restartController.destroy();
-        }
-    }
-
-    /**
-    *  Draws the boss life bar if the boss is visible.
-    */
-    drawBossLifeBar() {
-        const boss = this.level.enemies.find(e => e instanceof Endboss);
-
-        if (!boss || !boss.lifeBar) return;
-        if (!boss.lifeBar.isBossVisible()) return;
-
-        boss.lifeBar.draw(this.ctx);
-    }
-
-    /**
     * Updates world state before rendering
     */
     updateFrame() {
         this.tickEnemies();
+        Collision.checkBottlePickup(this);
         this.cleanupObjects();
     }
 
@@ -400,85 +332,16 @@ class World {
     }
 
     /**
-    * Handles scaling, camera transform and world/UI rendering
-    */
-    renderFrame() {
-        this.clearCanvas();
-
-        const { scale, offsetX, offsetY } = this.calculateCanvasTransform();
-
-        this.ctx.save();
-        this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
-
-        this.applyCameraTransform();
-        this.renderWorld();
-        this.resetCameraTransform();
-
-        this.renderUI();
-
-        this.ctx.restore();
-    }
-
-    /**
-    * Calculates canvas scale and offsets for responsive rendering.
-    */
-    calculateCanvasTransform() {
-        const canvasWidth = this.canvas.width;
-        const canvasHeight = this.canvas.height;
-
-        const scale = Math.min(
-            canvasWidth / this.baseWidth,
-            canvasHeight / this.baseHeight
-        );
-
-        const offsetX = (canvasWidth - this.baseWidth * scale) / 2;
-        const offsetY = (canvasHeight - this.baseHeight * scale) / 2;
-
-        return { scale, offsetX, offsetY };
-    }
-
-    /**
-    *  Applies the camera offset to the canvas
-    */
-    applyCameraTransform() {
-        this.ctx.translate(this.camera_x, 0);
-    }
-
-    /**
-    * Resets the camera offset on the canvas.
-    */
-    resetCameraTransform() {
-        this.ctx.translate(-this.camera_x, 0);
-    }
-
-    /**
-    * Renders world objects (background, enemies, items, character)
-    */
-    renderWorld() {
-        this.drawBackground();
-        this.drawCharacter();
-        this.drawClouds();
-        this.drawEnemies();
-        this.checkBottlePickup();
-        this.addObjectsToMap(this.level.coins);
-        this.addObjectsToMap(this.level.bottles);
-        this.drawThrowables();
-
-        this.coinBar.setCoins(this.character.coins || 0);
-    }
-
-    /**
     * Renders all UI elements depending on game state.
     */
     renderUI() {
-
         if (!this.gameWon && !this.gameOver) {
-            this.drawUI();
+            this.ui.drawHUD();
             this.pauseMenu.draw(this.ctx);
             this.touchUi.draw(this.ctx);
         }
 
-        this.drawGameStates();
+        this.state.draw();
     }
 
     /**
@@ -492,42 +355,6 @@ class World {
 
         if (this.gameWon) {
             this.drawWinState();
-        }
-    }
-
-    /**
-    * Draws the game over screen with animation.
-    */
-    drawGameOverState() {
-        this.forceExitFullscreenIfMobileBug();
-        this.updateGameOverAnimation();
-        this.gameOverBackground.draw(this.ctx, this);
-        this.gameOverImage.draw(this.ctx);
-    }
-
-    /**
-    * Draws the win screen with animation.
-    */
-    drawWinState() {
-        this.forceExitFullscreenIfMobileBug();
-        this.updateWinAnimation();
-        this.winBackground.draw(this.ctx, this);
-        this.winImage.draw(this.ctx);
-    }
-
-    /**
-    * Updates the game over fade/scale animation.
-    */
-    updateGameOverAnimation() {
-        if (!this.gameOver) return;
-
-        if (this.gameOverPhase === 1) {
-            this.gameOverImage.opacity = Math.min(this.gameOverImage.opacity + 0.01, 1);
-            this.gameOverImage.scale = Math.max(this.gameOverImage.scale - 0.015, 1);
-
-            if (this.gameOverImage.scale === 1) {
-                this.gameOverPhase = 2;
-            }
         }
     }
 
@@ -556,38 +383,6 @@ class World {
     }
 
     /**
-    * Updates the win animation based on current phase.
-    */
-    updateWinAnimation() {
-        if (!this.gameWon) return;
-
-        if (this.winPhase === 1) {
-            this.animateWinPhaseOne();
-        } else {
-            this.animateWinPhaseTwo();
-        }
-    }
-
-    /**
-    *  Animates the first win phase (fade in + scale down).
-    */
-    animateWinPhaseOne() {
-        this.winImage.opacity = Math.min(this.winImage.opacity + 0.02, 1);
-        this.winImage.scale = Math.max(this.winImage.scale - 0.03, 1);
-
-        if (this.winImage.scale === 1) {
-            this.winPhase = 2;
-        }
-    }
-
-    /**
-    * Animates the second win phase (fade out).
-    */
-    animateWinPhaseTwo() {
-        this.winImage.opacity = Math.max(this.winImage.opacity - 0.02, 0);
-    }
-
-    /**
     * Removes dead enemies and finished throwables
     */
     cleanupObjects() {
@@ -600,60 +395,6 @@ class World {
 
         this.level.enemies = this.level.enemies.filter(e => !e.markedForRemoval);
         this.throwableObjects = this.throwableObjects.filter(o => !o.markedForRemoval);
-    }
-
-    /**
-    * Clears the entire canvas.
-    */
-    clearCanvas() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-
-    /**
-    * Draws all background layers.
-    */
-    drawBackground() {
-        this.addObjectsToMap(this.level.backgroundObjects);
-    }
-
-    /**
-    *  Draws the main character.
-    */
-    drawCharacter() {
-        this.addToMap(this.character);
-    }
-
-    /**
-    *  Draws all clouds.
-    */
-    drawClouds() {
-        this.addObjectsToMap(this.level.clouds);
-    }
-
-    /**
-    *  Draws all enemies.
-    */
-    drawEnemies() {
-        this.level.enemies.forEach(enemy => {
-            this.addToMap(enemy);
-        });
-    }
-
-    /**
-    * Draws all throwable objects
-    */
-    drawThrowables() {
-        this.addObjectsToMap(this.throwableObjects);
-    }
-
-    /**
-    * Draws all UI elements
-    */
-    drawUI() {
-        this.addToMap(this.statusBar);
-        this.addToMap(this.coinBar);
-        this.addToMap(this.bottleBar);
-        this.drawBossLifeBar();
     }
 
     /**

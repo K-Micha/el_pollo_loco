@@ -9,9 +9,17 @@ class UI {
     /**
     * Creates a renderer with canvas and context references.
     */
-    constructor(ctx, canvas) {
+    constructor(ctx, canvas, world) {
         this.ctx = ctx;
         this.canvas = canvas;
+        this.world = world;
+    }
+
+    drawHUD() {
+        this.world.addToMap(this.world.statusBar);
+        this.world.addToMap(this.world.coinBar);
+        this.world.addToMap(this.world.bottleBar);
+        this.drawBossLifeBar();
     }
 
     /**
@@ -74,28 +82,56 @@ class UI {
     }
 
     /**
-    * Draws dimmed overlay and popup box
+    * Draws dimmed overlay and popup box.
     */
     drawPopupBackground(px, py, pw, ph) {
+        this.drawPopupOverlay();
+        this.drawPopupPanel(px, py, pw, ph);
+        this.drawPopupBorder(px, py, pw, ph);
+    }
+
+    /**
+    * Draws the dark popup overlay.
+    */
+    drawPopupOverlay() {
         const ctx = this.ctx;
-        const w = this.canvas.width;
-        const h = this.canvas.height;
 
         ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
-        ctx.fillRect(0, 0, w, h);
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    /**
+    * Draws the popup panel with gradient and shadow.
+    */
+    drawPopupPanel(px, py, pw, ph) {
+        const ctx = this.ctx;
+        const gradient = this.createPopupGradient(px, py, ph);
 
         ctx.save();
         ctx.shadowColor = "rgba(0,0,0,0.35)";
         ctx.shadowBlur = 22;
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 6;
-
-        const gradient = ctx.createLinearGradient(px, py, px, py + ph);
-        gradient.addColorStop(0, "rgba(255, 200, 80, 0.95)");
-        gradient.addColorStop(1, "rgba(230, 140, 40, 0.95)");
-
         this.roundedRect(px, py, pw, ph, 18, gradient);
         ctx.restore();
+    }
+
+    /**
+    * Creates the popup background gradient.
+    */
+    createPopupGradient(px, py, ph) {
+        const gradient = this.ctx.createLinearGradient(px, py, px, py + ph);
+
+        gradient.addColorStop(0, "rgba(255, 200, 80, 0.95)");
+        gradient.addColorStop(1, "rgba(230, 140, 40, 0.95)");
+        return gradient;
+    }
+
+    /**
+    * Draws the popup border.
+    */
+    drawPopupBorder(px, py, pw, ph) {
+        const ctx = this.ctx;
 
         ctx.strokeStyle = "rgba(120, 60, 0, 0.35)";
         ctx.lineWidth = 3;
@@ -103,137 +139,59 @@ class UI {
     }
 
     /**
-    * Draws popup title and control instructions
+    * Draws popup title and control instructions.
     */
-    drawPopupText(px, py, pw, ph) {
-        const ctx = this.ctx;
-        const w = this.canvas.width;
+    drawPopupText(px, py) {
+        const centerX = this.canvas.width / 2;
 
+        this.drawPopupTitle(centerX, py);
+        this.drawPopupControls(centerX, py);
+    }
+
+    /**
+    * Draws popup title.
+    */
+    drawPopupTitle(centerX, py) {
         this.setTitleStyle();
-        ctx.fillText("Controls", w / 2, py + 70);
+        this.ctx.fillText("Controls", centerX, py + 70);
+    }
 
+    /**
+    * Draws control instructions list.
+    */
+    drawPopupControls(centerX, py) {
         this.setBodyStyle();
-        const lines = [
+
+        const lines = this.getControlLines();
+        let y = py + 130;
+
+        for (const line of lines) {
+            this.ctx.fillText(line, centerX, y);
+            y += 35;
+        }
+    }
+
+    /**
+    * Returns control instruction lines.
+    */
+    getControlLines() {
+        return [
             "Move Right:   →  Arrow Key",
             "Move Left:    ←  Arrow Key",
             "Jump:         ↑  Arrow Key",
             "Throw:        D Key"
         ];
-
-        let y = py + 130;
-        for (const line of lines) {
-            ctx.fillText(line, w / 2, y);
-            y += 35;
-        }
-    }
-}
-
-class TouchUi {
-    constructor(world) {
-        this.world = world;
-        this.buttons = [];
     }
 
     /**
-    * Updates mobile button layout based on screen size
+    *  Draws the boss life bar if the boss is visible.
     */
-    updateButtons() {
-        if (!isMobileGameControls()) {
-            this.buttons = [];
-            return;
-        }
+    drawBossLifeBar() {
+        const boss = this.world.level.enemies.find(e => e instanceof Endboss);
 
-        const w = this.world.baseWidth;
-        const h = this.world.baseHeight;
-        const size = 85;
-        const gap = 25;
-        const bottom = h - size - 4;
+        if (!boss || !boss.lifeBar) return;
+        if (!boss.lifeBar.isBossVisible()) return;
 
-        this.buttons = [
-            {
-                key: 'LEFT',
-                x: 23,
-                y: bottom,
-                width: size,
-                height: size,
-                label: '◀'
-            },
-            {
-                key: 'RIGHT',
-                x: 23 + size + gap,
-                y: bottom,
-                width: size,
-                height: size,
-                label: '▶'
-            },
-            {
-                key: 'JUMP',
-                x: w - (size * 2 + gap) - 23,
-                y: bottom,
-                width: size,
-                height: size,
-                label: '▲'
-            },
-            {
-                key: 'THROW',
-                x: w - size - 23,
-                y: bottom,
-                width: size,
-                height: size,
-                label: '🧴'
-            }
-        ];
-    }
-
-    /**
-    * Draws all mobile control buttons
-    */
-    draw(ctx) {
-        if (!isMobileGameControls()) return;
-
-        this.updateButtons();
-        this.buttons.forEach(btn => this.drawButton(ctx, btn));
-    }
-
-    /**
-    * Draws a rounded icon button with its assigned symbol.
-    */
-    drawButton(ctx, btn) {
-        ctx.save();
-
-        ctx.shadowColor = 'transparent';
-
-        ctx.beginPath();
-        ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 16);
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.stroke();
-
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-        ctx.fill();
-
-        ctx.fillStyle = '#fff';
-        ctx.font = '26px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-
-        const [primary, fallback] = ICONS[btn.key];
-        const icon = primary || fallback;
-
-        ctx.fillText(
-            icon,
-            btn.x + btn.width / 2,
-            btn.y + btn.height / 2
-        );
-
-        ctx.restore();
-    }
-
-    /**
-    * Returns the list of interactive buttons.
-    */
-    getButtons() {
-        return this.buttons;
+        boss.lifeBar.draw(this.ctx);
     }
 }
