@@ -2,7 +2,6 @@ class StartScreen {
     isHoveringStart = false;
     gameStarted = false;
 
-
     /**
     * Initializes start screen UI, icons, events and render loop
     */
@@ -11,39 +10,24 @@ class StartScreen {
         this.ctx = canvas.getContext('2d');
         this.ui = new UI(this.ctx, this.canvas);
 
+        this.renderer = new StartScreenRenderer(this);
+
+        this.initImages();
+        this.initState();
+        this.initBindings();
+        this.registerEvents();
+        this.startRenderLoop();
+    }
+
+    /**
+    * Loads all start screen images.
+    */
+    initImages() {
         this.img = this.loadImage('assets/img/9_intro_outro_screens/start/startscreen_1.png');
         this.iconInfo = this.loadImage('assets/icon/info.png');
         this.iconMute = this.loadImage('assets/icon/mute.png');
         this.iconVolume = this.loadImage('assets/icon/volume.png');
         this.iconFullscreen = this.loadImage('assets/icon/fullscreen.png');
-
-        this.isMuted = !SOUND_ENABLED;
-        this.showInfoPopup = false;
-
-        this.boundClick = (e) => this.handleClick(e);
-        this.boundMove = (e) => this.handleMove(e);
-        this.boundLeave = () => {
-            this.canvas.style.cursor = "default";
-        };
-
-        this.boundFullscreenChange = () => this.handleFullscreenChange();
-        this.boundFullscreenResize = () => {
-            if (document.fullscreenElement) {
-                this.resizeCanvasToFullscreen();
-            } else {
-                this.resetCanvasSize();
-            }
-            this.draw();
-        };
-
-        canvas.addEventListener("click", this.boundClick);
-        canvas.addEventListener("mousemove", this.boundMove);
-        canvas.addEventListener("mouseleave", this.boundLeave);
-
-        canvas.addEventListener("touchend", (e) => this.handleTouchEnd(e), { passive: false });
-        document.addEventListener("fullscreenchange", this.boundFullscreenChange);
-        document.addEventListener("webkitfullscreenchange", this.boundFullscreenChange);
-        document.addEventListener("fullscreenchange", this.boundFullscreenResize);
 
         this.loadAllImages([
             this.img,
@@ -51,11 +35,85 @@ class StartScreen {
             this.iconMute,
             this.iconVolume,
             this.iconFullscreen
-        ], () => this.draw());
+        ], () => this.renderer.draw());
+    }
 
+    /**
+    * Initializes start screen state.
+    */
+    initState() {
+        this.isMuted = !SOUND_ENABLED;
+        this.showInfoPopup = false;
+    }
+
+    /**
+    * Initializes bound handlers.
+    */
+    initBindings() {
+        this.boundClick = (e) => this.handleClick(e);
+        this.boundMove = (e) => this.handleMove(e);
+        this.boundLeave = () => this.resetCursor();
+        this.boundFullscreenChange = () => this.handleFullscreenChange();
+        this.boundFullscreenResize = () => this.handleFullscreenResize();
+    }
+
+    /**
+    * Registers all screen events.
+    */
+    registerEvents() {
+        this.canvas.addEventListener("click", this.boundClick);
+        this.canvas.addEventListener("mousemove", this.boundMove);
+        this.canvas.addEventListener("mouseleave", this.boundLeave);
+        this.canvas.addEventListener("touchend", (e) => this.handleTouchEnd(e), { passive: false });
+
+        document.addEventListener("fullscreenchange", this.boundFullscreenChange);
+        document.addEventListener("webkitfullscreenchange", this.boundFullscreenChange);
+        document.addEventListener("fullscreenchange", this.boundFullscreenResize);
+    }
+
+    /**
+    * Starts the render loop.
+    */
+    startRenderLoop() {
         this.loop = setInterval(() => {
-            this.draw();
+            this.renderer.draw();
         }, 1000 / 60);
+    }
+
+    /**
+    * Returns scaled rectangle for the start button text.
+    */
+    getStartTextRect() {
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+
+        const textWidth = 360 * (w / 720);
+        const textHeight = 80 * (h / 480);
+
+        const x = (w - textWidth) / 2;
+        const y = 90 * (h / 480) - textHeight / 2;
+
+        return { x, y, width: textWidth, height: textHeight };
+    }
+
+    /**
+    * Resets the canvas cursor.
+    */
+    resetCursor() {
+        this.canvas.style.cursor = "default";
+    }
+
+    /**
+    * Handles fullscreen resize updates.
+    */
+    handleFullscreenResize() {
+        if (document.fullscreenElement) {
+            this.resizeCanvasToFullscreen();
+        } else {
+            this.resetCanvasSize();
+        }
+
+        this.renderer.draw();
     }
 
     /**
@@ -179,7 +237,7 @@ class StartScreen {
             this.resetCanvasSize();
         }
 
-        this.draw();
+        this.renderer.draw();
     }
 
     /**
@@ -245,98 +303,13 @@ class StartScreen {
     }
 
     /**
-    *  Draws a 48×48 icon at the given position.
-    */
-    drawIcon(img, x, y) {
-        const size = 48;
-        this.ctx.drawImage(img, x, y, size, size);
-    }
-
-    /**
-    * Returns scaled rectangle for the start button text
-    */
-    getStartTextRect() {
-        const w = this.canvas.width;
-        const h = this.canvas.height;
-
-        const textWidth = 360 * (w / 720);
-        const textHeight = 80 * (h / 480);
-
-        const x = (w - textWidth) / 2;
-        const y = 90 * (h / 480) - textHeight / 2;
-
-        return { x, y, width: textWidth, height: textHeight };
-    }
-
-    /**
-    * Draws background, UI icons, popup and start text
-    */
-    draw() {
-        const w = this.canvas.width;
-        const h = this.canvas.height;
-
-        this.ctx.clearRect(0, 0, w, h);
-
-        this.drawBackground(w, h);
-
-        const rect = this.getStartTextRect();
-        this.drawStartText(rect.x + rect.width / 2, rect.y + rect.height * 0.7);
-
-        if (this.showInfoPopup) {
-            const { px, py, pw, ph } = this.getPopupRect();
-            this.ui.drawPopup(px, py, pw, ph);
-        }
-
-        this.drawUI(w);
-    }
-
-    /**
-     * Draws the background image stretched to the given size.
-     */
-    drawBackground(w, h) {
-        this.ctx.drawImage(this.img, 0, 0, w, h);
-    }
-
-    /**
-    * Draws info, sound and fullscreen icons
-    */
-    drawUI(w) {
-        this.drawIcon(this.iconInfo, 20, 20);
-        this.drawIcon(this.isMuted ? this.iconMute : this.iconVolume, w - 140, 20);
-        this.drawIcon(this.iconFullscreen, w - 70, 20);
-    }
-
-    /**
-    * Draws the start button text with hover styling
-    */
-    drawStartText(x, y) {
-        const ctx = this.ctx;
-        const text = this.getStartText();
-
-        ctx.font = "bold 48px Arial";
-        ctx.textAlign = "center";
-        ctx.lineWidth = this.isHoveringStart ? 6 : 3;
-        ctx.strokeStyle = "#8b3a00";
-        ctx.strokeText(text, x, y);
-        ctx.fillStyle = "#ffcc33";
-        ctx.fillText(text, x, y);
-    }
-
-    /**
-    * Returns the start button text based on screen width.
-    */
-    getStartText() {
-        return window.innerWidth < 910 ? "START" : "START GAME";
-    }
-
-    /**
     * Toggles sound state and redraws the UI.
     */
     toggleSound() {
         SOUND_ENABLED = !SOUND_ENABLED;
         saveSoundState();
         this.isMuted = !SOUND_ENABLED;
-        this.draw();
+        this.renderer.draw();
     }
 
     /**
@@ -427,13 +400,13 @@ class StartScreen {
     handlePopupClick(x, y) {
         if (this.showInfoPopup) {
             this.showInfoPopup = false;
-            this.draw();
+            this.renderer.draw();
             return true;
         }
 
         if (this.isHit(x, y, 20, 20)) {
             this.showInfoPopup = true;
-            this.draw();
+            this.renderer.draw();
             return true;
         }
 

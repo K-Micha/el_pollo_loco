@@ -85,7 +85,7 @@ function init() {
     startScreen = new StartScreen(canvas);
 
     startScreen.img.onload = () => {
-        startScreen.draw();
+        startScreen.renderer.draw();
         updateRotateOverlay();
     };
 }
@@ -251,7 +251,7 @@ document.addEventListener("keyup", (e) => {
 */
 window.addEventListener('load', () => {
     updateRotateOverlay();
-     window.worldReady = true;
+    window.worldReady = true;
 });
 
 /**
