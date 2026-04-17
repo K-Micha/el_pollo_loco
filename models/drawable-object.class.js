@@ -34,7 +34,10 @@ class DrawableObject {
             ctx.drawImage(
                 this.img,
                 1, 0, this.img.width - 1, this.img.height,
-                this.x, this.y, this.width, this.height
+                Math.floor(this.x) - 1,
+                this.y,
+                this.width + 2,
+                this.height
             );
         } else {
             ctx.drawImage(this.img, Math.floor(this.x), this.y, this.width, this.height);
