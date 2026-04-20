@@ -1,6 +1,6 @@
 class GameOverBackground {
     /**
-    * Initializes the game‑over background and restart button.
+    * Initializes background and button states.
     */
     constructor() {
         this.layers = Images.IMAGES_GAMEOVER_BG.map(path =>
@@ -8,22 +8,26 @@ class GameOverBackground {
         );
 
         this.restartButton = { x: 0, y: 0, width: 160, height: 50 };
+        this.homeButton = { x: 0, y: 0, width: 100, height: 50 };
+
         this.isHoveringRestart = false;
+        this.isHoveringHome = false;
     }
 
     /**
-    * Draws background layers and restart button when active
+    * Draws background and buttons.
     */
     draw(ctx, world) {
-        this.layers.forEach(l => l.draw(ctx));
+        this.layers.forEach(layer => layer.draw(ctx));
 
-        if (world.gameOverPhase >= 2) {
-            this.drawRestart(ctx);
-        }
+        if (world.gameOverPhase < 2) return;
+
+        this.drawRestart(ctx);
+        this.drawHome(ctx);
     }
 
     /**
-    * Draws the restart button with hover styling
+    * Draws the restart button.
     */
     drawRestart(ctx) {
         const { x, y } = this.getRestartPosition();
@@ -32,7 +36,7 @@ class GameOverBackground {
     }
 
     /**
-    * Returns the centered restart button position.
+    * Returns restart button position.
     */
     getRestartPosition() {
         return {
@@ -54,7 +58,7 @@ class GameOverBackground {
     }
 
     /**
-    *  Draws the restart button text.
+    * Draws restart button text.
     */
     drawRestartText(ctx, x, y) {
         const hover = this.isHoveringRestart;
@@ -68,18 +72,62 @@ class GameOverBackground {
         ctx.strokeText("Restart", x, y);
         ctx.fillText("Restart", x, y);
     }
+
+    /**
+    * Draws the home button.
+    */
+    drawHome(ctx) {
+        const { x, y } = this.getHomePosition();
+        this.setHomeButton(x, y);
+        this.drawHomeText(ctx, x, y);
+    }
+
+    /**
+    * Returns home button position.
+    */
+    getHomePosition() {
+        return {
+            x: 60,
+            y: 55
+        };
+    }
+
+    /**
+    * Updates home button hitbox.
+    */
+    setHomeButton(x, y) {
+        this.homeButton = {
+            x: x - 50,
+            y: y - 25,
+            width: 100,
+            height: 50
+        };
+    }
+
+    /**
+    * Draws home button text.
+    */
+    drawHomeText(ctx, x, y) {
+        const hover = this.isHoveringHome;
+
+        ctx.font = "28px Arial";
+        ctx.textAlign = "center";
+        ctx.lineWidth = hover ? 7 : 6;
+        ctx.strokeStyle = hover ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.6)";
+        ctx.fillStyle = hover ? "#ffe066" : "#ffd700";
+
+        ctx.strokeText("Home", x, y);
+        ctx.fillText("Home", x, y);
+    }
 }
 
-/**
-* Loads and centers the game‑over image with fade/scale props
-*/
 class GameOverImage extends DrawableObject {
     constructor() {
         super();
         this.loadImage('assets/img/You won, you lost/Game Over.png');
 
         this.width = 400;
-        this.height = 200; 0
+        this.height = 200;
 
         this.x = (720 - this.width) / 2;
         this.y = (480 - this.height) / 2;
@@ -89,7 +137,7 @@ class GameOverImage extends DrawableObject {
     }
 
     /**
-    * Draws the image with scaling and fade‑in transform
+    * Draws image with fade and scale.
     */
     draw(ctx) {
         ctx.save();

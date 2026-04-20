@@ -1,5 +1,6 @@
 class WinBackground extends DrawableObject {
     isHoveringRestart = false;
+    isHoveringHome = false;
 
     /**
      * Initializes win screen background and buttons.
@@ -68,6 +69,7 @@ class WinBackground extends DrawableObject {
         super.draw(ctx);
         this.drawStats(ctx, world);
         this.drawRestart(ctx);
+        this.drawHome(ctx);
     }
 
     /**
@@ -275,7 +277,6 @@ class WinBackground extends DrawableObject {
     /**
     * Returns all win‑screen stats as formatted text lines.
     */
-
     getStatsLines(world) {
         return [
             `Enemies killed: ${world.enemiesKilled}`,
@@ -304,7 +305,6 @@ class WinBackground extends DrawableObject {
     }
 
 }
-
 
 class WinImage extends DrawableObject {
 

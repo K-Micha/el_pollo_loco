@@ -56,12 +56,12 @@ class RestartController {
 
         if (this.world.gameWon) {
             this.handleWinClick(pos);
-            this.handleHomeClick(pos);
+            this.handleHomeClick(pos, this.world.winBackground);
         }
 
         if (this.world.gameOver) {
             this.handleGameOverClick(pos);
-            this.handleHomeClick(pos);
+            this.handleHomeClick(pos, this.world.gameOverBackground);
         }
     }
 
@@ -127,24 +127,32 @@ class RestartController {
     onMove(e) {
         const pos = this.getMousePos(e);
 
-        if (this.world.gameWon) this.updateWinHover(pos);
-        if (this.world.gameOver) this.updateGameOverHover(pos);
+        if (this.world.gameWon) {
+            this.updateWinHover(pos);
+        }
+
+        if (this.world.gameOver && this.world.gameOverPhase >= 2) {
+            this.updateGameOverHover(pos);
+        }
     }
 
     /**
     * Updates hover state for win screen.
     */
     updateWinHover(pos) {
-        const b = this.world.winBackground.restartButton;
-        this.world.winBackground.isHoveringRestart = this.isInsideButton(pos, b);
+        const bg = this.world.winBackground;
+
+        bg.isHoveringRestart = this.isInsideButton(pos, bg.restartButton);
+        bg.isHoveringHome = this.isInsideButton(pos, bg.homeButton);
     }
 
     /**
     * Updates hover state for game‑over screen.
     */
     updateGameOverHover(pos) {
-        const b = this.world.gameOverBackground.restartButton;
-        this.world.gameOverBackground.isHoveringRestart = this.isInsideButton(pos, b);
+        const bg = this.world.gameOverBackground;
+        bg.isHoveringRestart = this.isInsideButton(pos, bg.restartButton);
+        bg.isHoveringHome = this.isInsideButton(pos, bg.homeButton);
     }
 
     isInsideButton(pos, btn) {
