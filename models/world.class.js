@@ -39,8 +39,9 @@ class World {
         this.keyboard = keyboard;
         this.level = createLevel1();
 
-        this.initGame();
+        this.bossState = new WorldBossState(this);
 
+        this.initGame();
         this.setWorld();
     }
 
@@ -159,49 +160,6 @@ class World {
     }
 
     /**
-    * Returns the endboss instance if present.
-    */
-    getBoss() {
-        return this.level.enemies.find(e => e instanceof Endboss);
-    }
-
-    /**
-    * Plays or stops boss sound depending on state.
-    */
-    updateBossSound(boss) {
-        if (boss && !boss.isDeadEnemy) {
-            if (!this.bossSoundPlaying) {
-                SOUNDS.boss_sound.play();
-                this.bossSoundPlaying = true;
-            }
-        } else {
-            if (this.bossSoundPlaying) {
-                SOUNDS.boss_sound.pause();
-                this.bossSoundPlaying = false;
-            }
-        }
-    }
-
-    /**
-    * Sets win state when boss is dead.
-    */
-    checkWinCondition(boss) {
-        if (boss && boss.isDeadEnemy) {
-            this.gameWon = true;
-        }
-    }
-
-    /**
-    * Handles boss sound, win detection and win animation
-    */
-    tickEnemies() {
-        const boss = this.getBoss();
-
-        this.updateBossSound(boss);
-        this.checkWinCondition(boss);
-    }
-
-    /**
     * Injects world reference into character and boss
     */
     setWorld() {
@@ -249,24 +207,10 @@ class World {
     *  Handles bottle pickup logic.
     */
     collectBottle(bottle) {
-        this.playBottleSound();
-        this.incrementBottleCount();
-        this.updateBottleUI();
-        this.removeBottle(bottle);
-    }
-
-    /**
-    * Plays the bottle pickup sound.
-    */
-    playBottleSound() {
         SOUNDS.pickup.play();
-    }
-
-    /**
-    * Increments collected bottle count.
-    */
-    incrementBottleCount() {
         this.bottlesCollected++;
+        this.updateBottleUI();
+        bottle.markedForRemoval = true;
     }
 
     /**
@@ -277,13 +221,6 @@ class World {
 
         this.bottleBar.setPercentage(percentage);
         this.bottleBar.setBottles(this.bottlesCollected, this.totalBottles);
-    }
-
-    /**
-    * Marks bottle for removal.
-    */
-    removeBottle(bottle) {
-        bottle.markedForRemoval = true;
     }
 
     /**
@@ -309,7 +246,7 @@ class World {
     * Updates world state before rendering
     */
     updateFrame() {
-        this.tickEnemies();
+        this.bossState.update();
         Collision.checkBottlePickup(this);
         this.cleanupObjects();
     }
@@ -342,20 +279,6 @@ class World {
         }
 
         this.state.draw();
-    }
-
-    /**
-    * Draws win/game over screens and animations
-    */
-    drawGameStates() {
-        if (this.gameOver) {
-            this.drawGameOverState();
-            return;
-        }
-
-        if (this.gameWon) {
-            this.drawWinState();
-        }
     }
 
     /**
