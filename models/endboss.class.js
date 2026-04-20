@@ -3,14 +3,14 @@ class Endboss extends MovableObject {
     height = 340;
     width = 240;
     isAggro = false;
-    attackRange = 120;
+    attackRange = 155;
     isAttacking = false;
     attackCooldown = false;
     isHurtEnemy = false;
     currentAnimation = 'idle';
     bossesKilled = 0;
-    rageSpeed = 4.5;
-    baseSpeed = 3;
+    rageSpeed = 5.8;
+    baseSpeed = 3.8;
 
     /**
     * Applies damage, triggers aggro and handles death
@@ -57,9 +57,9 @@ class Endboss extends MovableObject {
     * Returns rage bonus based on remaining life
     */
     getRageBonus() {
-        if (this.life <= 30) return 0.8;
-        if (this.life <= 60) return 0.4;
-        return 0.2;
+        if (this.life <= 30) return 1.0;
+        if (this.life <= 60) return 0.5;
+        return 0.25;
     }
 
     /**
@@ -67,7 +67,18 @@ class Endboss extends MovableObject {
     */
     updateChaseSpeed() {
         const distance = this.distanceToPlayer();
-        this.speed = distance > 220 ? this.rageSpeed : this.baseSpeed;
+
+        if (distance > 260) {
+            this.speed = 6.4;
+            return;
+        }
+
+        if (distance > 140) {
+            this.speed = 5.8;
+            return;
+        }
+
+        this.speed = 4.6;
     }
 
     /**
@@ -110,7 +121,6 @@ class Endboss extends MovableObject {
 
         this.x = 2500;
         this.animate();
-
     }
 
     /**
@@ -130,6 +140,7 @@ class Endboss extends MovableObject {
             this.moveLeft();
         }, 1000 / 60);
     }
+
     /**
     * Initiates attack sequence with timing windows
     */
@@ -148,11 +159,11 @@ class Endboss extends MovableObject {
             if (this.isCharacterInAttackRange()) {
                 this.performAttack();
             }
-        }, 300);
+        }, 220);
 
         setTimeout(() => {
             this.isAttacking = false;
-        }, 600);
+        }, 500);
     }
 
     /**
@@ -172,9 +183,9 @@ class Endboss extends MovableObject {
         const factor = this.getOverlapFactor(overlap);
         const rageBonus = this.getRageBonus();
 
-        const baseDamage = 15;
+        const baseDamage = 18;
 
-        return baseDamage * (1 + factor * 0.5 + rageBonus);
+        return baseDamage * (1 + factor * 0.55 + rageBonus);
     }
 
     /**
@@ -195,8 +206,8 @@ class Endboss extends MovableObject {
     isCharacterInAttackRange() {
         const char = this.world.character;
 
-        const horizontal = Math.abs(this.x - char.x) < 120;
-        const vertical = Math.abs((this.y + this.height) - (char.y + char.height)) < 80;
+        const horizontal = Math.abs(this.x - char.x) < this.attackRange;
+        const vertical = Math.abs((this.y + this.height) - (char.y + char.height)) < 90;
 
         return horizontal && vertical;
     }

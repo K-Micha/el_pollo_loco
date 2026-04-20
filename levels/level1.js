@@ -31,7 +31,7 @@ function randomBottle() {
 * Creates and returns Level 1 with enemies, clouds, background, coins and bottles.
 */
 function createLevel1() {
-    let startX = 300 + Math.random() * 1700;
+    let startX = 300 + Math.random() * 2400;
     let startY = 120 + Math.random() * 40;
 
     return new Level(

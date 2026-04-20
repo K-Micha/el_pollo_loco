@@ -176,14 +176,14 @@ class Collision {
         const charBottom = char.y + char.height;
         const charCenter = char.x + char.width / 2;
         const enemyTop = enemy.y;
-        const stompHeight = enemy.height + 10;
+        const stompHeight = enemy.height + 25;
 
         return (
             char.speedY < 0 &&
             charBottom >= enemyTop &&
             charBottom <= enemyTop + stompHeight &&
             charCenter >= enemy.x + 10 &&
-            charCenter <= enemy.x + enemy.width - 10
+            charCenter <= enemy.x + enemy.width - 5
         );
     }
 

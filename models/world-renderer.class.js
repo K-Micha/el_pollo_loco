@@ -68,16 +68,19 @@ class WorldRenderer {
     */
     renderWorld() {
         this.drawBackground();
-        this.drawCharacter();
         this.drawClouds();
-        this.drawEnemies();
+
         Collision.checkBottlePickup(this.world);
         this.world.addObjectsToMap(this.world.level.coins);
         this.world.addObjectsToMap(this.world.level.bottles);
+
         this.drawThrowables();
+        this.drawEnemies();
+        this.drawCharacter();
 
         this.world.coinBar.setCoins(this.world.character.coins || 0);
     }
+
     /**
     * Draws all background layers.
     */
