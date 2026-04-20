@@ -138,16 +138,21 @@ class World {
     }
 
     /**
-    * Converts pointer coordinates to game‑scaled coordinates.
+    * Converts pointer coordinates to scaled game coordinates.
     */
     getScaledPointer(e) {
         const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.baseWidth / rect.width;
-        const scaleY = this.baseHeight / rect.height;
+
+        const scaleX = rect.width / this.baseWidth;
+        const scaleY = rect.height / this.baseHeight;
+        const scale = Math.min(scaleX, scaleY);
+
+        const offsetX = (rect.width - this.baseWidth * scale) / 2;
+        const offsetY = (rect.height - this.baseHeight * scale) / 2;
 
         return {
-            x: (e.clientX - rect.left) * scaleX,
-            y: (e.clientY - rect.top) * scaleY
+            x: (e.clientX - rect.left - offsetX) / scale,
+            y: (e.clientY - rect.top - offsetY) / scale
         };
     }
 

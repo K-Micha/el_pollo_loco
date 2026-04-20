@@ -11,6 +11,7 @@ class StartScreen {
         this.ui = new UI(this.ctx, this.canvas);
 
         this.renderer = new StartScreenRenderer(this);
+        this.fullscreen = new StartScreenFullscreen(this);
 
         this.initImages();
         this.initState();
@@ -53,8 +54,8 @@ class StartScreen {
         this.boundClick = (e) => this.handleClick(e);
         this.boundMove = (e) => this.handleMove(e);
         this.boundLeave = () => this.resetCursor();
-        this.boundFullscreenChange = () => this.handleFullscreenChange();
-        this.boundFullscreenResize = () => this.handleFullscreenResize();
+        this.boundFullscreenChange = () => this.fullscreen.handleFullscreenChange();
+        this.boundFullscreenResize = () => this.fullscreen.handleFullscreenResize();
     }
 
     /**
@@ -104,19 +105,6 @@ class StartScreen {
     }
 
     /**
-    * Handles fullscreen resize updates.
-    */
-    handleFullscreenResize() {
-        if (document.fullscreenElement) {
-            this.resizeCanvasToFullscreen();
-        } else {
-            this.resetCanvasSize();
-        }
-
-        this.renderer.draw();
-    }
-
-    /**
     * Stops the start screen render loop
     */
     stop() {
@@ -143,52 +131,6 @@ class StartScreen {
             }
         } catch (err) {
             console.log('fullscreen failed:', err);
-        }
-    }
-
-    /**
-    * Returns true if the game is currently in fullscreen mode.
-    */
-    isFullscreen() {
-        return document.fullscreenElement || document.webkitFullscreenElement;
-    }
-
-    /**
-    * Enters fullscreen mode and locks device orientation.
-    */
-    async enterFullscreen() {
-        const elem = this.canvas;
-
-        if (elem.requestFullscreen) {
-            await elem.requestFullscreen({ navigationUI: "hide" });
-        } else if (elem.webkitRequestFullscreen) {
-            elem.webkitRequestFullscreen();
-        }
-
-        this.lockOrientation();
-    }
-
-    /**
-    *  Exits fullscreen mode.
-    */
-    async exitFullscreen() {
-        if (document.exitFullscreen) {
-            await document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        }
-    }
-
-    /**
-    * Locks device orientation to landscape if supported.
-    */
-    async lockOrientation() {
-        if (!screen.orientation?.lock) return;
-
-        try {
-            await screen.orientation.lock("landscape");
-        } catch (e) {
-            console.log("orientation lock failed");
         }
     }
 
@@ -220,64 +162,6 @@ class StartScreen {
             clientX: touch.clientX,
             clientY: touch.clientY
         });
-    }
-
-    /**
-    * Handles fullscreen changes and updates canvas layout.
-    */
-    handleFullscreenChange() {
-        const isFullscreen =
-            document.fullscreenElement || document.webkitFullscreenElement;
-
-        if (isFullscreen) {
-            document.body.style.backgroundColor = '#000';
-            this.resizeCanvasToFullscreen();
-        } else {
-            document.body.style.backgroundColor = '';
-            this.resetCanvasSize();
-        }
-
-        this.renderer.draw();
-    }
-
-    /**
-    * Resizes the canvas to match fullscreen dimensions.
-    */
-    resizeCanvasToFullscreen() {
-        const { width, height } = this.getFullscreenCanvasSize();
-
-        this.canvas.width = 720;
-        this.canvas.height = 480;
-        this.canvas.style.width = width + "px";
-        this.canvas.style.height = height + "px";
-    }
-
-    /**
-    * Calculates scaled fullscreen canvas size.
-    */
-    getFullscreenCanvasSize() {
-        const baseW = 720;
-        const baseH = 480;
-
-        const scale = Math.min(
-            window.innerWidth / baseW,
-            window.innerHeight / baseH
-        );
-
-        return {
-            width: Math.floor(baseW * scale),
-            height: Math.floor(baseH * scale)
-        };
-    }
-
-    /**
-    * Resets the canvas to its default size.
-    */
-    resetCanvasSize() {
-        this.canvas.width = 720;
-        this.canvas.height = 480;
-        this.canvas.style.width = "720px";
-        this.canvas.style.height = "480px";
     }
 
     /**
