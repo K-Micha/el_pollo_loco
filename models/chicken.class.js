@@ -80,7 +80,7 @@ class Chicken extends ChickenBase {
             walkImages: Images.IMAGES_WALKING,
             deadImages: Images.IMAGES_DEAD_CHICKEN,
 
-            y: 360,
+            y: 369,
             width: 80,
             height: 60,
 
@@ -102,7 +102,7 @@ class SmallChicken extends ChickenBase {
             walkImages: Images.IMAGES_WALKING_SMAL,
             deadImages: Images.IMAGES_DEAD_SMAL,
 
-            y: 380,
+            y: 387,
             width: 60,
             height: 40,
 
