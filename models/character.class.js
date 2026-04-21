@@ -16,7 +16,7 @@ class Character extends MovableObject {
     * Initializes character, loads animations and starts loops
     */
     constructor() {
-        super().loadImage('../assets/img/2_character_pepe/1_idle/idle/I-1.png')
+        super().loadImage('./assets/img/2_character_pepe/1_idle/idle/I-1.png')
         this.loadImages(Images.IMAGES_WALKING_CHAR);
         this.loadImages(Images.IMAGES_JUMPING_CHAR);
         this.loadImages(Images.IMAGES_DEAD_CHAR);

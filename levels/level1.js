@@ -31,7 +31,7 @@ function randomBottle() {
 * Creates and returns Level 1 with enemies, clouds, background, coins and bottles.
 */
 function createLevel1() {
-    let startX = 300 + Math.random() * 2400;
+    let startX = 300 + Math.random() * 1900;
     let startY = 120 + Math.random() * 40;
 
     return new Level(
@@ -55,30 +55,30 @@ function createLevel1() {
         ],
 
         [
-            new BackgroundObject('assets/img/5_background/layers/air.png', -720),
-            new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', -720),
-            new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', -720),
-            new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', -720),
+            new BackgroundObject('./assets/img/5_background/layers/air.png', -720),
+            new BackgroundObject('./assets/img/5_background/layers/3_third_layer/2.png', -720),
+            new BackgroundObject('./assets/img/5_background/layers/2_second_layer/2.png', -720),
+            new BackgroundObject('./assets/img/5_background/layers/1_first_layer/2.png', -720),
 
-            new BackgroundObject('assets/img/5_background/layers/air.png', 0),
-            new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 0),
-            new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 0),
-            new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 0),
+            new BackgroundObject('./assets/img/5_background/layers/air.png', 0),
+            new BackgroundObject('./assets/img/5_background/layers/3_third_layer/1.png', 0),
+            new BackgroundObject('./assets/img/5_background/layers/2_second_layer/1.png', 0),
+            new BackgroundObject('./assets/img/5_background/layers/1_first_layer/1.png', 0),
 
-            new BackgroundObject('assets/img/5_background/layers/air.png', 720),
-            new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720),
-            new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720),
-            new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720),
+            new BackgroundObject('./assets/img/5_background/layers/air.png', 720),
+            new BackgroundObject('./assets/img/5_background/layers/3_third_layer/2.png', 720),
+            new BackgroundObject('./assets/img/5_background/layers/2_second_layer/2.png', 720),
+            new BackgroundObject('./assets/img/5_background/layers/1_first_layer/2.png', 720),
 
-            new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 2),
-            new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 720 * 2),
-            new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 720 * 2),
-            new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 720 * 2),
+            new BackgroundObject('./assets/img/5_background/layers/air.png', 720 * 2),
+            new BackgroundObject('./assets/img/5_background/layers/3_third_layer/1.png', 720 * 2),
+            new BackgroundObject('./assets/img/5_background/layers/2_second_layer/1.png', 720 * 2),
+            new BackgroundObject('./assets/img/5_background/layers/1_first_layer/1.png', 720 * 2),
 
-            new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 3),
-            new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720 * 3),
-            new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720 * 3),
-            new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720 * 3),
+            new BackgroundObject('./assets/img/5_background/layers/air.png', 720 * 3),
+            new BackgroundObject('./assets/img/5_background/layers/3_third_layer/2.png', 720 * 3),
+            new BackgroundObject('./assets/img/5_background/layers/2_second_layer/2.png', 720 * 3),
+            new BackgroundObject('./assets/img/5_background/layers/1_first_layer/2.png', 720 * 3),
         ],
 
         [
